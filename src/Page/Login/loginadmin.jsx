@@ -3,15 +3,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie"; // Import the Cookies library
 import "./loginadmin.css";
+import { CircularProgress } from "@mui/material";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/login`,
@@ -25,12 +28,15 @@ const Login = () => {
         Cookies.set("token", token, { expires: 7 });
         navigate("/");
         window.location.reload();
+        setLoading(false);
       } else {
         setError("Invalid email or password");
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error logging in:", error);
       setError("An error occurred while logging in");
+      setLoading(false);
     }
   };
 
@@ -71,9 +77,18 @@ const Login = () => {
               required
             />
           </div>
-          <button className="btn" type="submit">
+
+          <div>
+            {loading === false ? <button
+              type="submit"
+              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Log in
+            </button> : <div className='flex items-center justify-center'><CircularProgress /></div>}
+          </div>
+          {/* <button className="btn" type="submit">
             Login
-          </button>
+          </button> */}
         </form>
       </div>
     </div>
