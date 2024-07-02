@@ -190,7 +190,7 @@ const ProductManagement = () => {
                 Export Product
               </ListItem>
             </Button>
-            <Button
+            {/* <Button
               sx={{ background: "orange" }}
               variant="contained"
               onClick={showPopupForCategoriesAndSubs}
@@ -198,7 +198,7 @@ const ProductManagement = () => {
               <ListItem disablePadding sx={{ display: "block" }}>
                 Category Management
               </ListItem>
-            </Button>
+            </Button> */}
             <Button
               sx={{ background: "orange" }}
               variant="contained"
@@ -267,7 +267,7 @@ const ProductManagement = () => {
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection:"column",
+                    flexDirection: "column",
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
@@ -279,7 +279,7 @@ const ProductManagement = () => {
                       p: 1,
                       fontSize: "40px",
                       borderRadius: "10px",
-                      marginBottom:"12%"
+                      marginBottom: "12%"
                     }}
                   />
                   <Typography
@@ -314,7 +314,7 @@ const ProductManagement = () => {
               </div>
 
               {/* Container for Verified Products */}
-              <div style={{ marginBottom: "1rem",alignContent:"center" }}>
+              <div style={{ marginBottom: "1rem", alignContent: "center" }}>
                 <Typography
                   variant="h6"
                   sx={{ fontSize: "14px", color: "grey" }}
@@ -334,7 +334,7 @@ const ProductManagement = () => {
               </div>
 
               {/* Container for Unverified Products */}
-              <div style={{alignContent:"center"}}>
+              <div style={{ alignContent: "center" }}>
                 <Typography
                   variant="h6"
                   sx={{ fontSize: "14px", color: "grey" }}
