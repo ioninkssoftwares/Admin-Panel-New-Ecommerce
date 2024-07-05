@@ -26,8 +26,13 @@ import {
   TextField,
   Typography,
   Box,
+  Divider,
+  Grid,
 } from "@mui/material";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import PaymentIcon from "@mui/icons-material/Payment";
+import DoneIcon from "@mui/icons-material/Done";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SideBar from "../../Component/SideBar";
@@ -70,6 +75,13 @@ const StaffManagement = () => {
     email: "",
     mobileNo: "",
   });
+
+  if (staffList) console.log(staffList, "fhdsjhfkjs")
+
+  const totalRewardMoney = staffList.reduce((sum, staff) => {
+    return sum + (staff.rewardMoney || 0);
+  }, 0);
+
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
@@ -398,22 +410,22 @@ const StaffManagement = () => {
     setOpenDeleteDialog(true);
   };
 
-const handleRequestSort = (property) => {
-  const isAsc = orderBy === property && order === "asc";
-  setOrder(isAsc ? "desc" : "asc");
-  setOrderBy(property);
-};
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
 
-const sortedStaff = [...staffList].sort((a, b) => {
-  const orderByValueA = a[orderBy] || "";
-  const orderByValueB = b[orderBy] || "";
-  if (orderBy === "mobileNo") {
-    return (order === "asc" ? 1 : -1) * (parseInt(orderByValueA) - parseInt(orderByValueB));
-  } else {
-    return (order === "asc" ? 1 : -1) * orderByValueA.localeCompare(orderByValueB);
-  }
-});
+  const sortedStaff = [...staffList].sort((a, b) => {
+    const orderByValueA = a[orderBy] || "";
+    const orderByValueB = b[orderBy] || "";
+    if (orderBy === "mobileNo") {
+      return (order === "asc" ? 1 : -1) * (parseInt(orderByValueA) - parseInt(orderByValueB));
+    } else {
+      return (order === "asc" ? 1 : -1) * orderByValueA.localeCompare(orderByValueB);
+    }
+  });
 
 
   const filteredStaff = sortedStaff.filter((staff) => {
@@ -480,7 +492,7 @@ const sortedStaff = [...staffList].sort((a, b) => {
             alignItems="center"
             marginTop="7%"
             justifyContent="space-between"
-            // marginLeft="20%"
+          // marginLeft="20%"
           >
             <TextField
               label="Search"
@@ -512,69 +524,128 @@ const sortedStaff = [...staffList].sort((a, b) => {
               </Button>
             </Box>
           </Box>
-          <div
-            className="ProductManagementProductDetailsSecond00"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              // marginLeft: "20%",
-              marginTop: "2%",
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "start", }}>
+            <div
+              className="ProductManagementProductDetailsSecond00"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                // marginLeft: "20%",
+                marginTop: "2%",
 
-              width: "30%",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "4rem",
+                width: "30%",
               }}
             >
-              <PeopleOutlineIcon
+              <Box
                 sx={{
-                  color: "black",
-                  background: "#ffffcc",
-                  p: 1,
-                  fontSize: "40px",
-                  borderRadius: "10px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "4rem",
                 }}
-              />
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
-                All Staff
-                <br />
-                <Typography
-                  paragraph
-                  style={{ fontWeight: "500", color: "black" }}
-                >
-                  {staffList && staffList.length}
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      color: "green",
-                      marginLeft: "4px",
-                    }}
+              >
+                <PeopleOutlineIcon
+                  sx={{
+                    color: "black",
+                    background: "#ffffcc",
+                    p: 1,
+                    fontSize: "40px",
+                    borderRadius: "10px",
+                  }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
+                  All Staff
+                  <br />
+                  <Typography
+                    paragraph
+                    style={{ fontWeight: "500", color: "black" }}
                   >
-                    {/* Calculate the percentage based on the total count of users */}
-                    {staffList &&
-                      staffList.length > 0 &&
-                      `+${((staffList.length / staffList.length) * 100).toFixed(
-                        2
-                      )}%`}
-                  </span>
+                    {staffList && staffList.length}
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        color: "green",
+                        marginLeft: "4px",
+                      }}
+                    >
+                      {/* Calculate the percentage based on the total count of users */}
+                      {staffList &&
+                        staffList.length > 0 &&
+                        `+${((staffList.length / staffList.length) * 100).toFixed(
+                          2
+                        )}%`}
+                    </span>
+                  </Typography>
                 </Typography>
-              </Typography>
-            </Box>
+              </Box>
+            </div>
+            <Typography sx={{ marginLeft: "30%" }} variant="h6" gutterBottom align="center">
+              Admin
+            </Typography>
           </div>
+
+
+          <Box>
+            {/* <Typography variant="h6" gutterBottom align="center">
+              Admin
+            </Typography>
+            <Divider /> */}
+            <Grid container spacing={2} sx={{ marginTop: 1 }}>
+              <Grid item xs={4}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <PaymentIcon color="primary" />
+                  <Box sx={{ marginLeft: 1 }}>
+                    <Typography variant="subtitle1">Total Amount</Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      ₹{totalRewardMoney}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <DoneIcon color="secondary" />
+                  <Box sx={{ marginLeft: 1 }}>
+                    <Typography variant="subtitle1">Total Paid</Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      ₹
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <HourglassEmptyIcon color="error" />
+                  <Box sx={{ marginLeft: 1 }}>
+                    <Typography variant="subtitle1">
+                      Pending Amount
+                    </Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      ₹
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                // onClick={handleClickOpen}
+                >
+                  Withdraw
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
           {loading ? (
             <div
               style={{
@@ -601,15 +672,15 @@ const sortedStaff = [...staffList].sort((a, b) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                   <TableCell>
-  <TableSortLabel
-    active={orderBy === "name"}
-    direction={orderBy === "name" ? order : "asc"}
-    onClick={() => handleRequestSort("name")}
-  >
-    Name
-  </TableSortLabel>
-</TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={orderBy === "name"}
+                        direction={orderBy === "name" ? order : "asc"}
+                        onClick={() => handleRequestSort("name")}
+                      >
+                        Name
+                      </TableSortLabel>
+                    </TableCell>
 
                     <TableCell>
                       <TableSortLabel
@@ -933,7 +1004,7 @@ const sortedStaff = [...staffList].sort((a, b) => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    sx={{ mr: 1 , marginTop:"2%" }}
+                    sx={{ mr: 1, marginTop: "2%" }}
                   />
                   <TextField
                     label="End Date"
@@ -943,12 +1014,12 @@ const sortedStaff = [...staffList].sort((a, b) => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    sx={{ mr: 1 , marginTop:"2%" }}
+                    sx={{ mr: 1, marginTop: "2%" }}
                   />
                   <Button
                     variant="contained"
                     onClick={handleClearDateFilter}
-                    style={{ backgroundColor: "#ffa500", marginTop:"3%" }}
+                    style={{ backgroundColor: "#ffa500", marginTop: "3%" }}
                   >
                     Clear Date Filter
                   </Button>
@@ -965,8 +1036,8 @@ const sortedStaff = [...staffList].sort((a, b) => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {filteredReferralCoins.length > 0 ? (
-                          filteredReferralCoins.map((coin) => (
+                        {filteredReferralCoins.length > 1 ? (
+                          filteredReferralCoins.slice(1).map((coin) => (
                             <TableRow key={coin._id}>
                               <TableCell>{coin._id}</TableCell>
                               <TableCell>{coin.amount}</TableCell>
