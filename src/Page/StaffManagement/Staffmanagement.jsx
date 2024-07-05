@@ -613,7 +613,7 @@ const StaffManagement = () => {
                       <PaymentIcon color="primary" />
                       <Box sx={{ marginLeft: 1 }}>
                         <Typography variant="subtitle1">Total Amount</Typography>
-                        <Typography variant="h6" color="textSecondary">
+                        <Typography variant="h6" color="green">
                           ₹{totalRewardMoney}
                         </Typography>
                       </Box>
