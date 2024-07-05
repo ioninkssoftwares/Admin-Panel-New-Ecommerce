@@ -524,14 +524,14 @@ const StaffManagement = () => {
               </Button>
             </Box>
           </Box>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "start", }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "start" }}>
             <div
               className="ProductManagementProductDetailsSecond00"
               style={{
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                // marginLeft: "20%",
+                padding: "20px 20px",
                 marginTop: "2%",
 
                 width: "30%",
@@ -588,17 +588,83 @@ const StaffManagement = () => {
                 </Typography>
               </Box>
             </div>
-            <Typography sx={{ marginLeft: "30%" }} variant="h6" gutterBottom align="center">
-              Admin
-            </Typography>
+
+            <div
+              className="ProductManagementProductDetailsSecond00"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                marginLeft: "2%",
+                marginTop: "2%",
+                padding: "20px 20px",
+                width: "70%",
+              }}
+            >
+
+              <Box>
+                <Typography variant="h6" gutterBottom align="center">
+                  Admin
+                </Typography>
+                <Divider />
+                <Grid container spacing={2} sx={{ marginTop: 1 }}>
+                  <Grid item xs={4}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <PaymentIcon color="primary" />
+                      <Box sx={{ marginLeft: 1 }}>
+                        <Typography variant="subtitle1">Total Amount</Typography>
+                        <Typography variant="h6" color="textSecondary">
+                          ₹{totalRewardMoney}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <DoneIcon color="secondary" />
+                      <Box sx={{ marginLeft: 1 }}>
+                        <Typography variant="subtitle1">Total Paid</Typography>
+                        <Typography variant="h6" color="textSecondary">
+                          ₹
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <HourglassEmptyIcon color="error" />
+                      <Box sx={{ marginLeft: 1 }}>
+                        <Typography variant="subtitle1">
+                          Pending Amount
+                        </Typography>
+                        <Typography variant="h6" color="textSecondary">
+                          ₹
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                    // onClick={handleClickOpen}
+                    >
+                      Withdraw
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            </div>
+
+
           </div>
 
 
-          <Box>
-            {/* <Typography variant="h6" gutterBottom align="center">
+          {/* <Box>
+            <Typography variant="h6" gutterBottom align="center">
               Admin
             </Typography>
-            <Divider /> */}
+            <Divider />
             <Grid container spacing={2} sx={{ marginTop: 1 }}>
               <Grid item xs={4}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -645,7 +711,7 @@ const StaffManagement = () => {
                 </Button>
               </Grid>
             </Grid>
-          </Box>
+          </Box> */}
           {loading ? (
             <div
               style={{
