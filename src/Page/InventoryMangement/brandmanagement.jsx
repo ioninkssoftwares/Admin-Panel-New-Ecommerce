@@ -136,6 +136,14 @@ const BrandsManagement = () => {
     return orderBy === property ? order : "asc";
   };
 
+
+  // logic to remove delete option on some brands
+
+  const brandOptions = ["boys", "kids", "girls", "mens", "womens", "toddlers"];
+
+  const containsKeywords = (brandName) => {
+    return brandOptions.some(option => brandName.toLowerCase().includes(option));
+  };
   return (
     <Box display="flex">
       <SideBar />
@@ -199,12 +207,14 @@ const BrandsManagement = () => {
                   <TableRow key={brand._id}>
                     <TableCell>{brand.brandName}</TableCell>
                     <TableCell>
-                      <IconButton
-                        color="secondary"
-                        onClick={() => handleDelete(brand._id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      {!containsKeywords(brand.brandName) && (
+                        <IconButton
+                          color="secondary"
+                          onClick={() => handleDelete(brand._id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -212,7 +222,7 @@ const BrandsManagement = () => {
             </Table>
           </TableContainer>
         )}
-        
+
         {confirmDelete !== null && (
           <div className="delete-confirmation-modal">
             <div className="modal-content">
@@ -223,7 +233,7 @@ const BrandsManagement = () => {
                   Delete
                 </button>
 
-                <button onClick={() =>  setConfirmDelete(null)}>
+                <button onClick={() => setConfirmDelete(null)}>
                   Cancel
                 </button>
               </div>
