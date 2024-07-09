@@ -490,7 +490,7 @@ const EditProduct = () => {
 
       // Append all color images to formData
       colorImageBlobs.forEach(({ blob, index }) => {
-        formData.append(`moreColorImage`, blob, `image${index}.png`);
+        formData.append(`moreColorImages`, blob, `image${index}.png`);
       });
 
       // Make the API call with all color images included
