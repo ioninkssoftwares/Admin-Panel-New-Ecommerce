@@ -36,6 +36,7 @@ import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SideBar from "../../Component/SideBar";
+import WithdrawalPopup from "./withdrawalPopup";
 
 const StaffManagement = () => {
   const [filteredReferralCoins, setFilteredReferralCoins] = useState([]);
@@ -75,6 +76,7 @@ const StaffManagement = () => {
     email: "",
     mobileNo: "",
   });
+  const [withdrawalPopupOpen, setWithdrawalPopupOpen] = useState(false);
 
   if (staffList) console.log(staffList, "fhdsjhfkjs")
 
@@ -479,6 +481,14 @@ const StaffManagement = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const handleWithdrawPopup = () => {
+    setWithdrawalPopupOpen(true);
+  };
+
+  const handleWithdrawClosePopup = () => {
+    setWithdrawalPopupOpen(false);
+  };
+
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -647,7 +657,7 @@ const StaffManagement = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                    // onClick={handleClickOpen}
+                      onClick={handleWithdrawPopup}
                     >
                       Withdraw
                     </Button>
@@ -1131,6 +1141,10 @@ const StaffManagement = () => {
               </Button>
             </DialogActions>
           </Dialog>
+          <WithdrawalPopup
+            open={withdrawalPopupOpen}
+            handleClose={handleWithdrawClosePopup}
+          />
           <ToastContainer />
         </div>
       </div>
