@@ -47,9 +47,9 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
             }
 
             const response = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/admin/staff/updateDetails/${staffId}`,
+                `${process.env.REACT_APP_BASE_URL}/admin/updateWithdrawalInfo/user/${staffId}`,
                 {
-                    method: "PUT",
+                    method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -63,9 +63,25 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
 
             toast.success("Staff details updated successfully");
             handleClose();
+            setWithdrawalInfo({
+                transactionType: "",
+                transactionId: "",
+                baseAmount: "",
+                totalAmount: "",
+                tdsDeducted: "",
+                tdsCertificate: null,
+            });
         } catch (error) {
             console.error("Error updating staff details:", error);
             toast.error("Failed to update staff details");
+            setWithdrawalInfo({
+                transactionType: "",
+                transactionId: "",
+                baseAmount: "",
+                totalAmount: "",
+                tdsDeducted: "",
+                tdsCertificate: null,
+            });
         }
     };
 
