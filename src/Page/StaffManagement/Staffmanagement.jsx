@@ -37,6 +37,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SideBar from "../../Component/SideBar";
 import WithdrawalPopup from "./withdrawalPopup";
+import AllWithdrawalPopup from "./allWithdrawalPopup";
 
 const StaffManagement = () => {
   const [filteredReferralCoins, setFilteredReferralCoins] = useState([]);
@@ -77,6 +78,7 @@ const StaffManagement = () => {
     mobileNo: "",
   });
   const [withdrawalPopupOpen, setWithdrawalPopupOpen] = useState(false);
+  const [allWithdrawalPopupOpen, setAllWithdrawalPopupOpen] = useState(false);
 
   if (staffList) console.log(staffList, "fhdsjhfkjs")
 
@@ -484,9 +486,15 @@ const StaffManagement = () => {
   const handleWithdrawPopup = () => {
     setWithdrawalPopupOpen(true);
   };
+  const handleAllWithdrawPopup = () => {
+    setAllWithdrawalPopupOpen(true);
+  };
 
   const handleWithdrawClosePopup = () => {
     setWithdrawalPopupOpen(false);
+  };
+  const handleAllWithdrawClosePopup = () => {
+    setAllWithdrawalPopupOpen(false);
   };
 
   return (
@@ -657,9 +665,9 @@ const StaffManagement = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={handleWithdrawPopup}
+                      onClick={handleAllWithdrawPopup}
                     >
-                      Withdraw
+                      <VisibilityIcon />
                     </Button>
                   </Grid>
                 </Grid>
@@ -1099,6 +1107,13 @@ const StaffManagement = () => {
                   >
                     Clear Date Filter
                   </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleWithdrawPopup}
+                    style={{ backgroundColor: "#ffa500", marginTop: "3%", marginLeft: 6 }}
+                  >
+                    Withdraw
+                  </Button>
                   <TableContainer
                     component={Paper}
                     style={{ marginTop: "1rem" }}
@@ -1144,6 +1159,12 @@ const StaffManagement = () => {
           <WithdrawalPopup
             open={withdrawalPopupOpen}
             handleClose={handleWithdrawClosePopup}
+            staffId={selectedStaff?._id}
+          />
+          <AllWithdrawalPopup
+            open={allWithdrawalPopupOpen}
+            handleClose={handleAllWithdrawClosePopup}
+            allStaff={staffList}
           />
           <ToastContainer />
         </div>
