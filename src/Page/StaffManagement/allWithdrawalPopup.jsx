@@ -311,18 +311,12 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                     )} */}
                 </Box>
 
-
-
-                <Box sx={{ marginTop: 1, display: "flex", justifyContent: "center", alignItems: "center", gap: 2 }}>
-                    <Button onClick={handleClose} variant="outlined">Cancel</Button>
-                    <Button variant="contained">Add</Button>
-                </Box>
             </DialogContent>
-            {/* <DialogActions>
+            <DialogActions>
                 <Button onClick={handleClose} color="primary" variant="contained">
                     Close
                 </Button>
-            </DialogActions> */}
+            </DialogActions>
         </Dialog>
     );
 };
