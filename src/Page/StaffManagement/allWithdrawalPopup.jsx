@@ -180,10 +180,10 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                         sx={{ marginTop: 2, marginBottom: 2 }}
                     >
                         <ToggleButton value="transactions" aria-label="products view">
-                            Transactions
+                            Staff with Transactions
                         </ToggleButton>
                         <ToggleButton value="allTransactions" aria-label="orders view">
-                            All Transactions
+                            Staff with All Transactions
                         </ToggleButton>
                         {/* <ToggleButton
                             value="transactions"
@@ -196,7 +196,7 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                     {/* Render view based on selected view */}
                     {view === "transactions" && (
                         <>
-                            <Typography variant="h6">Transactions</Typography>
+                            <Typography variant="h6">Staff with Transactions</Typography>
                             {allStaff && allStaff.length > 0 ? (
                                 <TableContainer
                                     component={Paper}
@@ -230,7 +230,7 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                     )}
                     {view === "allTransactions" && (
                         <>
-                            <Typography variant="h6">All Transactions:</Typography>
+                            <Typography variant="h6">Staff with All Transactions:</Typography>
                             {allStaff && allStaff.length > 0 ? (
                                 <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
                                     <Table>
