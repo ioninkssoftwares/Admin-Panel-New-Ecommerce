@@ -81,6 +81,7 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
                 totalAmount: "",
                 tdsDeducted: "",
                 tdsCertificate: null,
+                date: "",
             });
         }
     };
@@ -121,18 +122,37 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
                     margin="normal"
                     name="transactionId"
                 />
+                <Box sx={{ display: "flex", justifyContent: "start", alignItems: "center" }}>
+                    <Box sx={{ width: "50%" }}>
+                        <Typography sx={{ marginTop: 1 }}>Base Amount</Typography>
+                        <TextField
+                            type="text"
+                            value={withdrawalInfo.baseAmount}
+                            onChange={(e) => setWithdrawalInfo({ ...withdrawalInfo, baseAmount: e.target.value })}
+                            label="Amount"
+                            variant="outlined"
+                            sx={{ width: "80%" }}
+                            margin="normal"
+                            name="baseAmount"
+                        />
+                    </Box>
+                    <Box sx={{ width: "50%" }}>
+                        <Typography sx={{ marginTop: 1 }}>Date </Typography>
+                        <TextField
+                            label="Pick a Date"
+                            type="text"
+                            value={withdrawalInfo?.date}
+                            onChange={(e) => setWithdrawalInfo({ ...withdrawalInfo, date: e.target.value })}
+                            variant="outlined"
+                            sx={{ width: "80%" }}
+                            margin="normal"
 
-                <Typography sx={{ marginTop: 1 }}>Base Amount</Typography>
-                <TextField
-                    type="text"
-                    value={withdrawalInfo.baseAmount}
-                    onChange={(e) => setWithdrawalInfo({ ...withdrawalInfo, baseAmount: e.target.value })}
-                    label="Amount"
-                    variant="outlined"
-                    sx={{ width: "50%" }}
-                    margin="normal"
-                    name="baseAmount"
-                />
+                        />
+                    </Box>
+                </Box>
+
+
+
 
                 <Typography sx={{ marginTop: 1 }}>Total Amount</Typography>
                 <TextField
