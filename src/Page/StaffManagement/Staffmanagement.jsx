@@ -28,6 +28,8 @@ import {
   Box,
   Divider,
   Grid,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import PaymentIcon from "@mui/icons-material/Payment";
@@ -38,6 +40,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SideBar from "../../Component/SideBar";
 import WithdrawalPopup from "./withdrawalPopup";
 import AllWithdrawalPopup from "./allWithdrawalPopup";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const StaffManagement = () => {
   const [filteredReferralCoins, setFilteredReferralCoins] = useState([]);
@@ -45,8 +51,10 @@ const StaffManagement = () => {
   const [loading, setLoading] = useState(true);
   const [otp, setOtp] = useState("");
   const [refId, setRefId] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // const [startDate, setStartDate] = useState("");
+  // const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [staffToDelete, setStaffToDelete] = useState(null);
   const [openAddStaffDialog, setOpenAddStaffDialog] = useState(false);
@@ -79,12 +87,22 @@ const StaffManagement = () => {
   });
   const [withdrawalPopupOpen, setWithdrawalPopupOpen] = useState(false);
   const [allWithdrawalPopupOpen, setAllWithdrawalPopupOpen] = useState(false);
+  const [view, setView] = useState("transactions");
 
-  if (staffList) console.log(staffList, "fhdsjhfkjs")
+  if (selectedStaff) console.log(selectedStaff, "fhdsjhfkjs")
 
   const totalRewardMoney = staffList.reduce((sum, staff) => {
     return sum + (staff.rewardMoney || 0);
   }, 0);
+
+  const totalPaidMoney = staffList.reduce((sum, staff) => {
+    const staffTotal = staff.withdrawalInfo.reduce((staffSum, withdrawal) => {
+      return staffSum + (withdrawal.totalAmount || 0);
+    }, 0);
+    return sum + staffTotal;
+  }, 0);
+
+  const pendingAmount = totalRewardMoney - totalPaidMoney
 
 
   const handleStartDateChange = (event) => {
@@ -497,6 +515,43 @@ const StaffManagement = () => {
     setAllWithdrawalPopupOpen(false);
   };
 
+
+  const handleViewChange = (event, newView) => {
+    if (newView !== null) {
+      setView(newView);
+    }
+  };
+
+  const filterByDateRange = (data) => {
+    if (!startDate || !endDate) return data;
+    return data.filter(item => {
+      const date = dayjs(item.date);
+      return date.isAfter(dayjs(startDate).subtract(1, 'day')) && date.isBefore(dayjs(endDate).add(1, 'day'));
+    });
+  };
+
+  const sortedReferralCoinss = filteredReferralCoins.slice().reverse();
+  const sortedWithdrawalInfo = (selectedStaff?.withdrawalInfo || []).slice().reverse();
+
+  const filteredReferralCoinsByDate = filterByDateRange(sortedReferralCoinss);
+  const filteredWithdrawalInfoByDate = filterByDateRange(sortedWithdrawalInfo);
+
+  // const filteredReferralCoinsByDate = filterByDateRange(filteredReferralCoins);
+  // const filteredWithdrawalInfoByDate = filterByDateRange(selectedStaff?.withdrawalInfo || []);
+
+
+
+  const rewardStaffMoney = selectedStaff?.rewardMoney;
+
+  // Calculate totalPaidStaffMoney by reducing the withdrawalInfo array
+  const totalPaidStaffMoney = selectedStaff?.withdrawalInfo.reduce((sum, withdrawal) => {
+    return sum + (withdrawal.totalAmount || 0);
+  }, 0);
+
+  // Calculate staffPendingAmount
+  const staffPendingAmount = rewardStaffMoney - totalPaidStaffMoney;
+
+
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -643,7 +698,7 @@ const StaffManagement = () => {
                       <Box sx={{ marginLeft: 1 }}>
                         <Typography variant="subtitle1">Total Paid</Typography>
                         <Typography variant="h6" color="textSecondary">
-                          ₹
+                          ₹{totalPaidMoney}
                         </Typography>
                       </Box>
                     </Box>
@@ -656,7 +711,7 @@ const StaffManagement = () => {
                           Pending Amount
                         </Typography>
                         <Typography variant="h6" color="textSecondary">
-                          ₹
+                          ₹{pendingAmount}
                         </Typography>
                       </Box>
                     </Box>
@@ -1059,7 +1114,7 @@ const StaffManagement = () => {
             open={openViewDialog}
             onClose={handleCloseViewDialog}
             fullWidth
-            maxWidth="md"
+            maxWidth="lg"
           >
             <DialogTitle>Staff Details</DialogTitle>
             <DialogContent>
@@ -1068,53 +1123,196 @@ const StaffManagement = () => {
                   <Typography variant="h6">
                     Name: {capitalizeFirstLetter(selectedStaff.name)}
                   </Typography>
-                  <Typography variant="body1">
+                  {/* <Typography variant="body1">
                     Reward Coins: {selectedStaff.rewardCoins}
                   </Typography>
                   <Typography variant="body1">
                     Reward Money: ₹{selectedStaff.rewardMoney}
-                  </Typography>
+                  </Typography> */}
                   <Typography variant="body1">
                     Mobile Number: {selectedStaff.mobileNo}
                   </Typography>
-                  <Typography variant="h6" style={{ marginTop: "1rem" }}>
+                  {/* <Typography variant="h6" style={{ marginTop: "1rem" }}>
                     Referral Coins
-                  </Typography>
-                  <TextField
-                    label="Start Date"
-                    type="date"
-                    value={startDate}
-                    onChange={handleStartDateChange}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    sx={{ mr: 1, marginTop: "2%" }}
-                  />
-                  <TextField
-                    label="End Date"
-                    type="date"
-                    value={endDate}
-                    onChange={handleEndDateChange}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    sx={{ mr: 1, marginTop: "2%" }}
-                  />
-                  <Button
-                    variant="contained"
-                    onClick={handleClearDateFilter}
-                    style={{ backgroundColor: "#ffa500", marginTop: "3%" }}
-                  >
-                    Clear Date Filter
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={handleWithdrawPopup}
-                    style={{ backgroundColor: "#ffa500", marginTop: "3%", marginLeft: 6 }}
-                  >
-                    Withdraw
-                  </Button>
-                  <TableContainer
+                  </Typography> */}
+
+                  <Grid container spacing={2} sx={{ marginTop: 1 }}>
+                    <Grid item xs={4}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <PaymentIcon color="primary" />
+                        <Box sx={{ marginLeft: 1 }}>
+                          <Typography variant="subtitle1">Total Amount</Typography>
+                          <Typography variant="h6" color="textSecondary">
+                            ₹{rewardStaffMoney}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <DoneIcon color="secondary" />
+                        <Box sx={{ marginLeft: 1 }}>
+                          <Typography variant="subtitle1">Total Paid</Typography>
+                          <Typography variant="h6" color="textSecondary">
+                            ₹{totalPaidStaffMoney || 0}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <HourglassEmptyIcon color="error" />
+                        <Box sx={{ marginLeft: 1 }}>
+                          <Typography variant="subtitle1">
+                            Pending Amount
+                          </Typography>
+                          <Typography variant="h6" color="textSecondary">
+                            ₹{staffPendingAmount}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </Grid>
+
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "20px", marginBottom: "10px" }}>
+                    <ToggleButtonGroup
+                      value={view}
+                      exclusive
+                      onChange={handleViewChange}
+                      aria-label="view toggle"
+                    >
+                      <ToggleButton value="transactions" aria-label="products view">
+                        Transactions List
+                      </ToggleButton>
+                      <ToggleButton value="withdrawalTransactions" aria-label="transactions view">
+                        Withdrawal List
+                      </ToggleButton>
+
+                    </ToggleButtonGroup>
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+                        <DatePicker
+                          label="Start Date"
+                          value={startDate}
+                          onChange={(newValue) => setStartDate(newValue)}
+                          format="DD-MM-YYYY"
+                        />
+                        <DatePicker
+                          label="End Date"
+                          value={endDate}
+                          onChange={(newValue) => setEndDate(newValue)}
+                          format="DD-MM-YYYY"
+                        />
+                      </div>
+                    </LocalizationProvider>
+
+                    {/* <TextField
+                      label="Start Date"
+                      type="date"
+                      value={startDate}
+                      onChange={handleStartDateChange}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      label="End Date"
+                      type="date"
+                      value={endDate}
+                      onChange={handleEndDateChange}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    /> */}
+                    <Button
+                      variant="contained"
+                      onClick={handleClearDateFilter}
+                      style={{ backgroundColor: "#ffa500" }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={handleWithdrawPopup}
+                      style={{ backgroundColor: "#ffa500" }}
+                    >
+                      Withdraw
+                    </Button>
+
+                  </Box>
+
+
+                  {view === "transactions" && (
+                    <TableContainer component={Paper} style={{ marginTop: "1rem" }}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Amount</TableCell>
+                            <TableCell>Date & Time</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {filteredReferralCoinsByDate.length > 1 ? (
+                            filteredReferralCoinsByDate.map((coin) => (
+                              <TableRow key={coin._id}>
+                                <TableCell>{coin._id}</TableCell>
+                                <TableCell>{coin.amount}</TableCell>
+                                <TableCell>{dayjs(coin.date).format('DD-MM-YYYY')}</TableCell>
+                              </TableRow>
+                            ))
+                          ) : (
+                            <TableRow>
+                              <TableCell colSpan={3} align="center">
+                                No referral coins available
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  )}
+
+                  {view === "withdrawalTransactions" && (
+                    <TableContainer component={Paper} style={{ marginTop: "1rem" }}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Id</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>Base Amount</TableCell>
+                            <TableCell>TDS</TableCell>
+                            <TableCell>Total Amount</TableCell>
+                            <TableCell>TDS Certificate</TableCell>
+                            <TableCell>Date</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {filteredWithdrawalInfoByDate.map((withdrawal) => (
+                            <TableRow key={withdrawal.transactionId}>
+                              <TableCell>{withdrawal.transactionId}</TableCell>
+                              <TableCell>{withdrawal.transactionType}</TableCell>
+                              <TableCell>{withdrawal.baseAmount}</TableCell>
+                              <TableCell>{withdrawal.tdsDeducted}</TableCell>
+                              <TableCell>{withdrawal.totalAmount}</TableCell>
+                              <TableCell>
+                                {withdrawal.tdsCertificate ? (
+                                  <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
+                                    <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
+                                  </a>
+                                ) : 'No Certificate'}
+                              </TableCell>
+                              <TableCell>{dayjs(withdrawal.date).format('DD-MM-YYYY')}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  )}
+
+
+                  {/* {view === "transactions" && (<TableContainer
                     component={Paper}
                     style={{ marginTop: "1rem" }}
                   >
@@ -1132,9 +1330,7 @@ const StaffManagement = () => {
                             <TableRow key={coin._id}>
                               <TableCell>{coin._id}</TableCell>
                               <TableCell>{coin.amount}</TableCell>
-                              <TableCell>
-                                {new Date(coin.date).toLocaleDateString()}
-                              </TableCell>
+                              <TableCell>{dayjs(coin.date).format('DD-MM-YYYY')}</TableCell>
                             </TableRow>
                           ))
                         ) : (
@@ -1146,8 +1342,48 @@ const StaffManagement = () => {
                         )}
                       </TableBody>
                     </Table>
-                  </TableContainer>
+                  </TableContainer>)}
+
+
+
+                  {view === "withdrawalTransactions" && (
+                    <TableContainer component={Paper}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell> Id</TableCell>
+                            <TableCell> Type</TableCell>
+                            <TableCell>Base Amount</TableCell>
+                            <TableCell>TDS </TableCell>
+                            <TableCell>Total Amount</TableCell>
+                            <TableCell>TDS Certificate</TableCell>
+                            <TableCell>Date</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {selectedStaff?.withdrawalInfo.map((withdrawal) => (
+                            <TableRow key={withdrawal.transactionId}>
+                              <TableCell>{withdrawal.transactionId}</TableCell>
+                              <TableCell>{withdrawal.transactionType}</TableCell>
+                              <TableCell>{withdrawal.baseAmount}</TableCell>
+                              <TableCell>{withdrawal.tdsDeducted}</TableCell>
+                              <TableCell>{withdrawal.totalAmount}</TableCell>
+                              <TableCell>
+                                {withdrawal.tdsCertificate ? (
+                                  <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
+                                    <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
+                                  </a>
+                                ) : 'No Certificate'}
+                              </TableCell>
+                              <TableCell>{dayjs(withdrawal.date).format('DD-MM-YYYY')}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>)} */}
                 </>
+
+
               )}
             </DialogContent>
             <DialogActions>
@@ -1160,6 +1396,8 @@ const StaffManagement = () => {
             open={withdrawalPopupOpen}
             handleClose={handleWithdrawClosePopup}
             staffId={selectedStaff?._id}
+            fetchStaff={fetchStaff}
+
           />
           <AllWithdrawalPopup
             open={allWithdrawalPopupOpen}
@@ -1168,7 +1406,7 @@ const StaffManagement = () => {
           />
           <ToastContainer />
         </div>
-      </div>
+      </div >
     </>
   );
 };
