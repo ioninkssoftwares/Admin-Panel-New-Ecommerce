@@ -8,10 +8,17 @@ import { Box, FormControl, InputLabel, MenuItem, Select, TextField, Typography }
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+// import 'dayjs/locale/en';
 
 
-const WithdrawalPopup = ({ open, handleClose, staffId }) => {
+const WithdrawalPopup = ({ open, handleClose, staffId, fetchStaff }) => {
     const [cookies, setCookie] = useCookies(["token"]);
+    const [value, setValue] = useState(dayjs('14-04-2022'));
     const [withdrawalInfo, setWithdrawalInfo] = useState({
         transactionType: "",
         transactionId: "",
@@ -19,9 +26,10 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
         totalAmount: "",
         tdsDeducted: "",
         tdsCertificate: null,
+        date: ""
     });
 
-    if (staffId) console.log(staffId, "staffIDD");
+    if (withdrawalInfo) console.log(withdrawalInfo, "staffIDD");
 
 
     const handleChange = (e) => {
@@ -30,6 +38,14 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
 
     const handleFileChange = (e) => {
         setWithdrawalInfo({ ...withdrawalInfo, tdsCertificate: e.target.files[0] });
+    };
+
+    const handleDateChange = (newValue) => {
+        setValue(newValue);
+        setWithdrawalInfo((prevInfo) => ({
+            ...prevInfo,
+            date: newValue.format('DD-MM-YYYY'),
+        }));
     };
 
 
@@ -42,6 +58,7 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
             formData.append('baseAmount', withdrawalInfo.baseAmount);
             formData.append('totalAmount', withdrawalInfo.totalAmount);
             formData.append('tdsDeducted', withdrawalInfo.tdsDeducted);
+            formData.append('date', withdrawalInfo.date);
             if (withdrawalInfo.tdsCertificate) {
                 formData.append('tdsCertificate', withdrawalInfo.tdsCertificate);
             }
@@ -62,6 +79,7 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
             }
 
             toast.success("Staff details updated successfully");
+            fetchStaff()
             handleClose();
             setWithdrawalInfo({
                 transactionType: "",
@@ -138,16 +156,19 @@ const WithdrawalPopup = ({ open, handleClose, staffId }) => {
                     </Box>
                     <Box sx={{ width: "50%" }}>
                         <Typography sx={{ marginTop: 1 }}>Date </Typography>
-                        <TextField
-                            label="Pick a Date"
-                            type="text"
-                            value={withdrawalInfo?.date}
-                            onChange={(e) => setWithdrawalInfo({ ...withdrawalInfo, date: e.target.value })}
-                            variant="outlined"
-                            sx={{ width: "80%" }}
-                            margin="normal"
+                        <Box sx={{ display: "flex", marginTop: 2, gap: 2 }}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DemoContainer components={['DatePicker', 'DatePicker']}>
+                                    <DatePicker
+                                        label="Pick a Date"
+                                        value={value}
+                                        onChange={handleDateChange}
+                                        format="DD-MM-YYYY"
+                                    />
+                                </DemoContainer>
+                            </LocalizationProvider>
 
-                        />
+                        </Box>
                     </Box>
                 </Box>
 
