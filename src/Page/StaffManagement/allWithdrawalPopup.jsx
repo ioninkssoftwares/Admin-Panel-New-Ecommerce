@@ -26,6 +26,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+import dayjs from 'dayjs';
 
 
 const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
@@ -103,6 +104,14 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
         return sum + (staff.rewardMoney || 0);
     }, 0);
 
+    const totalPaidMoney = allStaff.reduce((sum, staff) => {
+        const staffTotal = staff.withdrawalInfo.reduce((staffSum, withdrawal) => {
+            return staffSum + (withdrawal.totalAmount || 0);
+        }, 0);
+        return sum + staffTotal;
+    }, 0);
+
+    const pendingAmount = totalRewardMoney - totalPaidMoney
 
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
@@ -142,7 +151,7 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                                 <Box sx={{ marginLeft: 1 }}>
                                     <Typography variant="subtitle1">Total Paid</Typography>
                                     <Typography variant="h6" color="textSecondary">
-                                        {/* ₹{totalPaid || 0} */} 500 ₹
+                                        ₹{totalPaidMoney || 0}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -155,7 +164,7 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                                         Pending Amount
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary">
-                                        {/* ₹{pendingAmount} */} 400 ₹
+                                        ₹{pendingAmount}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -180,10 +189,13 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                         sx={{ marginTop: 2, marginBottom: 2 }}
                     >
                         <ToggleButton value="transactions" aria-label="products view">
-                            Staff with Transactions
+                            Staff wise Transactions
                         </ToggleButton>
                         <ToggleButton value="allTransactions" aria-label="orders view">
-                            Staff with All Transactions
+                            Staff wise All Transactions
+                        </ToggleButton>
+                        <ToggleButton value="withdrawalTransactions" aria-label="transactions view">
+                            Withdrawal List
                         </ToggleButton>
                         {/* <ToggleButton
                             value="transactions"
@@ -196,7 +208,7 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                     {/* Render view based on selected view */}
                     {view === "transactions" && (
                         <>
-                            <Typography variant="h6">Staff with Transactions</Typography>
+                            <Typography variant="h6">Staff wise Transactions</Typography>
                             {allStaff && allStaff.length > 0 ? (
                                 <TableContainer
                                     component={Paper}
@@ -230,7 +242,7 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                     )}
                     {view === "allTransactions" && (
                         <>
-                            <Typography variant="h6">Staff with All Transactions:</Typography>
+                            <Typography variant="h6">Staff wise All Transactions:</Typography>
                             {allStaff && allStaff.length > 0 ? (
                                 <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
                                     <Table>
@@ -265,40 +277,43 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                     )}
 
 
-                    {/* {view === "transactions" && (
+                    {view === "withdrawalTransactions" && (
                         <>
-                            <Typography variant="h6">Transactions:</Typography>
-                            {selectedVendor.withdrawalInfo &&
-                                selectedVendor.withdrawalInfo.length > 0 ? (
+                            <Typography variant="h6">Withdrawal Transactions List:</Typography>
+                            {allStaff && allStaff.length > 0 ? (
                                 <TableContainer component={Paper}>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell>Transaction Id</TableCell>
-                                                <TableCell>Transaction Type</TableCell>
-                                                <TableCell>Amount</TableCell>
+                                                <TableCell> Id</TableCell>
+                                                <TableCell> Type</TableCell>
+                                                <TableCell>Base Amount</TableCell>
+                                                <TableCell>TDS </TableCell>
+                                                <TableCell>Total Amount</TableCell>
+                                                <TableCell>TDS Certificate</TableCell>
                                                 <TableCell>Date</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {selectedVendor.withdrawalInfo
-                                                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                                                .map((transaction, index) => (
-                                                    <TableRow key={`${selectedVendor._id}-${index}`}>
+                                            {allStaff.map((staff) => (
+                                                staff.withdrawalInfo.map((withdrawal, index) => (
+                                                    <TableRow key={`${staff._id}-${index}`}>
+                                                        <TableCell>{withdrawal.transactionId}</TableCell>
+                                                        <TableCell>{withdrawal.transactionType}</TableCell>
+                                                        <TableCell>{withdrawal.baseAmount}</TableCell>
+                                                        <TableCell>{withdrawal.tdsDeducted}</TableCell>
+                                                        <TableCell>{withdrawal.totalAmount}</TableCell>
                                                         <TableCell>
-                                                            {transaction.transactionId}
+                                                            {withdrawal.tdsCertificate ? (
+                                                                <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
+                                                                    <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
+                                                                </a>
+                                                            ) : 'No Certificate'}
                                                         </TableCell>
-                                                        <TableCell>
-                                                            {transaction.transactionType}
-                                                        </TableCell>
-                                                        <TableCell>₹{transaction.amount}</TableCell>
-                                                        <TableCell>
-                                                            {new Date(
-                                                                transaction.date
-                                                            ).toLocaleDateString()}
-                                                        </TableCell>
+                                                        <TableCell>{dayjs(withdrawal.date).format('YYYY-MM-DD')}</TableCell>
                                                     </TableRow>
-                                                ))}
+                                                ))
+                                            ))}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
@@ -308,7 +323,7 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                                 </Typography>
                             )}
                         </>
-                    )} */}
+                    )}
                 </Box>
 
             </DialogContent>
