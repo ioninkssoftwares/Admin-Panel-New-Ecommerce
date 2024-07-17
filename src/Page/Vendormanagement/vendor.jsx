@@ -1003,7 +1003,7 @@ const VendorManagement = () => {
                 <>
                   <Typography variant="h6">Transactions:</Typography>
                   {selectedVendor.withdrawalInfo &&
-                  selectedVendor.withdrawalInfo.length > 0 ? (
+                    selectedVendor.withdrawalInfo.length > 0 ? (
                     <TableContainer component={Paper}>
                       <Table>
                         <TableHead>
@@ -1098,14 +1098,14 @@ const VendorManagement = () => {
         <Typography variant="h4" gutterBottom>
           Vendor Management
         </Typography>
-{/*         <Button
+        <Button
           variant="contained"
           color="primary"
           onClick={() => handleOpenCreateDialog()}
           sx={{ background: "orange", marginBottom: "2%" }}
         >
           Add Vendor
-        </Button> */}
+        </Button>
         {loading ? (
           <CircularProgress />
         ) : (
