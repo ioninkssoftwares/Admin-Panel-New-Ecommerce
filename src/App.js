@@ -18,6 +18,7 @@ import { ToastContainer } from "react-toastify";
 import SubscriptionManagement from "./Page/Subscrption/subscription";
 import VendorManagement from "./Page/Vendormanagement/vendor";
 import GoogleProductTaxonomy from "./Page/Massimport";
+import AdminManagement from "./Page/Admin Management/adminManagement";
 // Function to check if the token exists in cookies
 const getTokenFromCookies = () => {
   // Implement logic to get token from cookies and return it
@@ -96,6 +97,10 @@ export default function App() {
           <Route
             path="/staffmanagement"
             element={<ProtectedRoute element={<StaffManagement />} />}
+          />
+          <Route
+            path="/adminManagement"
+            element={<ProtectedRoute element={<AdminManagement />} />}
           />
           <Route
             path="/subscription"
