@@ -41,6 +41,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const AlertDialog = ({ open, setOpen, title, description, onConfirm }) => {
   const handleClose = () => {
@@ -260,12 +261,13 @@ export default function SideBar() {
             { text: "Dashboard", route: "/" },
             { text: "Order Management", route: "/ordermanagement" },
             { text: "Product Management", route: "/productmanagement" },
-            
+
             { text: "Service Management", route: "/servicemanagement" },
             { text: "Banner Management", route: "/inventorymanagement" },
             { text: "User Management", route: "/usermanagement" },
             // { text: "Coupon Codes", route: "/couponcodes" },
             { text: "Staff Management", route: "/staffmanagement" },
+            { text: "Admin Management", route: "/adminManagement" },
             { text: "Subscription  Management", route: "/subscription" },
             { text: "Vendor Management", route: "/vendormanagement" },
 
@@ -315,13 +317,16 @@ export default function SideBar() {
                   {item.text === "Staff Management" && (
                     <PeopleIcon sx={{ color: "white" }} />
                   )}
+                  {item.text === "Admin Management" && (
+                    <AdminPanelSettingsIcon sx={{ color: "white" }} />
+                  )}
                   {item.text === "Subscription  Management" && (
                     <CardMembershipIcon sx={{ color: "white" }} />
                   )}
                   {item.text === "Vendor Management" && (
                     <LocalGroceryStoreIcon sx={{ color: "white" }} />
                   )}
-                   {item.text === "Service Management" && (
+                  {item.text === "Service Management" && (
                     <LocalGroceryStoreIcon sx={{ color: "white" }} />
                   )}
                   {item.text === "Payment Management" && (
