@@ -25,7 +25,9 @@ const Login = () => {
       );
       if (response.data.success) {
         const { token } = response.data;
+        const { _id } = response.data.user;
         Cookies.set("token", token, { expires: 7 });
+        Cookies.set("id", _id, { expires: 7 });
         navigate("/");
         window.location.reload();
         setLoading(false);
