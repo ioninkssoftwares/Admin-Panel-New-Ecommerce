@@ -287,9 +287,9 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                                             <TableRow>
                                                 <TableCell> Id</TableCell>
                                                 <TableCell> Type</TableCell>
-                                                <TableCell>Base Amount</TableCell>
-                                                <TableCell>TDS </TableCell>
                                                 <TableCell>Total Amount</TableCell>
+                                                <TableCell>TDS </TableCell>
+                                                <TableCell>Base Amount</TableCell>
                                                 <TableCell>TDS Certificate</TableCell>
                                                 <TableCell>Date</TableCell>
                                             </TableRow>
@@ -300,9 +300,10 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                                                     <TableRow key={`${staff._id}-${index}`}>
                                                         <TableCell>{withdrawal.transactionId}</TableCell>
                                                         <TableCell>{withdrawal.transactionType}</TableCell>
-                                                        <TableCell>{withdrawal.baseAmount}</TableCell>
-                                                        <TableCell>{withdrawal.tdsDeducted}</TableCell>
                                                         <TableCell>{withdrawal.totalAmount}</TableCell>
+                                                        <TableCell>{withdrawal.tdsDeducted}</TableCell>
+                                                        <TableCell>{withdrawal.baseAmount}</TableCell>
+
                                                         <TableCell>
                                                             {withdrawal.tdsCertificate ? (
                                                                 <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
