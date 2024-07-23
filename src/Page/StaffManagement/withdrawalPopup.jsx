@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 // import 'dayjs/locale/en';
 
 
-const WithdrawalPopup = ({ open, handleClose, staffId, fetchStaff }) => {
+const WithdrawalPopup = ({ open, handleClose, id, fetchStaff, title, fetchAdminDetails }) => {
     const [cookies, setCookie] = useCookies(["token"]);
     const [value, setValue] = useState(dayjs('14-04-2022'));
     const [withdrawalInfo, setWithdrawalInfo] = useState({
@@ -64,7 +64,7 @@ const WithdrawalPopup = ({ open, handleClose, staffId, fetchStaff }) => {
             }
 
             const response = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/admin/updateWithdrawalInfo/user/${staffId}`,
+                `${process.env.REACT_APP_BASE_URL}/admin/updateWithdrawalInfo/user/${id}`,
                 {
                     method: "POST",
                     headers: {
@@ -80,6 +80,7 @@ const WithdrawalPopup = ({ open, handleClose, staffId, fetchStaff }) => {
 
             toast.success("Staff details updated successfully");
             fetchStaff()
+            fetchAdminDetails()
             handleClose();
             setWithdrawalInfo({
                 transactionType: "",
@@ -106,7 +107,7 @@ const WithdrawalPopup = ({ open, handleClose, staffId, fetchStaff }) => {
 
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-            <DialogTitle>Withdrawal for staff</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <Typography>
                     Withdrawal Information
