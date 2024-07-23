@@ -174,6 +174,9 @@ const ProductList = () => {
                 <TableCell style={{ width: "35%", fontWeight: "bold" }}>
                   Name
                 </TableCell>
+                <TableCell style={{ width: "35%", fontWeight: "bold" }}>
+                  Vendor Id
+                </TableCell>
                 <TableCell style={{ width: "15%", fontWeight: "bold" }}>
                   Category
                 </TableCell>
@@ -204,6 +207,7 @@ const ProductList = () => {
                     {product.name.charAt(0).toUpperCase() +
                       product.name.slice(1)}
                   </TableCell>
+                  <TableCell>{product.vendorId}</TableCell>
                   <TableCell>{product.category.toUpperCase()}</TableCell>
                   <TableCell>
                     {product.subCategory.charAt(0).toUpperCase() +
@@ -270,11 +274,11 @@ const ProductList = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="delete-confirmation-buttons">
-   <button onClick={handleDeleteConfirm} autoFocus>
+          <button onClick={handleDeleteConfirm} autoFocus>
             Delete
           </button>
-          <button style={{backgroundColor:"#dc3545"}} onClick={handleDeleteCancel}>Cancel</button>
-       
+          <button style={{ backgroundColor: "#dc3545" }} onClick={handleDeleteCancel}>Cancel</button>
+
         </DialogActions>
       </Dialog>
       <ToastContainer />
