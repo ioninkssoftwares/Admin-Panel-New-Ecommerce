@@ -28,7 +28,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SideBar from "../../Component/SideBar"
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -36,6 +36,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { useCookies } from "react-cookie";
+import WithdrawalPopup from "../StaffManagement/withdrawalPopup";
 
 const AdminManagement = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -45,6 +46,17 @@ const AdminManagement = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [adminDetails, setAdminDetails] = useState({});
+  const [withdrawalPopupOpen, setWithdrawalPopupOpen] = useState(false);
+
+  if (adminDetails) console.log(adminDetails, "jkhjkkj")
+
+  const handleWithdrawPopup = () => {
+    setWithdrawalPopupOpen(true);
+  };
+
+  const handleWithdrawClosePopup = () => {
+    setWithdrawalPopupOpen(false);
+  };
 
   const [view, setView] = useState("transactions");
 
@@ -156,7 +168,7 @@ const AdminManagement = () => {
     }, 0);
   };
 
-  const sortedAdminWithdrawalInfo = (adminDetails?.withdrawalInfo || []).slice().reverse();
+  const sortedAdminWithdrawalInfo = (adminDetails?.user?.withdrawalInfo || []).slice().reverse();
 
   const filteredWithdrawalInfoByDate = filterByDateRange(sortedAdminWithdrawalInfo);
 
@@ -307,6 +319,9 @@ const AdminManagement = () => {
                     <ToggleButton value="transactions" aria-label="products view">
                       Staff Transactions List
                     </ToggleButton>
+                    <ToggleButton value="allTransactions" aria-label="products view">
+                      Staff All Transactions List
+                    </ToggleButton>
                     <ToggleButton value="adminWithdrawalTransactions" aria-label="transactions view">
                       Admin Withdrawal List
                     </ToggleButton>
@@ -336,6 +351,13 @@ const AdminManagement = () => {
                   >
                     Clear
                   </Button> */}
+                  <Button
+                    variant="contained"
+                    onClick={handleWithdrawPopup}
+                    style={{ backgroundColor: "#ffa500" }}
+                  >
+                    Withdraw
+                  </Button>
 
                 </Box>
 
@@ -382,9 +404,9 @@ const AdminManagement = () => {
                         <TableRow>
                           <TableCell>Id</TableCell>
                           <TableCell>Type</TableCell>
-                          <TableCell>Base Amount</TableCell>
-                          <TableCell>TDS</TableCell>
                           <TableCell>Total Amount</TableCell>
+                          <TableCell>TDS</TableCell>
+                          <TableCell>Base Amount</TableCell>
                           <TableCell>TDS Certificate</TableCell>
                           <TableCell>Date</TableCell>
                         </TableRow>
@@ -394,9 +416,9 @@ const AdminManagement = () => {
                           <TableRow key={withdrawal.transactionId}>
                             <TableCell>{withdrawal.transactionId}</TableCell>
                             <TableCell>{withdrawal.transactionType}</TableCell>
-                            <TableCell>{withdrawal.baseAmount}</TableCell>
-                            <TableCell>{withdrawal.tdsDeducted}</TableCell>
                             <TableCell>{withdrawal.totalAmount}</TableCell>
+                            <TableCell>{withdrawal.tdsDeducted}</TableCell>
+                            <TableCell>{withdrawal.baseAmount}</TableCell>
                             <TableCell>
                               {withdrawal.tdsCertificate ? (
                                 <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
@@ -412,76 +434,43 @@ const AdminManagement = () => {
                   </TableContainer>
                 )}
 
-
-                {/* {view === "transactions" && (<TableContainer
-                    component={Paper}
-                    style={{ marginTop: "1rem" }}
-                  >
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>ID</TableCell>
-                          <TableCell>Amount</TableCell>
-                          <TableCell>Date & Time</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredReferralCoins.length > 1 ? (
-                          filteredReferralCoins.slice(1).map((coin) => (
-                            <TableRow key={coin._id}>
-                              <TableCell>{coin._id}</TableCell>
-                              <TableCell>{coin.amount}</TableCell>
-                              <TableCell>{dayjs(coin.date).format('DD-MM-YYYY')}</TableCell>
+                {view === "allTransactions" && (
+                  <>
+                    <Typography variant="h6">Staff wise All Transactions:</Typography>
+                    {staffList && staffList.length > 0 ? (
+                      <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Transaction ID</TableCell>
+                              <TableCell>Name</TableCell>
+                              <TableCell>Referral Coin Amount</TableCell>
                             </TableRow>
-                          ))
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={3} align="center">
-                              No referral coins available
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>)}
+                          </TableHead>
+                          <TableBody>
+                            {staffList.map((staff) => (
+                              <React.Fragment key={staff._id}>
+                                {staff.referralCoins
+                                  .filter(coin => coin.amount < 50)
+                                  .map((coin, index) => (
+                                    <TableRow key={`${staff._id}-${index}`}>
+                                      <TableCell>{staff._id}</TableCell>
+                                      <TableCell>{staff.name}</TableCell>
+                                      <TableCell>{coin.amount}</TableCell>
+                                    </TableRow>
+                                  ))}
+                              </React.Fragment>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    ) : (
+                      <Typography>No orders found for this vendor</Typography>
+                    )}
+                  </>
+                )}
 
 
-
-                  {view === "withdrawalTransactions" && (
-                    <TableContainer component={Paper}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell> Id</TableCell>
-                            <TableCell> Type</TableCell>
-                            <TableCell>Base Amount</TableCell>
-                            <TableCell>TDS </TableCell>
-                            <TableCell>Total Amount</TableCell>
-                            <TableCell>TDS Certificate</TableCell>
-                            <TableCell>Date</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {selectedStaff?.withdrawalInfo.map((withdrawal) => (
-                            <TableRow key={withdrawal.transactionId}>
-                              <TableCell>{withdrawal.transactionId}</TableCell>
-                              <TableCell>{withdrawal.transactionType}</TableCell>
-                              <TableCell>{withdrawal.baseAmount}</TableCell>
-                              <TableCell>{withdrawal.tdsDeducted}</TableCell>
-                              <TableCell>{withdrawal.totalAmount}</TableCell>
-                              <TableCell>
-                                {withdrawal.tdsCertificate ? (
-                                  <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
-                                    <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
-                                  </a>
-                                ) : 'No Certificate'}
-                              </TableCell>
-                              <TableCell>{dayjs(withdrawal.date).format('DD-MM-YYYY')}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>)} */}
               </>
 
 
@@ -493,6 +482,14 @@ const AdminManagement = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <WithdrawalPopup
+          open={withdrawalPopupOpen}
+          handleClose={handleWithdrawClosePopup}
+          id={adminDetails?.user?._id}
+          fetchStaff={fetchStaff}
+          fetchAdminDetails={fetchAdminDetails}
+          title="Withdrawal for Admin"
+        />
         <ToastContainer />
       </div>
     </div >
