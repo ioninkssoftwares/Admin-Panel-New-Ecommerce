@@ -1114,6 +1114,7 @@ const VendorManagement = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
+                  <TableCell>Id</TableCell>
                   <TableCell>Last Name</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Mobile Number</TableCell>
@@ -1124,6 +1125,7 @@ const VendorManagement = () => {
                 {vendors.map((vendor) => (
                   <TableRow key={vendor._id}>
                     <TableCell>{vendor.name}</TableCell>
+                    <TableCell>{vendor._id}</TableCell>
                     <TableCell>{vendor.lastName}</TableCell>
                     <TableCell>{vendor.email}</TableCell>
                     <TableCell>{vendor.mobileNo}</TableCell>
