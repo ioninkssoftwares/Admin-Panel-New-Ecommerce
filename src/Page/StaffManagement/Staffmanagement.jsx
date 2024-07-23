@@ -1395,9 +1395,9 @@ const StaffManagement = () => {
           <WithdrawalPopup
             open={withdrawalPopupOpen}
             handleClose={handleWithdrawClosePopup}
-            staffId={selectedStaff?._id}
+            id={selectedStaff?._id}
             fetchStaff={fetchStaff}
-
+            title="Withdrawal for staff"
           />
           <AllWithdrawalPopup
             open={allWithdrawalPopupOpen}
