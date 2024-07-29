@@ -250,19 +250,26 @@ const AllWithdrawalPopup = ({ open, handleClose, allStaff }) => {
                                             <TableRow>
                                                 <TableCell>Transaction ID</TableCell>
                                                 <TableCell>Name</TableCell>
-                                                <TableCell>Referral Coin Amount</TableCell>
+                                                <TableCell>Commission Earned </TableCell>
+                                                <TableCell>Date</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
                                             {allStaff.map((staff) => (
                                                 <React.Fragment key={staff._id}>
                                                     {staff.referralCoins
-                                                        .filter(coin => coin.amount < 50)
+                                                        // .filter(coin => coin.amount < 50)
                                                         .map((coin, index) => (
                                                             <TableRow key={`${staff._id}-${index}`}>
                                                                 <TableCell>{staff._id}</TableCell>
                                                                 <TableCell>{staff.name}</TableCell>
-                                                                <TableCell>{coin.amount}</TableCell>
+                                                                <TableCell>
+                                                                    {coin.amount}
+                                                                    {coin.amount > 100 && (
+                                                                        <span style={{ color: 'red', marginLeft: '10px' }}>Coin Bonus</span>
+                                                                    )}
+                                                                </TableCell>
+                                                                <TableCell>{dayjs(staff.date).format('DD-MM-YYYY')}</TableCell>
                                                             </TableRow>
                                                         ))}
                                                 </React.Fragment>
