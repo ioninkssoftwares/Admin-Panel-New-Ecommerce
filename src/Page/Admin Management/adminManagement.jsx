@@ -47,6 +47,7 @@ const AdminManagement = () => {
   const [endDate, setEndDate] = useState(null);
   const [adminDetails, setAdminDetails] = useState({});
   const [withdrawalPopupOpen, setWithdrawalPopupOpen] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
   if (adminDetails) console.log(adminDetails, "jkhjkkj")
 
@@ -158,9 +159,9 @@ const AdminManagement = () => {
   const totalPendinggStaffMoney = totalStaffRewardMoney - totalPaidStaffMoney
 
 
-  // const adminWithdrawalMoney = allStaff.reduce((sum, staff) => {
-  //   return sum + (staff.rewardMoney || 0);
-  // }, 0);
+  const adminWithdrawalMoney = adminDetails?.user?.withdrawalInfo.reduce((sum, staff) => {
+    return sum + (staff.rewardMoney || 0);
+  }, 0);
 
   const calculateRewardMoney = (referralCoins) => {
     return referralCoins.reduce((sum, coin) => {
@@ -171,6 +172,9 @@ const AdminManagement = () => {
   const sortedAdminWithdrawalInfo = (adminDetails?.user?.withdrawalInfo || []).slice().reverse();
 
   const filteredWithdrawalInfoByDate = filterByDateRange(sortedAdminWithdrawalInfo);
+
+  const totalWithdrawalAmount = adminDetails?.user?.withdrawalInfo.reduce((sum, transaction) => sum + transaction.totalAmount, 0);
+
 
 
   return (
@@ -185,14 +189,14 @@ const AdminManagement = () => {
             Admin Management
           </Typography>
           <Divider />
-          <Grid container spacing={2} sx={{ marginTop: 1 }}>
+          {/* <Grid container spacing={2} sx={{ marginTop: 1 }}>
             <Grid item xs={4}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <PaymentIcon color="primary" />
                 <Box sx={{ marginLeft: 1 }}>
                   <Typography variant="subtitle1">Total Amount</Typography>
                   <Typography variant="h6" color="green">
-                    {/* ₹{totalRewardMoney} */}
+                 
                   </Typography>
                 </Box>
               </Box>
@@ -203,7 +207,7 @@ const AdminManagement = () => {
                 <Box sx={{ marginLeft: 1 }}>
                   <Typography variant="subtitle1">Total Paid</Typography>
                   <Typography variant="h6" color="textSecondary">
-                    {/* ₹{totalPaidMoney} */}
+                  
                   </Typography>
                 </Box>
               </Box>
@@ -216,7 +220,7 @@ const AdminManagement = () => {
                     Pending Amount
                   </Typography>
                   <Typography variant="h6" color="textSecondary">
-                    {/* ₹{pendingAmount} */}
+                
                   </Typography>
                 </Box>
               </Box>
@@ -230,105 +234,105 @@ const AdminManagement = () => {
                 <VisibilityIcon />
               </Button>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Box>
-        <Dialog
+        {/* <Dialog
           open={openViewDialog}
           onClose={handleCloseViewDialog}
           fullWidth
           maxWidth="lg"
-        >
-          <DialogTitle> Details</DialogTitle>
-          <DialogContent>
-            {staffList && (
-              <>
-                {/* <Typography variant="h6">
+        > */}
+        {/* <DialogTitle> Details</DialogTitle> */}
+        {/* <DialogContent> */}
+        {staffList && (
+          <>
+            {/* <Typography variant="h6">
                     Name: {capitalizeFirstLetter(selectedStaff.name)}
                   </Typography> */}
-                {/* <Typography variant="body1">
+            {/* <Typography variant="body1">
                     Reward Coins: {selectedStaff.rewardCoins}
                   </Typography>
                   <Typography variant="body1">
                     Reward Money: ₹{selectedStaff.rewardMoney}
                   </Typography> */}
-                {/* <Typography variant="body1">
+            {/* <Typography variant="body1">
                     Mobile Number: {selectedStaff.mobileNo}
                   </Typography> */}
-                {/* <Typography variant="h6" style={{ marginTop: "1rem" }}>
+            {/* <Typography variant="h6" style={{ marginTop: "1rem" }}>
                     Referral Coins
                   </Typography> */}
 
-                <Grid container spacing={2} sx={{ marginTop: 1 }}>
-                  <Grid item xs={4}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <PaymentIcon color="primary" />
-                      <Box sx={{ marginLeft: 1 }}>
-                        <Typography variant="subtitle1">Total Staff Amount</Typography>
-                        <Typography variant="h6" color="textSecondary">
-                          ₹{totalStaffRewardMoney}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <DoneIcon color="secondary" />
-                      <Box sx={{ marginLeft: 1 }}>
-                        <Typography variant="subtitle1">Total Staff Withdrawal</Typography>
-                        <Typography variant="h6" color="textSecondary">
-                          ₹{totalPaidStaffMoney || 0}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <HourglassEmptyIcon color="error" />
-                      <Box sx={{ marginLeft: 1 }}>
-                        <Typography variant="subtitle1">
-                          Pending Amount
-                        </Typography>
-                        <Typography variant="h6" color="textSecondary">
-                          ₹{totalPendinggStaffMoney}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <HourglassEmptyIcon color="error" />
-                      <Box sx={{ marginLeft: 1 }}>
-                        <Typography variant="subtitle1">
-                          Admin Withdrawal Amount
-                        </Typography>
-                        <Typography variant="h6" color="textSecondary">
-                          ₹
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                </Grid>
+            <Grid container spacing={2} sx={{ marginTop: 1 }}>
+              <Grid item xs={4}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <PaymentIcon color="primary" />
+                  <Box sx={{ marginLeft: 1 }}>
+                    <Typography variant="subtitle1">Total Amount Earned</Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      ₹{totalStaffRewardMoney}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              {/* <Grid item xs={4}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <DoneIcon color="secondary" />
+                  <Box sx={{ marginLeft: 1 }}>
+                    <Typography variant="subtitle1">Total Staff Withdrawal</Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      ₹{totalPaidStaffMoney || 0}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid> */}
+              <Grid item xs={4}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <HourglassEmptyIcon color="error" />
+                  <Box sx={{ marginLeft: 1 }}>
+                    <Typography variant="subtitle1">
+                      Pending Amount
+                    </Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      ₹{totalPendinggStaffMoney}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <HourglassEmptyIcon color="error" />
+                  <Box sx={{ marginLeft: 1 }}>
+                    <Typography variant="subtitle1">
+                      Total withdrawal Amount
+                    </Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      ₹{totalWithdrawalAmount}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
 
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "20px", marginBottom: "10px" }}>
-                  <ToggleButtonGroup
-                    value={view}
-                    exclusive
-                    onChange={handleViewChange}
-                    aria-label="view toggle"
-                  >
-                    <ToggleButton value="transactions" aria-label="products view">
-                      Staff Transactions List
-                    </ToggleButton>
-                    <ToggleButton value="allTransactions" aria-label="products view">
-                      Staff All Transactions List
-                    </ToggleButton>
-                    <ToggleButton value="adminWithdrawalTransactions" aria-label="transactions view">
-                      Admin Withdrawal List
-                    </ToggleButton>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "20px", marginBottom: "10px" }}>
+              <ToggleButtonGroup
+                value={view}
+                exclusive
+                onChange={handleViewChange}
+                aria-label="view toggle"
+              >
+                <ToggleButton value="transactions" aria-label="products view">
+                  All Staff Transactions List
+                </ToggleButton>
+                <ToggleButton value="allTransactions" aria-label="products view">
+                  All Transactions List
+                </ToggleButton>
+                <ToggleButton value="adminWithdrawalTransactions" aria-label="transactions view">
+                  Admin Withdrawal List
+                </ToggleButton>
 
-                  </ToggleButtonGroup>
+              </ToggleButtonGroup>
 
-                  {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
                       <DatePicker
                         label="Start Date"
@@ -344,144 +348,151 @@ const AdminManagement = () => {
                       />
                     </div>
                   </LocalizationProvider> */}
-                  {/* <Button
+              {/* <Button
                     variant="contained"
                     onClick={handleClearDateFilter}
                     style={{ backgroundColor: "#ffa500" }}
                   >
                     Clear
                   </Button> */}
-                  <Button
-                    variant="contained"
-                    onClick={handleWithdrawPopup}
-                    style={{ backgroundColor: "#ffa500" }}
+              <Button
+                variant="contained"
+                onClick={handleWithdrawPopup}
+                style={{ backgroundColor: "#ffa500" }}
+              >
+                Withdraw
+              </Button>
+
+            </Box>
+
+
+            {view === "transactions" && (
+              <>
+                <Typography variant="h6"> All Staff Transactions</Typography>
+                {staffList && staffList.length > 0 ? (
+                  <TableContainer
+                    component={Paper}
+                    style={{ marginBottom: "20px" }}
                   >
-                    Withdraw
-                  </Button>
-
-                </Box>
-
-
-                {view === "transactions" && (
-                  <>
-                    <Typography variant="h6">Staff wise Transactions</Typography>
-                    {staffList && staffList.length > 0 ? (
-                      <TableContainer
-                        component={Paper}
-                        style={{ marginBottom: "20px" }}
-                      >
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Transaction ID</TableCell>
-                              <TableCell> Name</TableCell>
-                              <TableCell>Reward Money</TableCell>
-                              {/* <TableCell>Price</TableCell> */}
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {staffList.map((staff) => (
-                              <TableRow key={staff._id}>
-                                <TableCell>{staff._id}</TableCell>
-                                <TableCell>{staff.name}</TableCell>
-                                <TableCell>            {calculateRewardMoney(staff.referralCoins)}</TableCell>
-                                {/* <TableCell>{staff.price}</TableCell> */}
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    ) : (
-                      <Typography>Staffs are not available</Typography>
-                    )}
-                  </>
-                )}
-
-                {view === "adminWithdrawalTransactions" && (
-                  <TableContainer component={Paper} style={{ marginTop: "1rem" }}>
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Id</TableCell>
-                          <TableCell>Type</TableCell>
-                          <TableCell>Total Amount</TableCell>
-                          <TableCell>TDS</TableCell>
-                          <TableCell>Base Amount</TableCell>
-                          <TableCell>TDS Certificate</TableCell>
-                          <TableCell>Date</TableCell>
+                          <TableCell>Transaction ID</TableCell>
+                          <TableCell> Name</TableCell>
+                          <TableCell>Reward Money</TableCell>
+                          {/* <TableCell>Price</TableCell> */}
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {filteredWithdrawalInfoByDate.map((withdrawal) => (
-                          <TableRow key={withdrawal.transactionId}>
-                            <TableCell>{withdrawal.transactionId}</TableCell>
-                            <TableCell>{withdrawal.transactionType}</TableCell>
-                            <TableCell>{withdrawal.totalAmount}</TableCell>
-                            <TableCell>{withdrawal.tdsDeducted}</TableCell>
-                            <TableCell>{withdrawal.baseAmount}</TableCell>
-                            <TableCell>
-                              {withdrawal.tdsCertificate ? (
-                                <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
-                                  <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
-                                </a>
-                              ) : 'No Certificate'}
-                            </TableCell>
-                            <TableCell>{dayjs(withdrawal.date).format('DD-MM-YYYY')}</TableCell>
+                        {staffList.map((staff) => (
+                          <TableRow key={staff._id}>
+                            <TableCell>{staff._id}</TableCell>
+                            <TableCell>{staff.name}</TableCell>
+                            <TableCell>            {calculateRewardMoney(staff.referralCoins)}</TableCell>
+                            {/* <TableCell>{staff.price}</TableCell> */}
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
+                ) : (
+                  <Typography>Staffs are not available</Typography>
                 )}
-
-                {view === "allTransactions" && (
-                  <>
-                    <Typography variant="h6">Staff wise All Transactions:</Typography>
-                    {staffList && staffList.length > 0 ? (
-                      <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Transaction ID</TableCell>
-                              <TableCell>Name</TableCell>
-                              <TableCell>Referral Coin Amount</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {staffList.map((staff) => (
-                              <React.Fragment key={staff._id}>
-                                {staff.referralCoins
-                                  .filter(coin => coin.amount < 50)
-                                  .map((coin, index) => (
-                                    <TableRow key={`${staff._id}-${index}`}>
-                                      <TableCell>{staff._id}</TableCell>
-                                      <TableCell>{staff.name}</TableCell>
-                                      <TableCell>{coin.amount}</TableCell>
-                                    </TableRow>
-                                  ))}
-                              </React.Fragment>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    ) : (
-                      <Typography>No orders found for this vendor</Typography>
-                    )}
-                  </>
-                )}
-
-
               </>
-
-
             )}
-          </DialogContent>
-          <DialogActions>
+
+            {view === "adminWithdrawalTransactions" && (
+              <TableContainer component={Paper} style={{ marginTop: "1rem" }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Id</TableCell>
+                      <TableCell>Type</TableCell>
+                      <TableCell>Total Amount</TableCell>
+                      <TableCell>TDS</TableCell>
+                      <TableCell>Base Amount</TableCell>
+                      <TableCell>TDS Certificate</TableCell>
+                      <TableCell>Date</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredWithdrawalInfoByDate.map((withdrawal) => (
+                      <TableRow key={withdrawal.transactionId}>
+                        <TableCell>{withdrawal.transactionId}</TableCell>
+                        <TableCell>{withdrawal.transactionType}</TableCell>
+                        <TableCell>{withdrawal.totalAmount}</TableCell>
+                        <TableCell>{withdrawal.tdsDeducted}</TableCell>
+                        <TableCell>{withdrawal.baseAmount}</TableCell>
+                        <TableCell>
+                          {withdrawal.tdsCertificate ? (
+                            <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
+                              <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
+                            </a>
+                          ) : 'No Certificate'}
+                        </TableCell>
+                        <TableCell>{dayjs(withdrawal.date).format('DD-MM-YYYY')}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+
+            {view === "allTransactions" && (
+              <>
+                <Typography variant="h6">All Transactions:</Typography>
+                {staffList && staffList.length > 0 ? (
+                  <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Transaction ID</TableCell>
+                          <TableCell>Name</TableCell>
+                          <TableCell>Commission Earned</TableCell>
+                          <TableCell>Date</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {staffList.map((staff) => (
+                          <React.Fragment key={staff._id}>
+                            {staff.referralCoins
+                              // .filter(coin => coin.amount < 50)
+                              .map((coin, index) => (
+                                <TableRow key={`${staff._id}-${index}`}>
+                                  <TableCell>{staff._id}</TableCell>
+                                  <TableCell>{staff.name}</TableCell>
+                                  <TableCell>
+                                    {coin.amount}
+                                    {coin.amount > 100 && (
+                                      <span style={{ color: 'red', marginLeft: '10px' }}>Coin Bonus</span>
+                                    )}
+                                  </TableCell>
+                                  <TableCell>{dayjs(staff.date).format('DD-MM-YYYY')}</TableCell>
+                                </TableRow>
+                              ))}
+                          </React.Fragment>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <Typography>No orders found for this vendor</Typography>
+                )}
+              </>
+            )}
+
+
+          </>
+
+
+        )}
+        {/* </DialogContent> */}
+        {/* <DialogActions>
             <Button onClick={handleCloseViewDialog} color="primary">
               Close
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
         <WithdrawalPopup
           open={withdrawalPopupOpen}
           handleClose={handleWithdrawClosePopup}
