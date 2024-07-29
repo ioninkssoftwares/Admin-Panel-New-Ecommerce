@@ -186,7 +186,7 @@ const AdminManagement = () => {
       >
         <Box>
           <Typography variant="h4" gutterBottom align="center">
-            Admin Management
+            Admin Management S
           </Typography>
           <Divider />
           {/* <Grid container spacing={2} sx={{ marginTop: 1 }}>
