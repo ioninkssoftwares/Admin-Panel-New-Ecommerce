@@ -1258,7 +1258,12 @@ const StaffManagement = () => {
                             filteredReferralCoinsByDate.map((coin) => (
                               <TableRow key={coin._id}>
                                 <TableCell>{coin._id}</TableCell>
-                                <TableCell>{coin.amount}</TableCell>
+                                <TableCell>
+                                  {coin.amount}
+                                  {coin.amount > 100 && (
+                                    <span style={{ color: 'red', marginLeft: '10px' }}>Coin Bonus</span>
+                                  )}
+                                </TableCell>
                                 <TableCell>{dayjs(coin.date).format('DD-MM-YYYY')}</TableCell>
                               </TableRow>
                             ))
