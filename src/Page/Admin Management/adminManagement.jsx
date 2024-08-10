@@ -57,9 +57,9 @@ const AdminManagement = () => {
 
   const handleWithdrawClosePopup = () => {
     setWithdrawalPopupOpen(false);
-  };
+  }
 
-  const [view, setView] = useState("transactions");
+   const [view, setView] = useState("transactions");
 
   const handleViewChange = (event, newView) => {
     if (newView !== null) {
