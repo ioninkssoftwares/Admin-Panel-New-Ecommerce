@@ -263,6 +263,7 @@ export default function SideBar() {
             { text: "Product Management", route: "/productmanagement" },
 
             { text: "Service Management", route: "/servicemanagement" },
+            { text: "Service Orders", route: "/serviceOrderManagement" },
             { text: "Banner Management", route: "/inventorymanagement" },
             { text: "User Management", route: "/usermanagement" },
             // { text: "Coupon Codes", route: "/couponcodes" },
@@ -328,6 +329,9 @@ export default function SideBar() {
                   )}
                   {item.text === "Service Management" && (
                     <LocalGroceryStoreIcon sx={{ color: "white" }} />
+                  )}
+                  {item.text === "Service Orders" && (
+                    <ListAltIcon sx={{ color: "white" }} />
                   )}
                   {item.text === "Payment Management" && (
                     <PaymentIcon sx={{ color: "white" }} />
