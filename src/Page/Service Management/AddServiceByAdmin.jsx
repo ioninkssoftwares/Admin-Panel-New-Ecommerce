@@ -4,10 +4,9 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AiOutlineClose } from 'react-icons/ai';
 
-import { useAxios } from "../../../utils/axios";
+// import { useAxios } from "../../../utils/axios";
 
-import Sidebar from "../../Components/sidebar/Siderbar";
-import AdminNavbar from "../../Components/navbar/VendorNavbar";
+// import AdminNavbar from "../../Components/navbar/VendorNavbar";
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Box from '@mui/material/Box';
@@ -22,9 +21,10 @@ import { Chip, CircularProgress, FormControlLabel, FormGroup, Switch } from '@mu
 import Textarea from '@mui/joy/Textarea';
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../Components/InputField";
-import ConfirmBox from "../../Components/vendor/shared/ConfirmDialog";
+import InputField from "../../Component/InputField";
+import ConfirmBox from "../../Component/vendor/shared/ConfirmDialog";
 import axios from "axios";
+import SideBar from "../../Component/SideBar";
 
 
 export const Button = ({
@@ -113,7 +113,7 @@ const AddServiceByAdmin = () => {
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState("");
     const [deleteId, setDeleteId] = useState("");
-    const instance = useAxios(token);
+    // const instance = useAxios(token);
     const [users, setUsers] = useState([]);
 
     const [pagination, setPagination] = useState(
@@ -155,7 +155,7 @@ const AddServiceByAdmin = () => {
     const [allCategories, setAllCategories] = useState([]);
     const [allColors, setAllColors] = useState([]);
     const [allSubCategories, setAllSubCategories] = useState([]);
-    const [subCategories, setSubCategories] = useState([]);
+    // const [subCategories, setSubCategories] = useState([]);
 
 
     const [selectedBrand, setSelectedBrand] = useState('');
@@ -185,7 +185,8 @@ const AddServiceByAdmin = () => {
 
 
 
-    const [specifications, setSpecifications] = useState(['']);
+    const [subCategories, setSubCategories] = useState([{ name: '', price: '' }]);
+
 
     const handleGenderChange = (event) => {
         setSelectedGender(event.target.value);
@@ -216,20 +217,20 @@ const AddServiceByAdmin = () => {
 
 
 
-    const handleSpecificationChange = (index, event) => {
-        const values = [...specifications];
-        values[index] = event.target.value;
-        setSpecifications(values);
+    const handleSubCategoryChange = (index, event) => {
+        const values = [...subCategories];
+        values[index][event.target.name] = event.target.value;
+        setSubCategories(values);
     };
 
-    const handleAddSpecification = () => {
-        setSpecifications([...specifications, '']);
+    const handleAddSubCategories = () => {
+        setSubCategories([...subCategories, { name: '', price: '' }]);
     };
 
-    const handleRemoveSpecification = (index) => {
-        const values = [...specifications];
+    const handleRemoveSubCategories = (index) => {
+        const values = [...subCategories];
         values.splice(index, 1);
-        setSpecifications(values);
+        setSubCategories(values);
     };
 
 
@@ -257,13 +258,13 @@ const AddServiceByAdmin = () => {
     };
 
 
-    const handleSubCategoryChange = (event) => {
-        const selectedSubCategoryName = event.target.value;
-        setSelectedSubCategory(selectedSubCategoryName);
+    // const handleSubCategoryChange = (event) => {
+    //     const selectedSubCategoryName = event.target.value;
+    //     setSelectedSubCategory(selectedSubCategoryName);
 
-        // If you need to update your product state as well
-        setProduct({ ...product, subCategory: selectedSubCategoryName });
-    };
+    //     // If you need to update your product state as well
+    //     setProduct({ ...product, subCategoryName: selectedSubCategoryName });
+    // };
 
 
 
@@ -271,10 +272,10 @@ const AddServiceByAdmin = () => {
         const fetchSubCategories = async () => {
             try {
                 if (selectedCategory) {
-                    const response = await instance.get(
-                        `/admin/getSubCategoryByCategoryId/${selectedCategory}`,
-                    );
-                    setSubCategories(response.data.data); // Update to response.data.data
+                    // const response = await instance.get(
+                    //     `/admin/getSubCategoryByCategoryId/${selectedCategory}`,
+                    // );
+                    // setSubCategories(response.data.data); // Update to response.data.data
                 }
             } catch (error) {
                 console.error("Error fetching subcategories:", error);
@@ -366,7 +367,7 @@ const AddServiceByAdmin = () => {
         ProductFormData.append('price', product.price);
         ProductFormData.append('bestSeller', product.bestSeller);
         ProductFormData.append('featured', product.featured);
-        ProductFormData.append('specification', specifications);
+        // ProductFormData.append('specification', specifications);
         ProductFormData.append('description', product.description);
         ProductFormData.append('brand', product.brand);
         ProductFormData.append('subCategory', product.subCategory);
@@ -380,22 +381,22 @@ const AddServiceByAdmin = () => {
         // ProductFormData.append('colors', selectedColorsIds);
 
         try {
-            const res = await instance.post("/admin/product/new", ProductFormData, {
-                // const res = await instance.post("http://localhost:8000/api/v1//admin/product/new", ProductFormData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            if (res.data) {
-                // setLoading(false)
-                setDeleteLoading(false)
-                console.log(res.data, "sdfhadjkf")
-                toast("Product has been added")
-                setDeleteOpen(false)
-                navigate("/vendor/productManagement")
+            // const res = await instance.post("/admin/product/new", ProductFormData, {
+            //     // const res = await instance.post("http://localhost:8000/api/v1//admin/product/new", ProductFormData, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data',
+            //     },
+            // });
+            // if (res.data) {
+            //     // setLoading(false)
+            //     setDeleteLoading(false)
+            //     console.log(res.data, "sdfhadjkf")
+            //     toast("Product has been added")
+            //     setDeleteOpen(false)
+            //     navigate("/vendor/productManagement")
 
 
-            }
+            // }
         } catch (error) {
             console.log(error, "skdfhsjdf")
             // setLoading(false)
@@ -600,13 +601,13 @@ const AddServiceByAdmin = () => {
             console.log(token, "jsakdfjkladsj")
 
             setLoading(true);
-            const res = await instance.get(
-                `/admin/getAllBrands`
-            );
-            if (res.data) {
-                setAllBrands(res.data.brands)
-                setLoading(false);
-            }
+            // const res = await instance.get(
+            //     `/admin/getAllBrands`
+            // );
+            // if (res.data) {
+            //     setAllBrands(res.data.brands)
+            //     setLoading(false);
+            // }
         } catch (e) {
             setLoading(false);
             console.log(e)
@@ -619,13 +620,13 @@ const AddServiceByAdmin = () => {
             console.log(token, "jsakdfjkladsj")
 
             setLoading(true);
-            const res = await instance.get(
-                `/admin/getAllCategories`
-            );
-            if (res.data) {
-                setAllCategories(res.data.categories)
-                setLoading(false);
-            }
+            // const res = await instance.get(
+            //     `/admin/getAllCategories`
+            // );
+            // if (res.data) {
+            //     setAllCategories(res.data.categories)
+            //     setLoading(false);
+            // }
         } catch (e) {
             setLoading(false);
             console.log(e)
@@ -638,13 +639,13 @@ const AddServiceByAdmin = () => {
             console.log(token, "jsakdfjkladsj")
 
             setLoading(true);
-            const res = await instance.get(
-                `/admin/getAllColors`
-            );
-            if (res.data) {
-                setAllColors(res.data.data)
-                setLoading(false);
-            }
+            // const res = await instance.get(
+            //     `/admin/getAllColors`
+            // );
+            // if (res.data) {
+            //     setAllColors(res.data.data)
+            //     setLoading(false);
+            // }
         } catch (e) {
             setLoading(false);
             console.log(e)
@@ -676,13 +677,13 @@ const AddServiceByAdmin = () => {
     const getVendorDetails = async () => {
         console.log(token, "tokeeen")
         try {
-            const res = await instance.get(
-                `/vendor/getVendorIdByToken`
-            );
-            if (res.data) {
-                console.log(res.data.id, "yuyiyui")
-                setVendorId(res.data.id)
-            }
+            // const res = await instance.get(
+            //     `/vendor/getVendorIdByToken`
+            // );
+            // if (res.data) {
+            //     console.log(res.data.id, "yuyiyui")
+            //     setVendorId(res.data.id)
+            // }
         } catch (e) {
             setLoading(false);
             console.log(e)
@@ -733,13 +734,13 @@ const AddServiceByAdmin = () => {
     return (
         <div>
             <div className='flex h-screen overflow-hidden'>
-                <Sidebar />
+                <SideBar />
                 <div className='relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden'>
                     {/* <main> */}
                     <div className='bg-gray-50'>
-                        <AdminNavbar />
+                        {/* <AdminNavbar /> */}
                         <div className="flex items-center justify-between mx-10 my-5">
-                            <p>Add Product Details</p>
+                            <p>Add Service Details</p>
                             <div className="flex gap-7">
                                 {/* <button className="px-4 py-2 rounded-lg text-white bg-black">
                                     Save as Draft
@@ -752,13 +753,13 @@ const AddServiceByAdmin = () => {
 
                         <div className="bg-white mx-10  flex  gap-5 ">
                             <div className="basis-[70%] flex gap-10">
-                                <div className="basis-[45%] p-10">
+                                <div className="basis-[100%] p-10">
                                     {/* <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
                                         Product Name
                                     </Typography> */}
 
                                     <InputField
-                                        label="Product Name"
+                                        label="Service Name"
                                         type="text"
                                         value={product?.name}
                                         onChange={(e) => setProduct({ ...product, name: e })}
@@ -775,7 +776,9 @@ const AddServiceByAdmin = () => {
                                         }}
                                         validate={validateBrand}
                                     /> */}
-                                    <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
+
+                                    {/* //  Brand */}
+                                    {/* <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
                                         <InputLabel id="brand-select-label">Select Brand</InputLabel>
                                         <Select
                                             labelId="brand-select-label"
@@ -791,7 +794,7 @@ const AddServiceByAdmin = () => {
                                                 </MenuItem>
                                             ))}
                                         </Select>
-                                    </FormControl>
+                                    </FormControl> */}
 
 
 
@@ -810,7 +813,7 @@ const AddServiceByAdmin = () => {
                                         validate={validateCategory}
                                     /> */}
 
-                                    <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
+                                    {/* <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
                                         <InputLabel id="brand-select-label">Select Category</InputLabel>
                                         <Select
                                             labelId="brand-select-label"
@@ -827,10 +830,10 @@ const AddServiceByAdmin = () => {
                                                 </MenuItem>
                                             ))}
                                         </Select>
-                                    </FormControl>
+                                    </FormControl> */}
 
 
-                                    <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
+                                    {/* <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
                                         <InputLabel id="subCategory-select-label">Select Sub Category</InputLabel>
                                         <Select
                                             labelId="brand-select-label"
@@ -847,7 +850,7 @@ const AddServiceByAdmin = () => {
                                                 </MenuItem>
                                             ))}
                                         </Select>
-                                    </FormControl>
+                                    </FormControl> */}
 
 
 
@@ -886,26 +889,106 @@ const AddServiceByAdmin = () => {
                                         </Select>
                                     </FormControl> */}
 
-                                    <Box sx={{ display: "flex", gap: 2 }}>
+
+                                    <Textarea sx={{ padding: 0, borderRadius: 1, marginBottom: 3 }} onChange={(event) => setProduct({
+                                        ...product,
+                                        description: event.target.value
+                                    })} placeholder="Short Description" minRows={6} />
+
+
+                                    <InputField
+                                        label="Service Category Name"
+                                        type="text"
+                                        value={product?.category}
+                                        onChange={(e) => setProduct({ ...product, category: e })}
+                                    // validate={validateProductName}
+                                    />
+
+                                    {/* 
+                                    <div>
+
+                                        {subCategories.map((subCategory, index) => (
+                                            <div key={index}>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex flex-col gap-2 w-1/2">
+                                                        <input
+                                                            type="text"
+
+                                                            value={subCategory}
+                                                            onChange={(event) => handleSubCategoryChange(index, event)}
+                                                            placeholder={`Sub-Category Name ${index + 1}`}
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            value={specification}
+                                                            onChange={(event) => handleSubCategoryChange(index, event)}
+                                                            placeholder={`Sub-Category Price ${index + 1}`}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                    <button className="mb-2 bg-primary-blue" type="button" onClick={() => handleRemoveSubCategories(index)}>Remove</button>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        ))}
+                                        <button className="bg-primary-blue" type="button" onClick={handleAddSUbCategories}>Add SubCategory</button>
+                                    </div> */}
+
+                                    <div>
+                                        {subCategories.map((subCategory, index) => (
+                                            <div key={index}>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex flex-col gap-2 w-1/2">
+                                                        <input
+                                                            type="text"
+                                                            name="name"
+                                                            value={subCategory.name}
+                                                            onChange={(event) => handleSubCategoryChange(index, event)}
+                                                            placeholder={`Sub-Category Name ${index + 1}`}
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            name="price"
+                                                            value={subCategory.price}
+                                                            onChange={(event) => handleSubCategoryChange(index, event)}
+                                                            placeholder={`Sub-Category Price ${index + 1}`}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <button className="mb-2 p-2 text-white bg-primary-blue" type="button" onClick={() => handleRemoveSubCategories(index)}>Remove</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <button className="bg-primary-blue p-2 text-white" type="button" onClick={handleAddSubCategories}>Add SubCategory</button>
+                                    </div>
+
+                                    <button className="bg-primary-blue p-2 my-3 text-white" type="button" onClick={handleAddSubCategories}>Add New Category</button>
+
+
+
+                                    {/* <Box sx={{ display: "flex", gap: 2 }}>
 
                                         <InputField
                                             label=" Price"
                                             type="number"
                                             value={product.price}
-                                            // onChange={(e) => setProduct({ ...product, price: e })} 
+                                     
                                             onChange={(value) => {
                                                 setProduct({ ...product, price: +value })
                                                 setFormErrors({ ...formErrors, price: validateSellingPrice(value) });
                                             }}
                                             validate={validateSellingPrice} />
 
-                                        {/* <InputField label="Cost Price" type="number" value={product.costPrice} onChange={(e) => setProduct({ ...product, costPrice: e })} validate={validateCostPrice} />
- */}
-
+                              
                                         <InputField label="Stock"
                                             type="number"
                                             value={product.stock}
-                                            // onChange={(e) => setProduct({ ...product, stock: e })} 
+                                      
                                             onChange={(value) => {
                                                 setProduct({ ...product, stock: +value })
                                                 setFormErrors({ ...formErrors, stock: validateSellingPrice(value) });
@@ -913,9 +996,9 @@ const AddServiceByAdmin = () => {
                                             validate={validateSellingPrice} />
 
 
-                                    </Box>
+                                    </Box> */}
 
-                                    {!brandOptions.includes(selectedBrand) && <Box sx={{ display: "flex", gap: 2 }}>
+                                    {/* {!brandOptions.includes(selectedBrand) && <Box sx={{ display: "flex", gap: 2 }}>
 
                                         <FormControl fullWidth>
                                             <InputLabel id="warranty-period-label">Warranty Period</InputLabel>
@@ -938,10 +1021,10 @@ const AddServiceByAdmin = () => {
                                         </FormControl>
 
 
-                                    </Box>}
+                                    </Box>} */}
 
 
-                                    {brandOptions.includes(selectedBrand) && <div className="my-4">
+                                    {/* {brandOptions.includes(selectedBrand) && <div className="my-4">
                                         <FormControl fullWidth>
                                             <InputLabel id="multiple-sizes-label">Sizes</InputLabel>
                                             <Select
@@ -1026,147 +1109,11 @@ const AddServiceByAdmin = () => {
                                                 ))}
                                             </Select>
                                         </FormControl>
-                                    </div>}
+                                    </div>} */}
 
 
                                 </div>
-                                <div className="basis-[45%] py-4 mt-10">
 
-                                    {/* <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                                        <FormGroup>
-                                            <FormControlLabel
-                                                label="Featured"
-                                                control={<Switch checked={featuredSwitch}
-                                                    onChange={handleFeaturedSwitch} />}
-
-                                            />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <FormControlLabel
-                                                label="Best Seller"
-                                                control={<Switch checked={bestSellerSwitch}
-                                                    onChange={handleBestSellerSwitch} />}
-
-                                            />
-                                        </FormGroup>
-                                    </Box> */}
-
-
-
-                                    <Textarea sx={{ padding: 0, borderRadius: 1, marginBottom: 1 }} onChange={(event) => setProduct({
-                                        ...product,
-                                        description: event.target.value
-                                    })} placeholder="Description" minRows={6} />
-
-                                    {/* 
-                                    <TextField
-                                        label="Specification"
-                                        fullWidth
-                                        margin="normal"
-                                        value={product.specification}
-                                        onChange={(e) =>
-                                            setProduct({ ...product, specification: e.target.value })
-                                        }
-                                    /> */}
-
-
-                                    {/* <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
-                                        Product Specifications
-                                    </Typography>
-
-                                    <Textarea sx={{ padding: 0, borderRadius: 1, marginBottom: 3 }}
-                                        onChange={(event) => setProduct({ ...product, specification: event.target.value })} placeholder="Your text goes here" minRows={6} /> */}
-
-
-
-
-
-
-
-                                    <Box sx={{ display: "flex", marginTop: 2, gap: 2 }}>
-
-                                        <InputField
-                                            label="HSN Code"
-                                            type="text"
-                                            value={product.hsnCode}
-                                            // onChange={(e) => setProduct({ ...product, price: e })} 
-                                            onChange={(value) => {
-                                                setProduct({ ...product, hsnCode: value })
-                                                // setFormErrors({ ...formErrors, hsnCode: validateSellingPrice(value) });
-                                            }}
-                                        // validate={validateSellingPrice} 
-                                        />
-
-                                        {/* <InputField label="Cost Price" type="number" value={product.costPrice} onChange={(e) => setProduct({ ...product, costPrice: e })} validate={validateCostPrice} />
-*/}
-
-                                        <InputField label="GST Percentage"
-                                            type="number"
-                                            value={product.gstPerc}
-                                            // onChange={(e) => setProduct({ ...product, stock: e })} 
-                                            onChange={(value) => {
-                                                setProduct({ ...product, gstPerc: +value })
-                                                setFormErrors({ ...formErrors, gstPerc: validateSellingPrice(value) });
-                                            }}
-                                            validate={validateSellingPrice} />
-
-
-                                    </Box>
-                                    <div>
-
-                                        {specifications.map((specification, index) => (
-                                            <div key={index}>
-                                                <input
-                                                    type="text"
-                                                    value={specification}
-                                                    onChange={(event) => handleSpecificationChange(index, event)}
-                                                    placeholder={`Specification ${index + 1}`}
-                                                />
-                                                <button className="mb-2 bg-primary-blue" type="button" onClick={() => handleRemoveSpecification(index)}>Remove</button>
-                                            </div>
-                                        ))}
-                                        <button className="bg-primary-blue" type="button" onClick={handleAddSpecification}>Add Specification</button>
-                                    </div>
-
-
-
-
-                                    {brandOptions.includes(selectedBrand) && <div className="mt-4">
-                                        <div className="flex items-center flex-col gap-4  w-full ">
-                                            <p className="font-semibold">Color Images</p>
-                                            <label className=" pb-4 flex flex-col w-full border-4 border-dashed hover:bg-gray-100 hover:border-gray-300">
-                                                <div className="flex flex-col items-center justify-center py-7 ">
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="w-12 h-12 text-gray-400 group-hover:text-gray-600"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                    <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-                                                        Upload Color Image
-                                                    </p>
-                                                    <p className="pt-3 text-sm tracking-wider text-gray-400 group-hover:text-gray-600 text-center">Upload a cover image for your product.</p>
-                                                    <p className="  text-sm tracking-wider text-gray-400 group-hover:text-gray-600 text-center">File Format jpeg, png Recommened Size 600x600 (1:1)</p>
-                                                </div>
-                                                <input
-                                                    onChange={handleColorImageChange}
-                                                    type="file"
-                                                    className="opacity-0"
-                                                />
-                                            </label>
-
-                                            <div className="w-full flex items-center justify-center gap-4 max-w-md flex-wrap">
-                                                {renderColorPhotos(colorFilesToUpload)}
-                                            </div>
-                                        </div>
-                                    </div>}
-                                </div>
                             </div>
                             <div className="basis-[25%] max-w-[380px]  px-7 ">
                                 <div>
@@ -1209,8 +1156,8 @@ const AddServiceByAdmin = () => {
                             </div>
                         </div>
                         <ConfirmBox
-                            title="Add Product"
-                            name="add a Product"
+                            title="Add Service"
+                            name="add a Service"
                             open={deleteOpen}
                             closeDialog={() => setDeleteOpen(false)}
                             toDoFunction={handleProductSubmit}
