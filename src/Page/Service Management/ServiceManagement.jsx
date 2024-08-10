@@ -311,7 +311,7 @@ const ServiceManagement = () => {
             minWidth: 150,
 
             field: "productName",
-            headerName: "Product Name",
+            headerName: "Service Name",
             align: "left",
             headerAlign: "left",
             disableColumnMenu: true,
@@ -596,7 +596,7 @@ const ServiceManagement = () => {
                     </div> : <div className='bg-gray-50'>
                         {/* <AdminNavbar /> */}
 
-                        <div className="flex justify-between mt-4 ">
+                        <div className="flex justify-between mt-[100px] ">
                             <div className="ml-6">
                                 <div className="p-3 bg-white rounded-lg ml-6">
                                     <div className="flex justify-between items-center">
@@ -612,7 +612,7 @@ const ServiceManagement = () => {
                                     <div className="mt-8 flex items-center justify-start gap-20 w-full">
                                         <div className="flex flex-col items-start justify-center">
                                             <p className="text-gray-400">
-                                                All Products
+                                                All Services
                                             </p>
                                             <Typography
                                                 paragraph
@@ -625,7 +625,7 @@ const ServiceManagement = () => {
                                         </div>
                                         <div className="flex flex-col ml-11 items-start justify-center">
                                             <p className=" text-gray-400">
-                                                Active Products
+                                                Active Services
                                             </p>
                                             <Typography
                                                 paragraph
@@ -638,7 +638,7 @@ const ServiceManagement = () => {
                                         </div>
                                         <div className="flex flex-col items-start justify-center">
                                             <p className=" text-gray-400">
-                                                Inactive Products
+                                                Inactive Services
                                             </p>
                                             <Typography
                                                 paragraph
@@ -655,7 +655,8 @@ const ServiceManagement = () => {
                             </div>
 
                             <div className="flex justify-end items-center mt-8 mb-6 px-4">
-                                <Button
+                                {/* // Stock button */}
+                                {/* <Button
                                     sx={{
                                         background: lowStockProducts.length > 0 ? "red" : "green",
                                         display: "flex",
@@ -680,16 +681,16 @@ const ServiceManagement = () => {
                                             sx={{ position: "absolute", top: "5px", right: "5px", width: "20px", height: "20px" }}
                                         />
                                     )}
-                                </Button>
+                                </Button> */}
                                 <div className=" text-sm px-3 flex gap-4">
                                     <button
-                                        onClick={() => navigate("/vendor/addProduct")}
+                                        onClick={() => navigate("/addService")}
                                         className=" px-3 text-white font-medium justify-center w-full bg-primary-blue rounded-lg py-3 flex space-x-2 items-center transition transform active:scale-95 duration-200  "
                                     >
                                         <span>
                                             <TbEdit className="w-6 h-6" />
                                         </span>
-                                        <span>Add Product</span>
+                                        <span>Add Service</span>
                                     </button>
                                     {/* <button
                                     onClick={exportExcelFile}
@@ -708,7 +709,7 @@ const ServiceManagement = () => {
 
                         <div className="flex justify-between items-center mb-8  px-4">
                             <div className="space-x-5">
-                                <p className="text-2xl ">Inventory Items</p>
+                                <p className="text-2xl ">Purchases</p>
                             </div>
 
 
@@ -752,6 +753,8 @@ const ServiceManagement = () => {
                                 </Card>
                             </Grid>
                         </Grid>
+
+          
 
                         <ConfirmBox
                             title="Product"
