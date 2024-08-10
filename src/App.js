@@ -20,6 +20,7 @@ import VendorManagement from "./Page/Vendormanagement/vendor";
 import GoogleProductTaxonomy from "./Page/Massimport";
 import AdminManagement from "./Page/Admin Management/adminManagement";
 import ServiceManagement from "./Page/Service Management/ServiceManagement";
+import AddServiceByAdmin from "./Page/Service Management/AddServiceByAdmin";
 // Function to check if the token exists in cookies
 const getTokenFromCookies = () => {
   // Implement logic to get token from cookies and return it
@@ -106,6 +107,10 @@ export default function App() {
           <Route
             path="/serviceManagement"
             element={<ProtectedRoute element={<ServiceManagement />} />}
+          />
+          <Route
+            path="/addService"
+            element={<ProtectedRoute element={<AddServiceByAdmin />} />}
           />
           <Route
             path="/subscription"
