@@ -18,6 +18,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Chip, CircularProgress, FormControlLabel, FormGroup, Switch } from '@mui/material';
 
+
 import Textarea from '@mui/joy/Textarea';
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -725,7 +726,17 @@ const AddServiceByAdmin = () => {
 
 
 
+    const [type, setType] = useState('');
 
+    const handleChangeType = (event) => {
+      setType(event.target.value);
+    };
+
+    const [value, setValue] = useState('');
+
+    const handleChangeValue = (event) => {
+      setValue(event.target.value);
+    };
 
 
 
@@ -968,6 +979,60 @@ const AddServiceByAdmin = () => {
                                     </div>
 
                                     <button className="bg-primary-blue p-2 my-3 text-white" type="button" onClick={handleAddSubCategories}>Add New Category</button>
+
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                                        <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
+                                            Discount
+                                        </Typography>
+                                        <FormGroup>
+                                            <FormControlLabel
+                                                label="Add Discount"
+                                                sx={{
+                                                    '& .MuiSwitch-switchBase.Mui-checked': {
+                                                        color: 'orange',
+                                                    },
+                                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                        backgroundColor: 'orange',
+                                                    },
+                                                }}
+                                                control={<Switch checked={featuredSwitch}
+                                                    onChange={handleFeaturedSwitch} />}
+
+                                            />
+                                        </FormGroup>
+
+                                    </Box>
+
+                                    <Box sx={{display:"flex", gap:"10px"} }>
+
+                                        <Box sx={{width:"50%"}}>
+                                            <FormControl fullWidth>
+                                                <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={type}
+                                                    label="Age"
+                                                    onChange={handleChangeType}
+                                                >
+                                                    <MenuItem value={10}>1</MenuItem>
+                                                    <MenuItem value={20}>2</MenuItem>
+                                                    <MenuItem value={30}>3</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Box>
+
+
+                                        <Box sx={{width:"50%"}} >
+                                        <InputField
+                                        label="Value"
+                                        type="text"
+                                        value={product?.value}
+                                        onChange={(e) => setProduct({ ...product, value: e })}
+                                    // validate={validateProductName}
+                                    />
+                                        </Box>
+                                    </Box>
 
 
 
