@@ -171,6 +171,7 @@ const ServiceManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredRows, setFilteredRows] = useState([]);
     const [vendorProducts, setVendorProducts] = useState([]);
+    const [services, setServices] = useState([]);
     const [vendorId, setVendorId] = useState('');
 
     const [popupOpen, setPopupOpen] = useState(false);
@@ -221,43 +222,59 @@ const ServiceManagement = () => {
 
 
 
-    const getProductsByVendors = async () => {
-        setLoading(true)
-        try {
+    // const getProductsByVendors = async () => {
+    //     setLoading(true)
+    //     try {
 
-            // const res = await instance.get(`/product/getProductByVendorId/${vendorId}`)
+    //         // const res = await instance.get(`/product/getProductByVendorId/${vendorId}`)
 
-            const res = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/product/getProductByVendorId/${vendorId}`
-              );
+    //         const res = await axios.get(
+    //             `${process.env.REACT_APP_BASE_URL}/product/getProductByVendorId/${vendorId}`
+    //         );
 
-            if (res.data) {
-                // setAllProducts(res.data.products)
-                console.log(res.data.data, "productsss")
-                setVendorProducts(res.data.data)
-                setLoading(false)
-            }
-
-
-        } catch (error) {
-            console.log(error);
-            setLoading(false)
-        }
-    }
+    //         if (res.data) {
+    //             // setAllProducts(res.data.products)
+    //             console.log(res.data.data, "productsss")
+    //             setVendorProducts(res.data.data)
+    //             setLoading(false)
+    //         }
 
 
-    const getVendorDetails = async () => {
+    //     } catch (error) {
+    //         console.log(error);
+    //         setLoading(false)
+    //     }
+    // }
+
+
+    // const getVendorDetails = async () => {
+    //     console.log(token, "tokeeen")
+    //     try {
+    //         // const res = await instance.get(
+    //         //     `/vendor/getVendorIdByToken`
+    //         // );
+    //         const res = await axios.get(
+    //             `${process.env.REACT_APP_BASE_URL}/vendor/getVendorIdByToken`)
+
+    //         if (res.data) {
+    //             console.log(res.data.id, "yuyiyui")
+    //             setVendorId(res.data.id)
+    //         }
+    //     } catch (e) {
+    //         setLoading(false);
+    //         console.log(e)
+    //         // ErrorDispaly(e);
+    //     }
+    // }
+
+    const getAllServices = async () => {
         console.log(token, "tokeeen")
         try {
-            // const res = await instance.get(
-            //     `/vendor/getVendorIdByToken`
-            // );
             const res = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/vendor/getVendorIdByToken`)
+                `${process.env.REACT_APP_BASE_URL}/services/getAllServices`)
 
             if (res.data) {
-                console.log(res.data.id, "yuyiyui")
-                setVendorId(res.data.id)
+                setServices(res.data.data)
             }
         } catch (e) {
             setLoading(false);
@@ -268,16 +285,14 @@ const ServiceManagement = () => {
 
 
     useEffect(() => {
-        if (token) {
-            getVendorDetails()
-        }
-    }, [token])
+        getAllServices()
+    }, [])
 
-    useEffect(() => {
-        if (vendorId) {
-            getProductsByVendors()
-        }
-    }, [vendorId])
+    // useEffect(() => {
+    //     if (vendorId) {
+    //         getProductsByVendors()
+    //     }
+    // }, [vendorId])
 
 
     async function deleteProduct() {
@@ -286,14 +301,14 @@ const ServiceManagement = () => {
             // const res = await instance.delete("/admin/product/" + deleteId);
 
             const res = await axios.delete(
-                `${process.env.REACT_APP_BASE_URL}/admin/product/` + deleteId) 
+                `${process.env.REACT_APP_BASE_URL}/admin/product/` + deleteId)
 
 
             if (res.data) {
                 toast.success("Product Deleted Successfully");
                 setDeleteLoading(false);
                 setDeleteOpen(false);
-                getProductsByVendors();
+                // getProductsByVendors();
                 // getAllUsers();
             }
         } catch (e) {
@@ -588,7 +603,7 @@ const ServiceManagement = () => {
     return (
         <div>
             <div className='flex h-screen overflow-hidden'>
-                <SideBar/>
+                <SideBar />
                 <div className='relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden'>
                     {/* <main> */}
                     {loading ? <div className="flex items-center justify-center text-3xl h-full">
@@ -754,7 +769,7 @@ const ServiceManagement = () => {
                             </Grid>
                         </Grid>
 
-          
+
 
                         <ConfirmBox
                             title="Product"
