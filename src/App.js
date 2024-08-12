@@ -21,6 +21,9 @@ import GoogleProductTaxonomy from "./Page/Massimport";
 import AdminManagement from "./Page/Admin Management/adminManagement";
 import ServiceManagement from "./Page/Service Management/ServiceManagement";
 import AddServiceByAdmin from "./Page/Service Management/AddServiceByAdmin";
+import ServiceOrderManagement from "./Page/Service Order Management/ServiceOrderManagement";
+// import ServiceOrderManagement from "./Page/Service Management/ServiceOrderManagement";
+
 // Function to check if the token exists in cookies
 const getTokenFromCookies = () => {
   // Implement logic to get token from cookies and return it
@@ -111,6 +114,10 @@ export default function App() {
           <Route
             path="/addService"
             element={<ProtectedRoute element={<AddServiceByAdmin />} />}
+          />
+          <Route
+            path="/serviceOrderManagement"
+            element={<ProtectedRoute element={<ServiceOrderManagement />} />}
           />
           <Route
             path="/subscription"
