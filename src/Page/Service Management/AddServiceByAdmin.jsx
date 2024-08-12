@@ -16,7 +16,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Chip, CircularProgress, FormControlLabel, FormGroup, Switch } from '@mui/material';
+import { Chip, CircularProgress, FormControlLabel, FormGroup, Switch, Button } from '@mui/material';
 
 
 import Textarea from '@mui/joy/Textarea';
@@ -28,25 +28,25 @@ import axios from "axios";
 import SideBar from "../../Component/SideBar";
 
 
-export const Button = ({
-    name,
-    Icon,
-    Color,
-}) => {
-    return (
-        <div
-            className={
-                Color +
-                " bg-white font-bold w-full rounded-sm shadow-sm flex space-x-1 items-center justify-center px-4 p-1 max-w-max border border-[#DEDEDE]"
-            }
-        >
-            <div className="text-xs">{<Icon />}</div>
-            <div>
-                <p className=" text-[10px]">{name}</p>
-            </div>
-        </div>
-    );
-};
+// export const Button = ({
+//     name,
+//     Icon,
+//     Color,
+// }) => {
+//     return (
+//         <div
+//             className={
+//                 Color +
+//                 " bg-white font-bold w-full rounded-sm shadow-sm flex space-x-1 items-center justify-center px-4 p-1 max-w-max border border-[#DEDEDE]"
+//             }
+//         >
+//             <div className="text-xs">{<Icon />}</div>
+//             <div>
+//                 <p className=" text-[10px]">{name}</p>
+//             </div>
+//         </div>
+//     );
+// };
 
 const userTypes = ["All", "Premium"];
 const rows = [
@@ -349,55 +349,34 @@ const AddServiceByAdmin = () => {
         setDeleteLoading(true)
         var ProductFormData = new FormData();
         for (let i of filesToupload) {
-            ProductFormData.append('productImages', i);
+            ProductFormData.append('imageUrl', i);
+        }
+        for (let i of service.pricing) {
+            ProductFormData.append('pricing', i);
         }
 
-        for (let i of colorFilesToUpload) {
-            ProductFormData.append('moreColorImages', i);
-        }
-        for (let i of sizes) {
-            ProductFormData.append('sizes', i);
-        }
-        for (let i of selectedColorsIds) {
-            ProductFormData.append('colors', i);
-        }
+        ProductFormData.append('serviceName', service.serviceName);
+        ProductFormData.append('description', service.description);
+        ProductFormData.append('isCashOnDelivery', service.isCashOnDelivery);
+        ProductFormData.append('inactive', service.inactive);
 
-        ProductFormData.append('name', product.name);
-        ProductFormData.append('category', selectedCategoryName);
-        ProductFormData.append('stock', product.stock);
-        ProductFormData.append('price', product.price);
-        ProductFormData.append('bestSeller', product.bestSeller);
-        ProductFormData.append('featured', product.featured);
-        // ProductFormData.append('specification', specifications);
-        ProductFormData.append('description', product.description);
-        ProductFormData.append('brand', product.brand);
-        ProductFormData.append('subCategory', product.subCategory);
-        // ProductFormData.append('mrp', product.mrp);
-        ProductFormData.append('warrantyPeriod', product.warrantyPeriod);
-        ProductFormData.append('vendorId', vendorId);
-        ProductFormData.append('gstPerc', product.gstPerc);
-        ProductFormData.append('hsnCode', product.hsnCode);
-        // ProductFormData.append('sizes', sizes);
-        ProductFormData.append('gender', selectedGender);
-        // ProductFormData.append('colors', selectedColorsIds);
 
         try {
-            // const res = await instance.post("/admin/product/new", ProductFormData, {
-            //     // const res = await instance.post("http://localhost:8000/api/v1//admin/product/new", ProductFormData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            // });
-            // if (res.data) {
-            //     // setLoading(false)
-            //     setDeleteLoading(false)
-            //     console.log(res.data, "sdfhadjkf")
-            //     toast("Product has been added")
-            //     setDeleteOpen(false)
-            //     navigate("/vendor/productManagement")
+            const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/admin/service/new`, ProductFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            
+            if (res.data) {
+                // setLoading(false)
+                setDeleteLoading(false)
+                toast("Service has been added")
+                setDeleteOpen(false)
+                // navigate("/vendor/productManagement")
 
 
-            // }
+            }
         } catch (error) {
             console.log(error, "skdfhsjdf")
             // setLoading(false)
@@ -522,10 +501,20 @@ const AddServiceByAdmin = () => {
     // Validation Logics
 
 
-    const validateProductName = (value) => {
+    const validateServiceName = (value) => {
         // Add specific validation logic for product name
         const regex = /^[a-zA-Z ]+$/; // Only allow letters and spaces
-        return regex.test(value) ? null : 'Invalid characters in product name';
+        return regex.test(value) ? null : 'Invalid characters in service name';
+    };
+    const validateAttributeName = (value) => {
+        // Add specific validation logic for product name
+        const regex = /^[a-zA-Z ]+$/; // Only allow letters and spaces
+        return regex.test(value) ? null : 'Invalid characters in category name';
+    };
+    const validateValueName = (value) => {
+        // Add specific validation logic for product name
+        const regex = /^[a-zA-Z ]+$/; // Only allow letters and spaces
+        return regex.test(value) ? null : 'Invalid characters in value name';
     };
     // const validateCategory = (value) => {
     //     // Only allow lowercase letters, exclude uppercase, spaces, and symbols
@@ -563,14 +552,14 @@ const AddServiceByAdmin = () => {
     const validateSellingPrice = (value) => {
         // Check if the value contains a decimal point
         if (/\./.test(value)) {
-            return 'Selling price should not contain decimals';
+            return ' Price should not contain decimals';
         }
 
         const floatValue = parseFloat(value);
 
         // Add specific validation logic for product price
         if (isNaN(floatValue) || floatValue <= 0) {
-            return 'Invalid selling price';
+            return 'Invalid price';
         }
 
         return null;
@@ -597,62 +586,62 @@ const AddServiceByAdmin = () => {
     };
 
 
-    async function getAllBrands() {
-        try {
-            console.log(token, "jsakdfjkladsj")
+    // async function getAllBrands() {
+    //     try {
+    //         console.log(token, "jsakdfjkladsj")
 
-            setLoading(true);
-            // const res = await instance.get(
-            //     `/admin/getAllBrands`
-            // );
-            // if (res.data) {
-            //     setAllBrands(res.data.brands)
-            //     setLoading(false);
-            // }
-        } catch (e) {
-            setLoading(false);
-            console.log(e)
-            // ErrorDispaly(e);
-        }
-    }
+    //         setLoading(true);
+    //         // const res = await instance.get(
+    //         //     `/admin/getAllBrands`
+    //         // );
+    //         // if (res.data) {
+    //         //     setAllBrands(res.data.brands)
+    //         //     setLoading(false);
+    //         // }
+    //     } catch (e) {
+    //         setLoading(false);
+    //         console.log(e)
+    //         // ErrorDispaly(e);
+    //     }
+    // }
 
-    async function getAllCategories() {
-        try {
-            console.log(token, "jsakdfjkladsj")
+    // async function getAllCategories() {
+    //     try {
+    //         console.log(token, "jsakdfjkladsj")
 
-            setLoading(true);
-            // const res = await instance.get(
-            //     `/admin/getAllCategories`
-            // );
-            // if (res.data) {
-            //     setAllCategories(res.data.categories)
-            //     setLoading(false);
-            // }
-        } catch (e) {
-            setLoading(false);
-            console.log(e)
-            // ErrorDispaly(e);
-        }
-    }
+    //         setLoading(true);
+    //         // const res = await instance.get(
+    //         //     `/admin/getAllCategories`
+    //         // );
+    //         // if (res.data) {
+    //         //     setAllCategories(res.data.categories)
+    //         //     setLoading(false);
+    //         // }
+    //     } catch (e) {
+    //         setLoading(false);
+    //         console.log(e)
+    //         // ErrorDispaly(e);
+    //     }
+    // }
 
-    async function getAllColors() {
-        try {
-            console.log(token, "jsakdfjkladsj")
+    // async function getAllColors() {
+    //     try {
+    //         console.log(token, "jsakdfjkladsj")
 
-            setLoading(true);
-            // const res = await instance.get(
-            //     `/admin/getAllColors`
-            // );
-            // if (res.data) {
-            //     setAllColors(res.data.data)
-            //     setLoading(false);
-            // }
-        } catch (e) {
-            setLoading(false);
-            console.log(e)
-            // ErrorDispaly(e);
-        }
-    }
+    //         setLoading(true);
+    //         // const res = await instance.get(
+    //         //     `/admin/getAllColors`
+    //         // );
+    //         // if (res.data) {
+    //         //     setAllColors(res.data.data)
+    //         //     setLoading(false);
+    //         // }
+    //     } catch (e) {
+    //         setLoading(false);
+    //         console.log(e)
+    //         // ErrorDispaly(e);
+    //     }
+    // }
 
 
     // async function getAllSubCategories() {
@@ -694,9 +683,9 @@ const AddServiceByAdmin = () => {
 
 
     useEffect(() => {
-        getAllBrands();
-        getAllCategories();
-        getAllColors();
+        // getAllBrands();
+        // getAllCategories();
+        // getAllColors();
         getVendorDetails();
     }, [token]);
 
@@ -729,18 +718,62 @@ const AddServiceByAdmin = () => {
     const [type, setType] = useState('');
 
     const handleChangeType = (event) => {
-      setType(event.target.value);
+        setType(event.target.value);
     };
 
     const [value, setValue] = useState('');
 
     const handleChangeValue = (event) => {
-      setValue(event.target.value);
+        setValue(event.target.value);
+    };
+
+    const [service, setService] = useState({
+        serviceName: '',
+        description: '',
+        pricing: [],
+        inactive: false,
+        isCashOnDelivery: true
+    });
+
+    if(service) console.log(service,"kjkkkk")
+
+    const [serviceAttributes, setServiceAttributes] = useState([{ attribute: '', value: '', price: '' }]);
+
+ 
+
+    const handleAttributeChange = (index, name, value) => {
+        const updatedAttributes = [...serviceAttributes];
+        updatedAttributes[index][name] = value;
+        setServiceAttributes(updatedAttributes);
+
+        setService({
+            ...service,
+            pricing: updatedAttributes,
+        });
+    };
+
+    const handleAddAttributes = () => {
+        setServiceAttributes([...serviceAttributes, { attribute: '', value: '', price: '' }]);
+    };
+
+    const handleRemoveAttributes = (index) => {
+        const updatedAttributes = [...serviceAttributes];
+        updatedAttributes.splice(index, 1);
+        setServiceAttributes(updatedAttributes);
+
+        setService({
+            ...service,
+            pricing: updatedAttributes,
+        });
     };
 
 
+    const [cashOnDeliverySwitch, setCashOnDeliverySwitch] = useState(true);
 
-
+    const handleCashOnDeliverySwitch = (event) => {
+        setCashOnDeliverySwitch(event.target.checked);
+        setService({ ...service, isCashOnDelivery: event.target.checked })
+    };
 
     return (
         <div>
@@ -750,7 +783,7 @@ const AddServiceByAdmin = () => {
                     {/* <main> */}
                     <div className='bg-gray-50'>
                         {/* <AdminNavbar /> */}
-                        <div className="flex items-center justify-between mx-10 my-5">
+                        <div className="flex items-center justify-between mx-10 my-5 mt-[100px]">
                             <p>Add Service Details</p>
                             <div className="flex gap-7">
                                 {/* <button className="px-4 py-2 rounded-lg text-white bg-black">
@@ -759,226 +792,103 @@ const AddServiceByAdmin = () => {
                                 {loading ? <CircularProgress /> : Object.values(formErrors).some((error) => Boolean(error)) ? null : (<button onClick={() => setDeleteOpen(true)} className="px-4 py-2 rounded-lg text-white bg-primary-blue">
                                     Save & Publish
                                 </button>)}
+                                {/* <button onClick={() => setDeleteOpen(true)} className="px-4 py-2 rounded-lg text-white bg-primary-blue">
+                                    Save & Publish
+                                </button> */}
                             </div>
                         </div>
 
                         <div className="bg-white mx-10  flex  gap-5 ">
                             <div className="basis-[70%] flex gap-10">
                                 <div className="basis-[100%] p-10">
-                                    {/* <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
-                                        Product Name
-                                    </Typography> */}
 
-                                    <InputField
-                                        label="Service Name"
-                                        type="text"
-                                        value={product?.name}
-                                        onChange={(e) => setProduct({ ...product, name: e })}
-                                    // validate={validateProductName}
-                                    />
+                                    <div>
+                                        <InputField
+                                            label="Service Name"
+                                            type="text"
+                                            value={service.serviceName}
+                                            // onChange={(e) => setService({ ...service, serviceName: e })}
+                                            onChange={(value) => {
+                                                setService({ ...service, serviceName: value })
+                                                setFormErrors({ ...formErrors, serviceName: validateServiceName(value) });
+                                            }}
+                                            validate={validateServiceName} />
 
-                                    {/* <InputField
-                                        label="Brand"
-                                        type="text"
-                                        value={product?.brand}
-                                        onChange={(value) => {
-                                            setProduct({ ...product, brand: value });
-                                            setFormErrors({ ...formErrors, brand: validateBrand(value) });
-                                        }}
-                                        validate={validateBrand}
-                                    /> */}
+                                        <TextField
+                                            label="Description"
+                                            multiline
+                                            rows={4}
+                                            value={service.description}
+                                            onChange={(e) => setService({ ...service, description: e.target.value })}
+                                            fullWidth
+                                            margin="normal"
+                                        />
 
-                                    {/* //  Brand */}
-                                    {/* <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
-                                        <InputLabel id="brand-select-label">Select Brand</InputLabel>
-                                        <Select
-                                            labelId="brand-select-label"
-                                            id="brand-select"
-                                            value={selectedBrand}
-                                            onChange={handleBrandChange}
-                                            label="Brand"
-                                        // sx={{ w: '100%' }}
-                                        >
-                                            {allBrands?.map((brand) => (
-                                                <MenuItem key={brand._id} value={brand.brandName}>
-                                                    {brand.brandName}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl> */}
+                                        {serviceAttributes.map((attribute, index) => (
+                                            <div key={index} style={{ marginBottom: '16px' }}>
+                                                <InputField
+                                                    label={`Attribute Name ${index + 1}`}
+                                                    type="text"
+                                                    value={attribute.attribute}
+                                                    onChange={(value) => handleAttributeChange(index, 'attribute', value)}
+                                                    validate={validateAttributeName}
+                                                />
 
+                                                <InputField
+                                                    label={`Value ${index + 1}`}
+                                                    type="text"
+                                                    value={attribute.value}
+                                                    onChange={(value) => handleAttributeChange(index, 'value', value)}
+                                                    validate={validateValueName}
+                                                />
 
+                                                <InputField
+                                                    label={`Price ${index + 1}`}
+                                                    type="number"
+                                                    value={attribute.price}
+                                                    onChange={(value) => handleAttributeChange(index, 'price', value)}
+                                                    validate={validateSellingPrice}
+                                                />
 
-                                    {/* <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
-                                        Category
-                                    </Typography> */}
-
-                                    {/* <InputField
-                                        label="Category"
-                                        type="text"
-                                        value={product?.category}
-                                        onChange={(value) => {
-                                            setProduct({ ...product, category: value });
-                                            setFormErrors({ ...formErrors, category: validateCategory(value) });
-                                        }}
-                                        validate={validateCategory}
-                                    /> */}
-
-                                    {/* <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
-                                        <InputLabel id="brand-select-label">Select Category</InputLabel>
-                                        <Select
-                                            labelId="brand-select-label"
-                                            id="brand-select"
-                                            value={selectedCategory}
-                                            onChange={handleCategoryChange}
-                                            label="Category"
-                                        // sx={{ w: '100%' }}
-                                        >
-
-                                            {allCategories?.map((category) => (
-                                                <MenuItem key={category._id} value={category._id}>
-                                                    {category.categoryName}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl> */}
-
-
-                                    {/* <FormControl variant="standard" sx={{ mb: 4, width: "100%" }}>
-                                        <InputLabel id="subCategory-select-label">Select Sub Category</InputLabel>
-                                        <Select
-                                            labelId="brand-select-label"
-                                            id="subCategory-select"
-                                            value={selectedSubCategory}
-                                            onChange={handleSubCategoryChange}
-                                            label="Category"
-                                        // sx={{ w: '100%' }}
-                                        >
-
-                                            {subCategories?.map((category) => (
-                                                <MenuItem key={category._id} value={category.subCategoryName}>
-                                                    {category.subCategoryName}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl> */}
-
-
-
-
-
-
-
-                                    {/* <InputField
-                                        label="Sub Category"
-                                        type="text"
-                                        value={product?.subCategory}
-                                        onChange={(e) => setProduct({ ...product, subCategory: e })}
-                                    // validate={validateCategory}
-                                    /> */}
-
-
-
-                                    {/* <FormControl fullWidth>
-                                        <InputLabel id="demo-simple-select-label">Select Product Category</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={product?.category}
-                                            label="Select Customer"
-                                            onChange={handleCategory}
-                                        >
-                                            {productCategories && productCategories.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                // style={getStyles(name, personName, theme)}
+                                                <Button
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    onClick={() => handleRemoveAttributes(index)}
+                                                    style={{ marginTop: '8px' }}
                                                 >
-                                                    {name}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl> */}
-
-
-                                    <Textarea sx={{ padding: 0, borderRadius: 1, marginBottom: 3 }} onChange={(event) => setProduct({
-                                        ...product,
-                                        description: event.target.value
-                                    })} placeholder="Short Description" minRows={6} />
-
-
-                                    <InputField
-                                        label="Service Category Name"
-                                        type="text"
-                                        value={product?.category}
-                                        onChange={(e) => setProduct({ ...product, category: e })}
-                                    // validate={validateProductName}
-                                    />
-
-                                    {/* 
-                                    <div>
-
-                                        {subCategories.map((subCategory, index) => (
-                                            <div key={index}>
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="flex flex-col gap-2 w-1/2">
-                                                        <input
-                                                            type="text"
-
-                                                            value={subCategory}
-                                                            onChange={(event) => handleSubCategoryChange(index, event)}
-                                                            placeholder={`Sub-Category Name ${index + 1}`}
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            value={specification}
-                                                            onChange={(event) => handleSubCategoryChange(index, event)}
-                                                            placeholder={`Sub-Category Price ${index + 1}`}
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                    <button className="mb-2 bg-primary-blue" type="button" onClick={() => handleRemoveSubCategories(index)}>Remove</button>
-
-                                                    </div>
-
-                                                </div>
-
-
+                                                    Remove
+                                                </Button>
                                             </div>
                                         ))}
-                                        <button className="bg-primary-blue" type="button" onClick={handleAddSUbCategories}>Add SubCategory</button>
-                                    </div> */}
 
-                                    <div>
-                                        {subCategories.map((subCategory, index) => (
-                                            <div key={index}>
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="flex flex-col gap-2 w-1/2">
-                                                        <input
-                                                            type="text"
-                                                            name="name"
-                                                            value={subCategory.name}
-                                                            onChange={(event) => handleSubCategoryChange(index, event)}
-                                                            placeholder={`Sub-Category Name ${index + 1}`}
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            name="price"
-                                                            value={subCategory.price}
-                                                            onChange={(event) => handleSubCategoryChange(index, event)}
-                                                            placeholder={`Sub-Category Price ${index + 1}`}
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <button className="mb-2 p-2 text-white bg-primary-blue" type="button" onClick={() => handleRemoveSubCategories(index)}>Remove</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                        <button className="bg-primary-blue p-2 text-white" type="button" onClick={handleAddSubCategories}>Add SubCategory</button>
+                                        <Button variant="contained" color="primary" onClick={handleAddAttributes}>
+                                            Add Category
+                                        </Button>
                                     </div>
 
-                                    <button className="bg-primary-blue p-2 my-3 text-white" type="button" onClick={handleAddSubCategories}>Add New Category</button>
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                                        <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
+                                            Cash on Delivery
+                                        </Typography>
+                                        <FormGroup>
+                                            <FormControlLabel
+                                                label="Cash On Delivery"
+                                                sx={{
+                                                    '& .MuiSwitch-switchBase.Mui-checked': {
+                                                        color: 'orange',
+                                                    },
+                                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                        backgroundColor: 'orange',
+                                                    },
+                                                }}
+                                                control={<Switch checked={cashOnDeliverySwitch}
+                                                    onChange={handleCashOnDeliverySwitch} />}
+
+                                            />
+                                        </FormGroup>
+                                    </Box>
+                                    {/* <button className="bg-primary-blue p-2 my-3 text-white" type="button" onClick={handleAddSubCategories}>Add New Category</button> */}
+
 
                                     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                                         <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
@@ -1003,9 +913,9 @@ const AddServiceByAdmin = () => {
 
                                     </Box>
 
-                                    <Box sx={{display:"flex", gap:"10px"} }>
+                                    <Box sx={{ display: "flex", gap: "10px" }}>
 
-                                        <Box sx={{width:"50%"}}>
+                                        <Box sx={{ width: "50%" }}>
                                             <FormControl fullWidth>
                                                 <InputLabel id="demo-simple-select-label">Type</InputLabel>
                                                 <Select
@@ -1023,158 +933,17 @@ const AddServiceByAdmin = () => {
                                         </Box>
 
 
-                                        <Box sx={{width:"50%"}} >
-                                        <InputField
-                                        label="Value"
-                                        type="text"
-                                        value={product?.value}
-                                        onChange={(e) => setProduct({ ...product, value: e })}
-                                    // validate={validateProductName}
-                                    />
+                                        <Box sx={{ width: "50%" }} >
+                                            <InputField
+                                                label="Value"
+                                                type="text"
+                                                value={product?.value}
+                                                onChange={(e) => setProduct({ ...product, value: e })}
+                                            // validate={validateProductName}
+                                            />
                                         </Box>
                                     </Box>
 
-
-
-                                    {/* <Box sx={{ display: "flex", gap: 2 }}>
-
-                                        <InputField
-                                            label=" Price"
-                                            type="number"
-                                            value={product.price}
-                                     
-                                            onChange={(value) => {
-                                                setProduct({ ...product, price: +value })
-                                                setFormErrors({ ...formErrors, price: validateSellingPrice(value) });
-                                            }}
-                                            validate={validateSellingPrice} />
-
-                              
-                                        <InputField label="Stock"
-                                            type="number"
-                                            value={product.stock}
-                                      
-                                            onChange={(value) => {
-                                                setProduct({ ...product, stock: +value })
-                                                setFormErrors({ ...formErrors, stock: validateSellingPrice(value) });
-                                            }}
-                                            validate={validateSellingPrice} />
-
-
-                                    </Box> */}
-
-                                    {/* {!brandOptions.includes(selectedBrand) && <Box sx={{ display: "flex", gap: 2 }}>
-
-                                        <FormControl fullWidth>
-                                            <InputLabel id="warranty-period-label">Warranty Period</InputLabel>
-                                            <Select
-                                                labelId="warranty-period-label"
-                                                id="warranty-period-select"
-                                                value={product.warrantyPeriod}
-                                                onChange={(event) => {
-                                                    setProduct({ ...product, warrantyPeriod: event.target.value });
-                                                }}
-                                                label="Warranty Period"
-                                            >
-                                                <MenuItem value="6 months">3 months</MenuItem>
-                                                <MenuItem value="6 months">6 months</MenuItem>
-                                                <MenuItem value="12 months">12 months</MenuItem>
-                                                <MenuItem value="18 months">18 months</MenuItem>
-                                                <MenuItem value="24 months">24 months</MenuItem>
-                                                <MenuItem value="36 months">36 months</MenuItem>
-                                            </Select>
-                                        </FormControl>
-
-
-                                    </Box>} */}
-
-
-                                    {/* {brandOptions.includes(selectedBrand) && <div className="my-4">
-                                        <FormControl fullWidth>
-                                            <InputLabel id="multiple-sizes-label">Sizes</InputLabel>
-                                            <Select
-                                                labelId="multiple-sizes-label"
-                                                multiple
-                                                value={sizes.map((sizeObj) => sizeObj)}
-                                                onChange={handleSizeChange}
-                                                renderValue={(selected) => (
-                                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                        {selected.map((value) => (
-                                                            <Chip key={value} label={value} />
-                                                        ))}
-                                                    </Box>
-                                                )}
-                                            >
-                                                {sampleSizes.map((size) => (
-                                                    <MenuItem key={size} value={size}>
-                                                        {size}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </div>}
-
-
-                                    {brandOptions.includes(selectedBrand) && <div className="my-4">
-                                        <FormControl fullWidth>
-                                            <InputLabel id="color-select-label">Color</InputLabel>
-                                            <Select
-                                                labelId="color-select-label"
-                                                multiple
-                                                value={selectedColors.map(color => color.hexCode)}
-                                                onChange={handleColorChange}
-                                                renderValue={(selected) => (
-                                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                        {selected.map((value) => {
-                                                            const color = colors.find(color => color.hexCode === value);
-                                                            return (
-                                                                <Chip
-                                                                    key={value}
-                                                                    label={color.colorName}
-                                                                    style={{ backgroundColor: value, color: '#fff' }}
-                                                                />
-                                                            );
-                                                        })}
-                                                    </Box>
-                                                )}
-                                            >
-                                                {colors.map((color) => (
-                                                    <MenuItem key={color.colorName} value={color.hexCode}>
-                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                            <div style={{
-                                                                backgroundColor: color.hexCode,
-                                                                width: 20,
-                                                                height: 20,
-                                                                marginRight: 10,
-                                                                border: '1px solid #000',
-                                                            }} />
-                                                            {color.colorName}
-                                                        </div>
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-
-                                    </div>}
-
-
-                                    {brandOptions.includes(selectedBrand) && <div>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="gender-select-label">Gender</InputLabel>
-                                            <Select
-                                                labelId="gender-select-label"
-                                                value={selectedGender}
-                                                onChange={handleGenderChange}
-                                                label="Gender"
-                                            >
-                                                {genderOptions.map((gender) => (
-                                                    <MenuItem key={gender} value={gender}>
-                                                        {gender}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </div>} */}
 
 
                                 </div>
