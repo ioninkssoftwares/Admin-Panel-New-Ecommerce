@@ -108,7 +108,7 @@ const columns = [
 const AddServiceByAdmin = () => {
     const navigate = useNavigate();
     const [deleteOpen, setDeleteOpen] = useState(false);
-    const [cookies, setCookies] = useCookies(["vendorToken"]);
+    const [cookies, setCookies] = useCookies(["token"]);
     const [deleteLoading, setDeleteLoading] = useState(false);
     // const [value, setValue] = useState(dayjs('2022-04-17'));
     const [loading, setLoading] = useState(false);
@@ -328,9 +328,9 @@ const AddServiceByAdmin = () => {
 
 
     useEffect(() => {
-        if (cookies && cookies.vendorToken) {
-            console.log(cookies.vendorToken, "fdsfsdfsf")
-            setToken(cookies.vendorToken);
+        if (cookies && cookies.token) {
+            console.log(cookies.token, "fdsfsdfsf")
+            setToken(cookies.token);
         }
     }, [cookies]);
 
@@ -346,6 +346,8 @@ const AddServiceByAdmin = () => {
 
     const handleProductSubmit = async () => {
         // setLoading(true)
+        const token = cookies.token;
+
         setDeleteLoading(true)
         var ProductFormData = new FormData();
         for (let i of filesToupload) {
@@ -365,6 +367,7 @@ const AddServiceByAdmin = () => {
             const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/admin/service/new`, ProductFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             
