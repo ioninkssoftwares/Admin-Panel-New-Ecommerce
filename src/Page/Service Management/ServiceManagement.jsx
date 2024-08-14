@@ -15,146 +15,31 @@ import { DataGrid } from "@mui/x-data-grid";
 // import { useRouter } from "next/router";
 import React, { ReactElement, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-import { BsEyeFill, BsPencil, BsPencilFill } from "react-icons/bs";
+
 import { MdDeleteForever, MdInventory } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
-import { VscListFilter } from "react-icons/vsc";
+
 import { toast } from "react-toastify";
-// import { location, newResponse, Pagination, response, User } from "src/@types";
-// import { AdminCustomers } from "../../../componets/user/adminCustomer";
-// import AdminsideNav from "../../../componets/admin/adminDasboardnav";
-// import ConfirmBox from "../../../components/admin/shared/ConfirmDialog";
+
 import ConfirmBox from "../../Component/vendor/shared/ConfirmDialog";
-// import DashBoardLayout from "src/Layout/DasboardsLayout";
-// import { useFetch } from "src/lib/hooks/useFetch";
-// import { useAxios } from "../../../utils/axios"; 
+
 import { tableStyles } from "../../Component/vendor/shared/ConfirmDialog";
-// import AdminNavbar from "../../Components/navbar/VendorNavbar";
+
 import { FaArrowDown, FaCartArrowDown, FaCheckCircle, FaEye, FaTimesCircle } from "react-icons/fa";
-import { FiUsers } from "react-icons/fi";
-// import CustomPagination from "src/componets/customPagination";
-// import { ErrorDispaly } from "../property";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-// import * as XLSX from 'xlsx';
-// import ExcelJS from "exceljs";
-import { CiExport } from "react-icons/ci";
-import { PiWarningCircleBold } from "react-icons/pi";
-import { CircleOutlined } from "@mui/icons-material";
-import { GrStatusGood } from "react-icons/gr";
-// import StockPopup from "./StockPopup";
+
 import SideBar from "../../Component/SideBar";
 import axios from "axios";
 
 
-
-const toDataURL = (url) => {
-    const promise = new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-            var reader = new FileReader();
-            reader.readAsDataURL(xhr.response);
-            reader.onloadend = function () {
-                resolve({ base64Url: reader.result });
-            };
-        };
-        xhr.open("GET", url);
-        xhr.responseType = "blob";
-        xhr.send();
-    });
-
-    return promise;
-};
-
-
-
-// export const Button = ({
-//     name,
-//     Icon,
-//     Color,
-// }) => {
-//     return (
-//         <div
-//             className={
-//                 Color +
-//                 " bg-white font-bold w-full rounded-sm shadow-sm flex space-x-1 items-center justify-center px-4 p-1 max-w-max border border-[#DEDEDE]"
-//             }
-//         >
-//             <div className="text-xs">{<Icon />}</div>
-//             <div>
-//                 <p className=" text-[10px]">{name}</p>
-//             </div>
-//         </div>
-//     );
-// };
-
-const userTypes = ["All", "Premium"];
-const rows = [
-    { id: 1, totalOrder: 10000, name: 'Blutooth Devices', price: 14, totalSales: 123456 },
-    { id: 2, totalOrder: 10000, name: 'Airpods', price: 31, totalSales: 123456 },
-    { id: 3, totalOrder: 10000, name: 'Neck Band', price: 71, totalSales: 123456 },
-    { id: 4, totalOrder: 10000, name: 'IR Remote', price: 31, totalSales: 123456 },
-    { id: 5, totalOrder: 10000, name: 'Smart Watch', price: 40, totalSales: 123456 },
-    { id: 6, totalOrder: 10000, name: 'Power Bank', price: 150, totalSales: 123456 },
-];
-
-const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-        field: 'name',
-        headerName: 'Name',
-        width: 150,
-        renderCell: (params) => (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <AccountCircleIcon style={{ marginRight: '5px' }} />
-                {params.value}
-            </div>
-        ),
-        editable: true,
-    },
-    {
-        field: 'totalOrder',
-        headerName: 'Total Order',
-        type: 'number',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'price',
-        headerName: 'Price',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'totalSales',
-        headerName: 'Total Sales',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    // {
-    //     field: 'fullName',
-    //     headerName: 'Full name',
-    //     description: 'This column has a value getter and is not sortable.',
-    //     sortable: false,
-    //     width: 160,
-    //     valueGetter: (params) =>
-    //         `${params.row.firstName || ''} ${params.row.totalOrder || ''}`,
-    // },
-];
-
-// give main area a max widht
 const ServiceManagement = () => {
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState("");
     const [deleteId, setDeleteId] = useState("");
-    // const instance = useAxios(token);
-    const [allProducts, setAllProducts] = useState([]);
-    const [users, setUsers] = useState([]);
     const [pagination, setPagination] = useState(
         null
     );
@@ -162,9 +47,7 @@ const ServiceManagement = () => {
         page: 0,
         pageSize: 100,
     });
-    const [name, setName] = useState("");
-    const [selected, setSelected] = useState("All");
-    const [cookies, setCookies] = useCookies(["vendorToken"]);
+    const [cookies, setCookies] = useCookies(["token"]);
     const navigate = useNavigate();
 
 
@@ -172,7 +55,6 @@ const ServiceManagement = () => {
     const [filteredRows, setFilteredRows] = useState([]);
     const [vendorProducts, setVendorProducts] = useState([]);
     const [services, setServices] = useState([]);
-    const [vendorId, setVendorId] = useState('');
 
     const [popupOpen, setPopupOpen] = useState(false);
 
@@ -214,9 +96,9 @@ const ServiceManagement = () => {
 
 
     useEffect(() => {
-        if (cookies && cookies.vendorToken) {
-            console.log(cookies.vendorToken, "fdsfsdfsf")
-            setToken(cookies.vendorToken);
+        if (cookies && cookies.token) {
+            console.log(cookies.token, "fdsfsdfsf")
+            setToken(cookies.token);
         }
     }, [cookies]);
 
@@ -271,7 +153,13 @@ const ServiceManagement = () => {
         console.log(token, "tokeeen")
         try {
             const res = await axios.get(
-                `${process.env.REACT_APP_BASE_URL}/services/getAllServices`)
+                `${process.env.REACT_APP_BASE_URL}/services/getAllServices`,
+                {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
 
             if (res.data) {
                 setServices(res.data.data)
@@ -285,8 +173,11 @@ const ServiceManagement = () => {
 
 
     useEffect(() => {
-        getAllServices()
-    }, [])
+        if(token){
+            getAllServices()
+        }
+      
+    }, [token])
 
     // useEffect(() => {
     //     if (vendorId) {
