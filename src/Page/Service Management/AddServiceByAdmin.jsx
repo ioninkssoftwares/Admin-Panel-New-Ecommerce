@@ -1,7 +1,7 @@
 
 import React, { ReactElement, useEffect, useState } from "react";
 
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { AiOutlineClose } from 'react-icons/ai';
 
 // import { useAxios } from "../../../utils/axios";
@@ -351,12 +351,12 @@ const AddServiceByAdmin = () => {
         setDeleteLoading(true)
         var ProductFormData = new FormData();
         for (let i of filesToupload) {
-            ProductFormData.append('imageUrl', i);
+            ProductFormData.append('serviceImage', i);
         }
-        for (let i of service.pricing) {
-            ProductFormData.append('pricing', i);
-        }
-
+        // for (let i of service.pricing) {
+        //     ProductFormData.append('pricing', i);
+        // }
+        ProductFormData.append('pricing', JSON.stringify(service.pricing));
         ProductFormData.append('serviceName', service.serviceName);
         ProductFormData.append('description', service.description);
         ProductFormData.append('isCashOnDelivery', service.isCashOnDelivery);
@@ -376,7 +376,7 @@ const AddServiceByAdmin = () => {
                 setDeleteLoading(false)
                 toast("Service has been added")
                 setDeleteOpen(false)
-                // navigate("/vendor/productManagement")
+                navigate("/servicemanagement")
 
 
             }
@@ -1001,7 +1001,7 @@ const AddServiceByAdmin = () => {
                             loading={deleteLoading}
                             sx={{ pb: 4, border: "2px solid red" }}
                         />
-
+        <ToastContainer />
                     </div>
                 </div>
                 {/* </main> */}
