@@ -717,7 +717,7 @@ export default function ServiceOrderManagement() {
           </div> */}
         </div>
 
-        {/* <ServiceOrderManagementTable /> */}
+        <ServiceOrderManagementTable />
 
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Create New Order</DialogTitle>
