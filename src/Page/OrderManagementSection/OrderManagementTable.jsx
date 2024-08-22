@@ -180,7 +180,7 @@ const InvoiceDocument = ({ selectedOrderDetails }) => (
       {/* Customer Information and Shipping Information */}
       <View style={styles.infoContainer}>
         <View style={styles.infoColumn}>
-          <Text style={styles.subtitle}>Customer Information</Text>
+          <Text style={styles.subtitle}>Owner Information</Text>
           <Text style={styles.infoText}>
 {/*             Name: {selectedOrderDetails.user?.name} */}
 Name : S2 For You
@@ -202,18 +202,24 @@ Adress : Dummy address area
           <Text style={styles.subtitle}>Shipping Information</Text>
           <Text style={styles.infoText}>
             Contact Number:{" "}
-            {selectedOrderDetails.user?.contactNumber || "Not Given"}
+            {selectedOrderDetails.user?.mobileNo || "Not Given"}
           </Text>
-          <Text style={styles.infoText}>
-            Email: {selectedOrderDetails.user?.email}
-          </Text>
+          {/* <Text style={styles.infoText}>
+            Email: {selectedOrderDetails.shippingInfo?.email}
+          </Text> */}
           <Text style={styles.infoText}>
             Issued On:{" "}
             {new Date(selectedOrderDetails.createdAt).toLocaleDateString()}
           </Text>
-          <Text style={styles.infoText}>
+          {/* <Text style={styles.infoText}>
             Address: {selectedOrderDetails.shippingInfo?.address}
-          </Text>
+          </Text> */}
+          {/* <Text style={styles.infoText}>Address:</Text> */}
+        <Text style={styles.infoText}>
+        Address:{" "}
+          {selectedOrderDetails.shippingInfo.address}, {selectedOrderDetails.shippingInfo.city}, {selectedOrderDetails.shippingInfo.state},{" "}
+          {selectedOrderDetails.shippingInfo.country}, {selectedOrderDetails.shippingInfo.pinCode}
+        </Text>
         </View>
       </View>
 
@@ -261,7 +267,7 @@ Adress : Dummy address area
           </View>
           <View style={[styles.tableRow, styles.tableBody]}>
             <Text style={styles.tableCell}>
-              {Math.round(selectedOrderDetails.basePrice)}
+              {(selectedOrderDetails.basePrice.toFixed(2))}
             </Text>
             {selectedOrderDetails.cgst === 0 && selectedOrderDetails.sgst === 0 ? (
   <Text style={styles.tableCell}> {selectedOrderDetails.igst.toFixed(2)}</Text>
@@ -349,6 +355,7 @@ export default function EnhancedTable() {
   const [openDateRangePicker, setOpenDateRangePicker] = useState(false);
 
   const [openIPopup, setOpenIPopup] = useState(false);
+  if(selectedOrderDetails) console.log(selectedOrderDetails,"jkjkjk")
 
   const handleInvoice = () => {
     setOpenIPopup(true);
@@ -1221,7 +1228,7 @@ if (property === "mobileNo") {
                             </Typography>
                           </Box>
 
-                          <Box>
+                          {/* <Box>
                             <Typography
                               variant="body1"
                               sx={{ marginBottom: "4px" }}
@@ -1231,7 +1238,7 @@ if (property === "mobileNo") {
                             <Typography variant="body1">
                               <strong>Paid</strong>
                             </Typography>
-                          </Box>
+                          </Box> */}
                           <Box>
                             <Typography
                               variant="body1"
@@ -1336,7 +1343,7 @@ if (property === "mobileNo") {
                           <TableCell>Discount</TableCell>
                           <TableCell>Shipping Charges</TableCell>
                           <TableCell>Total Fare</TableCell>
-                          <TableCell>Final Price</TableCell>
+                          {/* <TableCell>Final Price</TableCell> */}
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -1381,12 +1388,12 @@ if (property === "mobileNo") {
                                 ).toFixed(2)
                               : "N/A"}
                           </TableCell>
-                          <TableCell>
+                          {/* <TableCell>
                             ₹
                             {selectedOrderDetails && selectedOrderDetails.total
                               ? selectedOrderDetails.total
                               : "N/A"}
-                          </TableCell>
+                          </TableCell> */}
                         </TableRow>
                       </TableBody>
                     </Table>
