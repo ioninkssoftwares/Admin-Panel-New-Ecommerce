@@ -512,12 +512,12 @@ const AddServiceByAdmin = () => {
     const validateAttributeName = (value) => {
         // Add specific validation logic for product name
         const regex = /^[a-zA-Z ]+$/; // Only allow letters and spaces
-        return regex.test(value) ? null : 'Invalid characters in category name';
+        return regex.test(value) ? null : 'Invalid characters in main category name';
     };
     const validateValueName = (value) => {
         // Add specific validation logic for product name
         const regex = /^[a-zA-Z ]+$/; // Only allow letters and spaces
-        return regex.test(value) ? null : 'Invalid characters in value name';
+        return regex.test(value) ? null : 'Invalid characters in sub category name';
     };
     // const validateCategory = (value) => {
     //     // Only allow lowercase letters, exclude uppercase, spaces, and symbols
@@ -830,7 +830,7 @@ const AddServiceByAdmin = () => {
                                         {serviceAttributes.map((attribute, index) => (
                                             <div key={index} style={{ marginBottom: '16px' }}>
                                                 <InputField
-                                                    label={`Attribute Name ${index + 1}`}
+                                                    label={`Main Category Name ${index + 1}`}
                                                     type="text"
                                                     value={attribute.attribute}
                                                     onChange={(value) => handleAttributeChange(index, 'attribute', value)}
@@ -838,7 +838,7 @@ const AddServiceByAdmin = () => {
                                                 />
 
                                                 <InputField
-                                                    label={`Value ${index + 1}`}
+                                                    label={`Sub Category Name ${index + 1}`}
                                                     type="text"
                                                     value={attribute.value}
                                                     onChange={(value) => handleAttributeChange(index, 'value', value)}
