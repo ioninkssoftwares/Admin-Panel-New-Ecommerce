@@ -216,72 +216,86 @@ const ServiceManagement = () => {
             flex: 0.25,
             minWidth: 150,
 
-            field: "productName",
+            field: "serviceName",
             headerName: "Service Name",
             align: "left",
             headerAlign: "left",
             disableColumnMenu: true,
             renderCell: ({ row }) => (
                 <Typography variant="body1" fontWeight={500}>
-                    {row?.name}
+                    {row?.serviceName}
                 </Typography>
             ),
         },
         {
             minWidth: 150,
-
             flex: 0.25,
             field: "category",
-            headerName: "Category",
+            headerName: "Category Count",
             align: "left",
             headerAlign: "left",
             disableColumnMenu: true,
-        },
-        {
+            renderCell: ({ row }) => {
+              const categoryCount = row.pricing.reduce((sum, item) => sum + (item.attribute ? 1 : 0), 0);
+              return (
+                <Typography variant="body1" fontWeight={500}>
+                  {categoryCount}
+                </Typography>
+              );
+            },
+          },
+          {
             minWidth: 150,
-
             flex: 0.25,
             field: "subCategory",
-            headerName: "Sub Category",
+            headerName: "Sub Category Count",
             align: "left",
             headerAlign: "left",
             disableColumnMenu: true,
-        },
+            renderCell: ({ row }) => {
+              const subCategoryCount = row.pricing.reduce((sum, item) => sum + (item.value ? 1 : 0), 0);
+              return (
+                <Typography variant="body1" fontWeight={500}>
+                  {subCategoryCount}
+                </Typography>
+              );
+            },
+          },
         {
             minWidth: 150,
 
             flex: 0.25,
-            field: "brand",
-            headerName: "Brand",
+            field: "discount",
+            headerName: "Discount",
             align: "left",
             headerAlign: "left",
             disableColumnMenu: true,
         },
+        // {
+        //     minWidth: 150,
+
+        //     flex: 0.25,
+        //     field: "price",
+        //     headerName: "Selling Price",
+        //     align: "left",
+        //     headerAlign: "left",
+        //     disableColumnMenu: true,
+        // },
+        // {
+        //     minWidth: 150,
+
+        //     flex: 0.25,
+        //     field: "stock",
+        //     headerName: "In-Stock",
+        //     align: "left",
+        //     headerAlign: "left",
+        //     disableColumnMenu: true,
+        // },
+
         {
             minWidth: 150,
 
-            flex: 0.25,
-            field: "price",
-            headerName: "Selling Price",
-            align: "left",
-            headerAlign: "left",
-            disableColumnMenu: true,
-        },
-        {
-            minWidth: 150,
-
-            flex: 0.25,
-            field: "stock",
-            headerName: "In-Stock",
-            align: "left",
-            headerAlign: "left",
-            disableColumnMenu: true,
-        },
-
-        {
-            minWidth: 150,
-
-            field: "isVerified",
+            field: "inactive",
             headerName: "Status",
             flex: 0.15,
             align: "left",
@@ -289,7 +303,7 @@ const ServiceManagement = () => {
             disableColumnMenu: true,
             renderCell: ({ row }) => {
                 // Convert string to boolean
-                const isActive = row.isVerified === "true";
+                const isActive = row.inactive === "true";
 
                 return (
                     <Box>
@@ -303,35 +317,35 @@ const ServiceManagement = () => {
             }
 
         },
-        {
-            minWidth: 150,
+        // {
+        //     minWidth: 150,
 
-            field: "action",
-            headerName: "ACTION",
-            flex: 0.25,
-            align: "left",
-            headerAlign: "left",
-            disableColumnMenu: true,
-            renderCell: ({ row }) => (
-                <Box>
-                    <Tooltip title="View Order Details">
-                        <IconButton onClick={() => navigate(`/vendor/product/${row._id}`)} color="error">
-                            <FaEye />
-                        </IconButton>
-                    </Tooltip>
+        //     field: "action",
+        //     headerName: "ACTION",
+        //     flex: 0.25,
+        //     align: "left",
+        //     headerAlign: "left",
+        //     disableColumnMenu: true,
+        //     renderCell: ({ row }) => (
+        //         <Box>
+        //             <Tooltip title="View Order Details">
+        //                 <IconButton  color="error">
+        //                     <FaEye />
+        //                 </IconButton>
+        //             </Tooltip>
 
-                    {/* <Tooltip title="Process">
-                        <IconButton
-                            onClick={() => processOrder(row._id)}
-                            color="primary"
-                        >
-                            {processLoadingState[row._id] ? <CircularProgress size={24} /> : <FcProcess />}
-                        </IconButton>
-                    </Tooltip> */}
+        //             {/* <Tooltip title="Process">
+        //                 <IconButton
+        //                     onClick={() => processOrder(row._id)}
+        //                     color="primary"
+        //                 >
+        //                     {processLoadingState[row._id] ? <CircularProgress size={24} /> : <FcProcess />}
+        //                 </IconButton>
+        //             </Tooltip> */}
 
-                </Box>
-            ),
-        },
+        //         </Box>
+        //     ),
+        // },
     ];
 
 
@@ -639,7 +653,7 @@ const ServiceManagement = () => {
                             <Grid item xs={12}>
                                 <Card sx={{ borderRadius: 2 }}>
                                     <DataGrid
-                                        rows={searchQuery ? filteredRows : vendorProducts}
+                                        rows={services}
                                         columns={all_customer_columns}
                                         getRowId={(row) => row._id}
                                         autoHeight
@@ -654,7 +668,20 @@ const ServiceManagement = () => {
                                         rowCount={pagination?.totalUsers}
                                         paginationMode="server"
                                         onPaginationModelChange={setPaginationModel}
-                                        sx={tableStyles}
+                                        // sx={tableStyles}
+                                        sx={{
+                                            "& .MuiDataGrid-columnHeaders": {
+                                                backgroundColor: "#f5f5f5", // Light grey background
+                                                color: "#000", // Black text color
+                                                fontWeight: "bold", // Bold header text
+                                            },
+                                            "& .MuiDataGrid-columnSeparator": {
+                                                display: "none", // Hide the column separators if needed
+                                            },
+                                            "& .MuiDataGrid-cell": {
+                                                padding: "10px", // Adjust cell padding
+                                            },
+                                        }}
                                     />
                                 </Card>
                             </Grid>
