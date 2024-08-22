@@ -537,7 +537,8 @@ const EditProduct = () => {
 
   // size and color logics
 
-  const sampleSizes = ["X", "S", "M", "L", "XL", "XXL", "3XL"];
+  // const sampleSizes = ["X", "S", "M", "L", "XL", "XXL", "3XL"];
+  const sampleSizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL"];
 
 
   const handleSizeChange = (event) => {
