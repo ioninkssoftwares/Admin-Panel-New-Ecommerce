@@ -344,6 +344,34 @@ const AddServiceByAdmin = () => {
         });
     };
 
+
+    const [service, setService] = useState({
+        serviceName: '',
+        description: '',
+        pricing: [],
+        inactive: false,
+        isCashOnDelivery: true
+    });
+
+    const [serviceAttributes, setServiceAttributes] = useState([
+        {
+            attribute: '',
+            subcategories: [{ value: '', price: '' }]
+        }
+    ]);
+
+    const flattenedPricing = [];
+
+    serviceAttributes.forEach(attribute => {
+        attribute.subcategories.forEach(subcategory => {
+            flattenedPricing.push({
+                attribute: attribute.attribute,
+                value: subcategory.value,
+                price: subcategory.price,
+            });
+        });
+    });
+
     const handleProductSubmit = async () => {
         // setLoading(true)
         const token = cookies.token;
@@ -353,10 +381,8 @@ const AddServiceByAdmin = () => {
         for (let i of filesToupload) {
             ProductFormData.append('serviceImage', i);
         }
-        // for (let i of service.pricing) {
-        //     ProductFormData.append('pricing', i);
-        // }
-        ProductFormData.append('pricing', JSON.stringify(service.pricing));
+
+        ProductFormData.append('pricing', JSON.stringify(flattenedPricing));
         ProductFormData.append('serviceName', service.serviceName);
         ProductFormData.append('description', service.description);
         ProductFormData.append('isCashOnDelivery', service.isCashOnDelivery);
@@ -370,7 +396,7 @@ const AddServiceByAdmin = () => {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            
+
             if (res.data) {
                 // setLoading(false)
                 setDeleteLoading(false)
@@ -730,45 +756,39 @@ const AddServiceByAdmin = () => {
         setValue(event.target.value);
     };
 
-    const [service, setService] = useState({
-        serviceName: '',
-        description: '',
-        pricing: [],
-        inactive: false,
-        isCashOnDelivery: true
-    });
 
-    if(service) console.log(service,"kjkkkk")
 
-    const [serviceAttributes, setServiceAttributes] = useState([{ attribute: '', value: '', price: '' }]);
+    if (service) console.log(service, "kjkkkk")
 
- 
+    // const [serviceAttributes, setServiceAttributes] = useState([{ attribute: '', value: '', price: '' }]);
 
-    const handleAttributeChange = (index, name, value) => {
-        const updatedAttributes = [...serviceAttributes];
-        updatedAttributes[index][name] = value;
-        setServiceAttributes(updatedAttributes);
 
-        setService({
-            ...service,
-            pricing: updatedAttributes,
-        });
-    };
 
-    const handleAddAttributes = () => {
-        setServiceAttributes([...serviceAttributes, { attribute: '', value: '', price: '' }]);
-    };
+    // const handleAttributeChange = (index, name, value) => {
+    //     const updatedAttributes = [...serviceAttributes];
+    //     updatedAttributes[index][name] = value;
+    //     setServiceAttributes(updatedAttributes);
 
-    const handleRemoveAttributes = (index) => {
-        const updatedAttributes = [...serviceAttributes];
-        updatedAttributes.splice(index, 1);
-        setServiceAttributes(updatedAttributes);
+    //     setService({
+    //         ...service,
+    //         pricing: updatedAttributes,
+    //     });
+    // };
 
-        setService({
-            ...service,
-            pricing: updatedAttributes,
-        });
-    };
+    // const handleAddAttributes = () => {
+    //     setServiceAttributes([...serviceAttributes, { attribute: '', value: '', price: '' }]);
+    // };
+
+    // const handleRemoveAttributes = (index) => {
+    //     const updatedAttributes = [...serviceAttributes];
+    //     updatedAttributes.splice(index, 1);
+    //     setServiceAttributes(updatedAttributes);
+
+    //     setService({
+    //         ...service,
+    //         pricing: updatedAttributes,
+    //     });
+    // };
 
 
     const [cashOnDeliverySwitch, setCashOnDeliverySwitch] = useState(true);
@@ -777,6 +797,56 @@ const AddServiceByAdmin = () => {
         setCashOnDeliverySwitch(event.target.checked);
         setService({ ...service, isCashOnDelivery: event.target.checked })
     };
+
+
+
+
+
+
+
+
+    if (flattenedPricing) console.log(flattenedPricing, "shubhhhh")
+
+    // Handle change for the main category or subcategories
+    const handleAttributeChange = (index, name, value) => {
+        const updatedAttributes = [...serviceAttributes];
+        updatedAttributes[index][name] = value;
+        setServiceAttributes(updatedAttributes);
+    };
+
+    const handleSubcategoryChange = (index, subIndex, name, value) => {
+        const updatedAttributes = [...serviceAttributes];
+        updatedAttributes[index].subcategories[subIndex][name] = value;
+        setServiceAttributes(updatedAttributes);
+    };
+
+    // Add new main category
+    const handleAddAttributes = () => {
+        setServiceAttributes([...serviceAttributes, { attribute: '', subcategories: [{ value: '', price: '' }] }]);
+    };
+
+    // Add new subcategory to a specific main category
+    const handleAddSubcategory = (index) => {
+        const updatedAttributes = [...serviceAttributes];
+        updatedAttributes[index].subcategories.push({ value: '', price: '' });
+        setServiceAttributes(updatedAttributes);
+    };
+
+    // Remove a main category
+    const handleRemoveAttributes = (index) => {
+        const updatedAttributes = [...serviceAttributes];
+        updatedAttributes.splice(index, 1);
+        setServiceAttributes(updatedAttributes);
+    };
+
+    // Remove a subcategory from a specific main category
+    const handleRemoveSubcategory = (index, subIndex) => {
+        const updatedAttributes = [...serviceAttributes];
+        updatedAttributes[index].subcategories.splice(subIndex, 1);
+        setServiceAttributes(updatedAttributes);
+    };
+
+
 
     return (
         <div>
@@ -827,7 +897,7 @@ const AddServiceByAdmin = () => {
                                             margin="normal"
                                         />
 
-                                        {serviceAttributes.map((attribute, index) => (
+                                        {/* {serviceAttributes.map((attribute, index) => (
                                             <div key={index} style={{ marginBottom: '16px' }}>
                                                 <InputField
                                                     label={`Main Category Name ${index + 1}`}
@@ -866,7 +936,90 @@ const AddServiceByAdmin = () => {
 
                                         <Button variant="contained" color="primary" onClick={handleAddAttributes}>
                                             Add Category
-                                        </Button>
+                                        </Button> */}
+
+
+                                        <div>
+                                            {serviceAttributes.map((attribute, index) => (
+                                                <div key={index} style={{ marginBottom: '16px' }}>
+                                                    {/* Main Category Input */}
+                                                    <InputField
+                                                        label={`Main Category Name ${index + 1}`}
+                                                        type="text"
+                                                        value={attribute.attribute}
+                                                        onChange={(value) => handleAttributeChange(index, 'attribute', value)}
+                                                        validate={validateAttributeName}
+                                                    />
+                                                    <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                                                        {attribute.subcategories.map((subcategory, subIndex) => (
+                                                            <div key={subIndex} style={{ marginLeft: '20px', marginBottom: '8px', }}>
+                                                                {/* Sub Category Input */}
+                                                                <Box sx={{ display: "flex", gap: "10px" }}>
+                                                                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                                                        <InputField
+                                                                            label={`Sub Category Name ${index + 1}-${subIndex + 1}`}
+                                                                            type="text"
+                                                                            value={subcategory.value}
+                                                                            onChange={(value) => handleSubcategoryChange(index, subIndex, 'value', value)}
+                                                                            validate={validateValueName}
+                                                                            width="100%"
+                                                                        />
+
+                                                                        {/* Price Input */}
+                                                                        <InputField
+                                                                            label={`Price ${index + 1}-${subIndex + 1}`}
+                                                                            type="number"
+                                                                            value={subcategory.price}
+                                                                            onChange={(value) => handleSubcategoryChange(index, subIndex, 'price', value)}
+                                                                            validate={validateSellingPrice}
+                                                                            width="100%"
+                                                                        />
+                                                                    </Box>
+                                                                    <Box sx={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "10px" }}>
+                                                                        <Button
+                                                                            variant="outlined"
+                                                                            color="primary"
+                                                                            onClick={() => handleAddSubcategory(index)}
+                                                                            style={{ marginTop: '8px' }}
+                                                                        >
+                                                                            Add Subcategory
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="contained"
+                                                                            color="secondary"
+                                                                            onClick={() => handleRemoveSubcategory(index, subIndex)}
+                                                                            style={{ marginTop: '8px' }}
+                                                                        >
+                                                                            Remove Subcategory
+                                                                        </Button>
+
+
+                                                                    </Box>
+                                                                </Box>
+                                                            </div>
+                                                        ))}
+                                                    </Box>
+                                                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
+                                                        <Button variant="contained" color="success" onClick={handleAddAttributes}>
+                                                            Add Category
+                                                        </Button>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="error"
+                                                            onClick={() => handleRemoveAttributes(index)}
+                                                        // style={{ marginTop: '16px' }}
+                                                        >
+                                                            Remove Category
+                                                        </Button>
+                                                    </Box>
+                                                </div>
+                                            ))}
+
+
+                                        </div>
+
+
+
                                     </div>
 
                                     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -1001,7 +1154,7 @@ const AddServiceByAdmin = () => {
                             loading={deleteLoading}
                             sx={{ pb: 4, border: "2px solid red" }}
                         />
-        <ToastContainer />
+                        <ToastContainer />
                     </div>
                 </div>
                 {/* </main> */}
