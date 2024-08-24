@@ -303,7 +303,7 @@ const ServiceManagement = () => {
             disableColumnMenu: true,
             renderCell: ({ row }) => {
                 // Convert string to boolean
-                const isActive = row.inactive === "true";
+                const isActive = row.active === true;
 
                 return (
                     <Box>
