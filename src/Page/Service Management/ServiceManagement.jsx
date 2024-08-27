@@ -16,7 +16,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import React, { ReactElement, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
-import { MdDeleteForever, MdInventory } from "react-icons/md";
+import { MdDelete, MdDeleteForever, MdInventory } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
 
 import { toast } from "react-toastify";
@@ -32,6 +32,7 @@ import { useCookies } from "react-cookie";
 
 import SideBar from "../../Component/SideBar";
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
 
 
 const ServiceManagement = () => {
@@ -189,17 +190,16 @@ const ServiceManagement = () => {
     async function deleteProduct() {
         try {
             setDeleteLoading(true);
-            // const res = await instance.delete("/admin/product/" + deleteId);
 
             const res = await axios.delete(
-                `${process.env.REACT_APP_BASE_URL}/admin/product/` + deleteId)
+                `${process.env.REACT_APP_BASE_URL}/service/` + deleteId)
 
 
             if (res.data) {
-                toast.success("Product Deleted Successfully");
+                toast.success("Service Deleted Successfully");
                 setDeleteLoading(false);
                 setDeleteOpen(false);
-                // getProductsByVendors();
+                getAllServices()
                 // getAllUsers();
             }
         } catch (e) {
@@ -334,14 +334,17 @@ const ServiceManagement = () => {
                         </IconButton>
                     </Tooltip>
 
-                    {/* <Tooltip title="Process">
+                     <Tooltip title="Delete Service">
                         <IconButton
-                            onClick={() => processOrder(row._id)}
-                            color="primary"
+                      onClick={() => {
+                        setDeleteId(row._id); 
+                        setDeleteOpen(true);  
+                    }}
+                            color="danger"
                         >
-                            {processLoadingState[row._id] ? <CircularProgress size={24} /> : <FcProcess />}
+                          <MdDelete />
                         </IconButton>
-                    </Tooltip> */}
+                    </Tooltip> 
 
                 </Box>
             ),
@@ -690,14 +693,15 @@ const ServiceManagement = () => {
 
 
                         <ConfirmBox
-                            title="Product"
-                            name="product"
+                            title=" Service"
+                            name="delete service"
                             open={deleteOpen}
                             closeDialog={() => setDeleteOpen(false)}
                             toDoFunction={deleteProduct}
                             loading={deleteLoading}
                             sx={{ pb: 4, border: "2px solid red" }}
                         />
+                                <ToastContainer />
 
                         {/* <StockPopup
                             open={popupOpen}
