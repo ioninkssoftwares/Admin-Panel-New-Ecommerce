@@ -317,35 +317,35 @@ const ServiceManagement = () => {
             }
 
         },
-        // {
-        //     minWidth: 150,
+        {
+            minWidth: 150,
 
-        //     field: "action",
-        //     headerName: "ACTION",
-        //     flex: 0.25,
-        //     align: "left",
-        //     headerAlign: "left",
-        //     disableColumnMenu: true,
-        //     renderCell: ({ row }) => (
-        //         <Box>
-        //             <Tooltip title="View Order Details">
-        //                 <IconButton  color="error">
-        //                     <FaEye />
-        //                 </IconButton>
-        //             </Tooltip>
+            field: "action",
+            headerName: "ACTION",
+            flex: 0.25,
+            align: "left",
+            headerAlign: "left",
+            disableColumnMenu: true,
+            renderCell: ({ row }) => (
+                <Box>
+                    <Tooltip title="View Service Details">
+                        <IconButton onClick={() => navigate(`/editService/${row._id}`)}  color="error">
+                            <FaEye />
+                        </IconButton>
+                    </Tooltip>
 
-        //             {/* <Tooltip title="Process">
-        //                 <IconButton
-        //                     onClick={() => processOrder(row._id)}
-        //                     color="primary"
-        //                 >
-        //                     {processLoadingState[row._id] ? <CircularProgress size={24} /> : <FcProcess />}
-        //                 </IconButton>
-        //             </Tooltip> */}
+                    {/* <Tooltip title="Process">
+                        <IconButton
+                            onClick={() => processOrder(row._id)}
+                            color="primary"
+                        >
+                            {processLoadingState[row._id] ? <CircularProgress size={24} /> : <FcProcess />}
+                        </IconButton>
+                    </Tooltip> */}
 
-        //         </Box>
-        //     ),
-        // },
+                </Box>
+            ),
+        },
     ];
 
 
