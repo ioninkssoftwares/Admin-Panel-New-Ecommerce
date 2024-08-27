@@ -69,7 +69,7 @@ const ViewService = () => {
     })
     const [featuredSwitch, setFeaturedSwitch] = useState(true);
     const [bestSellerSwitch, setBestSellerSwitch] = useState(true);
-    const [bestSellerSwitchNew, setBestSellerSwitchNew] = useState(true);
+
 
 
 
