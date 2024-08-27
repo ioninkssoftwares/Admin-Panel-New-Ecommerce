@@ -26,85 +26,10 @@ import InputField from "../../Component/InputField";
 import ConfirmBox from "../../Component/vendor/shared/ConfirmDialog";
 import axios from "axios";
 import SideBar from "../../Component/SideBar";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
-// export const Button = ({
-//     name,
-//     Icon,
-//     Color,
-// }) => {
-//     return (
-//         <div
-//             className={
-//                 Color +
-//                 " bg-white font-bold w-full rounded-sm shadow-sm flex space-x-1 items-center justify-center px-4 p-1 max-w-max border border-[#DEDEDE]"
-//             }
-//         >
-//             <div className="text-xs">{<Icon />}</div>
-//             <div>
-//                 <p className=" text-[10px]">{name}</p>
-//             </div>
-//         </div>
-//     );
-// };
-
-const userTypes = ["All", "Premium"];
-const rows = [
-    { id: 1, totalOrder: 10000, name: 'Blutooth Devices', price: 14, totalSales: 123456 },
-    { id: 2, totalOrder: 10000, name: 'Airpods', price: 31, totalSales: 123456 },
-    { id: 3, totalOrder: 10000, name: 'Neck Band', price: 71, totalSales: 123456 },
-    { id: 4, totalOrder: 10000, name: 'IR Remote', price: 31, totalSales: 123456 },
-    { id: 5, totalOrder: 10000, name: 'Smart Watch', price: 40, totalSales: 123456 },
-    { id: 6, totalOrder: 10000, name: 'Power Bank', price: 150, totalSales: 123456 },
-];
-
-const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-        field: 'name',
-        headerName: 'Name',
-        width: 150,
-        renderCell: (params) => (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <AccountCircleIcon style={{ marginRight: '5px' }} />
-                {params.value}
-            </div>
-        ),
-        editable: true,
-    },
-    {
-        field: 'totalOrder',
-        headerName: 'Total Order',
-        type: 'number',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'price',
-        headerName: 'Price',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'totalSales',
-        headerName: 'Total Sales',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    // {
-    //     field: 'fullName',
-    //     headerName: 'Full name',
-    //     description: 'This column has a value getter and is not sortable.',
-    //     sortable: false,
-    //     width: 160,
-    //     valueGetter: (params) =>
-    //         `${params.row.firstName || ''} ${params.row.totalOrder || ''}`,
-    // },
-];
-
-// give main area a max widht
 const AddServiceByAdmin = () => {
     const navigate = useNavigate();
     const [deleteOpen, setDeleteOpen] = useState(false);
@@ -113,218 +38,33 @@ const AddServiceByAdmin = () => {
     // const [value, setValue] = useState(dayjs('2022-04-17'));
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState("");
-    const [deleteId, setDeleteId] = useState("");
-    // const instance = useAxios(token);
-    const [users, setUsers] = useState([]);
-
-    const [pagination, setPagination] = useState(
-        null
-    );
-    const [paginationModel, setPaginationModel] = useState({
-        page: 0,
-        pageSize: 50,
-    });
-    const [name, setName] = useState("");
-    const [selected, setSelected] = useState("All");
     const [filesToupload, setFilesToUpload] = useState([]);
-    const [colorFilesToUpload, setColorFilesToUpload] = useState([]);
     const [formErrors, setFormErrors] = useState({});
-    const [product, setProduct] = useState({
-        stock: 0,
-        name: "",
-        price: 0,
-        description: "",
-        category: "",
-        brand: "",
-        specification: "",
-        featured: false,
-        bestSeller: false,
-        subCategory: "",
-        // mrp: 0,
-        warrantyPeriod: "",
-        hsnCode: "",
-        gstPerc: 0,
-        // gender,
-        // costPrice: 0,
-        // returnPolicy: true
-    })
-    const [returnSwitch, setReturnSwitch] = useState(true);
-    const [discountSwitch, setDiscountSwitch] = useState(true);
-    const [featuredSwitch, setFeaturedSwitch] = useState(true);
-    const [bestSellerSwitch, setBestSellerSwitch] = useState(true);
-    const [allBrands, setAllBrands] = useState([]);
-    const [allCategories, setAllCategories] = useState([]);
-    const [allColors, setAllColors] = useState([]);
-    const [allSubCategories, setAllSubCategories] = useState([]);
-    // const [subCategories, setSubCategories] = useState([]);
-
-
-    const [selectedBrand, setSelectedBrand] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedSubCategory, setSelectedSubCategory] = useState('');
-    const [selectedCategoryName, setSelectedCategoryName] = useState("");
-    const [vendorId, setVendorId] = useState('');
-    const [colors, setColors] = useState([]);
-    const [sizes, setSizes] = useState([]);
-    const [selectedColors, setSelectedColors] = useState([]);
-    const [selectedColorsIds, setSelectedColorsIds] = useState([]);
-    const [selectedGender, setSelectedGender] = useState('');
-
-    const brandOptions = ["boys", "kids", "girls", "mens", "womens", "toddlers"];
-
-    if (Array.isArray(selectedColorsIds)) {
-        console.log(selectedColorsIds, 'Selected Color IDs');
-    } else {
-        console.log('selectedColorIds is not an array');
-    }
-
-    // if (selectedColorsIds) console.log(selectedColorsIds, 'sdfdsfd');
-    if (sizes) console.log(sizes, 'sadasd');
-
-    const genderOptions = ['men', 'women', 'boys', 'girls'];
-    const sizeOptions = ['S', 'M', 'L', 'XL', 'XXL'];
-
-
-
-    const [subCategories, setSubCategories] = useState([{ name: '', price: '' }]);
-
-
-    const handleGenderChange = (event) => {
-        setSelectedGender(event.target.value);
-        // setProduct({ ...product, gender: event.target.value });
-    };
-
-
-    const handleSizeChange = (event) => {
-        setSizes(event.target.value);
-    };
-
-    const handleColorChange = (event) => {
-        const selectedHexCodes = event.target.value;
-        const selectedColorObjects = selectedHexCodes.map(hexCode => colors.find(color => color.hexCode === hexCode));
-        console.log(selectedColorObjects, 'dfdfdfdfdfsfsa');
-        setSelectedColors(selectedColorObjects);
-
-        //selecting Ids
-        const colorIds = selectedColorObjects.map(color => color._id);
-
-        setSelectedColorsIds(colorIds);
-
-
-
-        setProduct({ ...product, color: selectedColorObjects });
-    };
-
-
-
-
-    const handleSubCategoryChange = (index, event) => {
-        const values = [...subCategories];
-        values[index][event.target.name] = event.target.value;
-        setSubCategories(values);
-    };
-
-    const handleAddSubCategories = () => {
-        setSubCategories([...subCategories, { name: '', price: '' }]);
-    };
-
-    const handleRemoveSubCategories = (index) => {
-        const values = [...subCategories];
-        values.splice(index, 1);
-        setSubCategories(values);
-    };
-
-
-    const handleBrandChange = (event) => {
-        console.log(event.target.value, "dsljfdslkj")
-        const selectedBrandId = event.target.value;
-        setSelectedBrand(selectedBrandId);
-
-        // If you need to update your product state as well
-        setProduct({ ...product, brand: selectedBrandId });
-    };
-    // const handleCategoryChange = (event) => {
-    //     const selectedCategoryName = event.target.value;
-    //     setSelectedCategory(selectedCategoryName);
-
-    //     // If you need to update your product state as well
-    //     setProduct({ ...product, category: selectedCategoryName });
-    // };
-
-    const handleCategoryChange = (e) => {
-        const categoryId = e.target.value;
-        const selectedCategory = allCategories.find(category => category._id === categoryId);
-        setSelectedCategory(categoryId); // Update selected category ID
-        setSelectedCategoryName(selectedCategory ? selectedCategory.categoryName : ""); // Update selected category name
-    };
-
-
-    // const handleSubCategoryChange = (event) => {
-    //     const selectedSubCategoryName = event.target.value;
-    //     setSelectedSubCategory(selectedSubCategoryName);
-
-    //     // If you need to update your product state as well
-    //     setProduct({ ...product, subCategoryName: selectedSubCategoryName });
-    // };
-
-
-
-    useEffect(() => {
-        const fetchSubCategories = async () => {
-            try {
-                if (selectedCategory) {
-                    // const response = await instance.get(
-                    //     `/admin/getSubCategoryByCategoryId/${selectedCategory}`,
-                    // );
-                    // setSubCategories(response.data.data); // Update to response.data.data
-                }
-            } catch (error) {
-                console.error("Error fetching subcategories:", error);
-                toast.error("Failed to fetch subcategories");
-            }
-        };
-
-        fetchSubCategories();
-    }, [selectedCategory]);
-
-
-    if (product) console.log(product, "dsfjdslk")
+    const [featuredSwitch, setFeaturedSwitch] = useState(false)
+    const [cashOnDeliverySwitch, setCashOnDeliverySwitch] = useState(true);
+    // const [statusSwitch, setStatusSwitch] = useState(true);
+    const [serviceAttributes, setServiceAttributes] = useState([
+        {
+            attribute: '',
+            subcategories: [{ value: '', price: '' }]
+        }
+    ]);
+    const [service, setService] = useState({
+        serviceName: '',
+        description: '',
+        pricing: [],
+        active: false,
+        isCashOnDelivery: true
+    });
+    
+ 
 
     // Handler function to update the switch state
-    const handleReturnSwitch = (event) => {
-        setReturnSwitch(event.target.checked);
-        console.log(event.target.checked, "jfhasdjkfhsdajk")
-        setProduct({ ...product, returnPolicy: event.target.checked })
-    };
-    const handleDiscountSwitch = (event) => {
-        setDiscountSwitch(event.target.checked);
-        setProduct({ ...product, Discount: event.target.checked })
-    };
+
     const handleFeaturedSwitch = (event) => {
         setFeaturedSwitch(event.target.checked);
-        setProduct({ ...product, featured: event.target.checked })
+        // setProduct({ ...product, featured: event.target.checked })
     };
-    const handleBestSellerSwitch = (event) => {
-        setBestSellerSwitch(event.target.checked);
-        setProduct({ ...product, bestSeller: event.target.checked })
-    };
-
-
-
-    if (product) {
-        console.log(product, "dsfhdkjf")
-    }
-
-    const productCategories = [
-        'Smartphones',
-        'TV & Audio',
-        'Laptops & PCs',
-        'Gadgets',
-        'Photo & Video',
-        'Gifts',
-        'Books',
-        'Toys',
-    ];
 
 
     useEffect(() => {
@@ -336,47 +76,34 @@ const AddServiceByAdmin = () => {
 
 
 
-    const handleCategory = (event) => {
-        console.log(event.target.value, "sjfhsdhfk")
-        setProduct({
-            ...product,
-            category: event.target.value
-        });
-    };
+ 
 
 
-    const [service, setService] = useState({
-        serviceName: '',
-        description: '',
-        pricing: [],
-        inactive: false,
-        isCashOnDelivery: true
-    });
+   
 
-    const [serviceAttributes, setServiceAttributes] = useState([
-        {
-            attribute: '',
-            subcategories: [{ value: '', price: '' }]
-        }
-    ]);
+    if (service) console.log(service, "kjkjk")
 
-    const flattenedPricing = [];
 
-    serviceAttributes.forEach(attribute => {
-        attribute.subcategories.forEach(subcategory => {
-            flattenedPricing.push({
-                attribute: attribute.attribute,
-                value: subcategory.value,
-                price: subcategory.price,
-            });
-        });
-    });
+
+   
 
     const handleProductSubmit = async () => {
         // setLoading(true)
         const token = cookies.token;
-
         setDeleteLoading(true)
+
+        const flattenedPricing = [];
+
+        serviceAttributes.forEach(attribute => {
+            attribute.subcategories.forEach(subcategory => {
+                flattenedPricing.push({
+                    attribute: attribute.attribute,
+                    value: subcategory.value,
+                    price: subcategory.price,
+                });
+            });
+        });
+
         var ProductFormData = new FormData();
         for (let i of filesToupload) {
             ProductFormData.append('serviceImage', i);
@@ -386,7 +113,7 @@ const AddServiceByAdmin = () => {
         ProductFormData.append('serviceName', service.serviceName);
         ProductFormData.append('description', service.description);
         ProductFormData.append('isCashOnDelivery', service.isCashOnDelivery);
-        ProductFormData.append('inactive', service.inactive);
+        ProductFormData.append('active', service.active);
 
 
         try {
@@ -439,18 +166,7 @@ const AddServiceByAdmin = () => {
     };
 
 
-    const handleColorImageChange = (e) => {
-        if (e.target.files) {
-            setColorFilesToUpload((prev) => {
-                let prevs = [...colorFilesToUpload];
-                console.log(e.target.files);
-                prevs.push(e.target.files[0]);
-                console.log(prevs);
-                return prevs;
-            });
-        }
-        e.target.files = null;
-    };
+
     const dleteImage = (file) => {
         setFilesToUpload((prev) => {
             let imgs = [...filesToupload];
@@ -462,16 +178,7 @@ const AddServiceByAdmin = () => {
         });
     };
 
-    const dleteColorImage = (file) => {
-        setColorFilesToUpload((prev) => {
-            let imgs = [...colorFilesToUpload];
-            const index = imgs.indexOf(file);
-            if (index > -1) {
-                imgs.splice(index, 1);
-            }
-            return imgs;
-        });
-    };
+ 
 
     const renderPhotos = (source) => {
 
@@ -484,33 +191,6 @@ const AddServiceByAdmin = () => {
                     <button
                         onClick={() => {
                             dleteImage(photo);
-                        }}
-                        className="text-white bg-red-500 h-7 w-7 pt-1 flex rounded-full items-center justify-center absolute top-1 right-0"
-                    >
-                        x
-                    </button>
-                    <img
-                        className=" h-full object-cover"
-                        src={URL.createObjectURL(photo)}
-                        alt=""
-                        key={photo}
-                    />
-                </div>
-            );
-        });
-    };
-
-    const renderColorPhotos = (source) => {
-
-        return source.map((photo, index) => {
-            return (
-                <div
-                    className="w-max h-40 flex justify-center items-center  relative max-w-[200px]"
-                    key={index}
-                >
-                    <button
-                        onClick={() => {
-                            dleteColorImage(photo);
                         }}
                         className="text-white bg-red-500 h-7 w-7 pt-1 flex rounded-full items-center justify-center absolute top-1 right-0"
                     >
@@ -545,39 +225,10 @@ const AddServiceByAdmin = () => {
         const regex = /^[a-zA-Z ]+$/; // Only allow letters and spaces
         return regex.test(value) ? null : 'Invalid characters in sub category name';
     };
-    // const validateCategory = (value) => {
-    //     // Only allow lowercase letters, exclude uppercase, spaces, and symbols
-    //     const regex = /^[a-z]+$/;
-    //     return regex.test(value) ? null : 'Invalid characters in category (Accepts only lowercase letters)';
-    // };
-    const validateCategory = (value) => {
-        // Allow lowercase letters and spaces, exclude uppercase and symbols
-        const regex = /^[a-z\s]+$/;
-        return regex.test(value) ? null : 'Invalid characters in category (Accepts only lowercase letters and spaces)';
-    };
 
-    const validateBrand = (value) => {
-        // Allow letters and white spaces
-        const regex = /^[a-zA-Z\s]+$/;
-        return regex.test(value) ? null : 'Invalid characters in brand';
-    };
-    const validateBrandName = (value) => {
-        // Add specific validation logic for product name
-        const regex = /^[a-zA-Z ]+$/; // Only allow letters and spaces
-        return regex.test(value) ? null : 'Invalid characters in brand name';
-    };
+   
 
-    // Numeric Regex Logic
-    // const validateSellingPrice = (value) => {
-    //     const floatValue = parseFloat(value);
 
-    //     // Add specific validation logic for product price
-    //     if (isNaN(floatValue) || floatValue <= 0) {
-    //         return 'Invalid selling price';
-    //     }
-
-    //     return null;
-    // };
     const validateSellingPrice = (value) => {
         // Check if the value contains a decimal point
         if (/\./.test(value)) {
@@ -593,206 +244,23 @@ const AddServiceByAdmin = () => {
 
         return null;
     };
-    const validateCostPrice = (value) => {
-        const floatValue = parseFloat(value);
-
-        // Add specific validation logic for product price
-        if (isNaN(floatValue) || floatValue <= 0) {
-            return 'Invalid cost price';
-        }
-
-        return null;
-    };
-    const validateQuantity = (value) => {
-        const floatValue = parseFloat(value);
-
-        // Add specific validation logic for product price
-        if (isNaN(floatValue) || floatValue <= 0) {
-            return 'Invalid quantity';
-        }
-
-        return null;
-    };
-
-
-    // async function getAllBrands() {
-    //     try {
-    //         console.log(token, "jsakdfjkladsj")
-
-    //         setLoading(true);
-    //         // const res = await instance.get(
-    //         //     `/admin/getAllBrands`
-    //         // );
-    //         // if (res.data) {
-    //         //     setAllBrands(res.data.brands)
-    //         //     setLoading(false);
-    //         // }
-    //     } catch (e) {
-    //         setLoading(false);
-    //         console.log(e)
-    //         // ErrorDispaly(e);
-    //     }
-    // }
-
-    // async function getAllCategories() {
-    //     try {
-    //         console.log(token, "jsakdfjkladsj")
-
-    //         setLoading(true);
-    //         // const res = await instance.get(
-    //         //     `/admin/getAllCategories`
-    //         // );
-    //         // if (res.data) {
-    //         //     setAllCategories(res.data.categories)
-    //         //     setLoading(false);
-    //         // }
-    //     } catch (e) {
-    //         setLoading(false);
-    //         console.log(e)
-    //         // ErrorDispaly(e);
-    //     }
-    // }
-
-    // async function getAllColors() {
-    //     try {
-    //         console.log(token, "jsakdfjkladsj")
-
-    //         setLoading(true);
-    //         // const res = await instance.get(
-    //         //     `/admin/getAllColors`
-    //         // );
-    //         // if (res.data) {
-    //         //     setAllColors(res.data.data)
-    //         //     setLoading(false);
-    //         // }
-    //     } catch (e) {
-    //         setLoading(false);
-    //         console.log(e)
-    //         // ErrorDispaly(e);
-    //     }
-    // }
-
-
-    // async function getAllSubCategories() {
-    //     try {
-    //         console.log(token, "jsakdfjkladsj")
-
-    //         setLoading(true);
-    //         const res = await instance.get(
-    //             `/admin/getAllSubCategories`
-    //         );
-    //         if (res.data) {
-    //             setAllSubCategories(res.data.subcategories)
-    //             setLoading(false);
-    //         }
-    //     } catch (e) {
-    //         setLoading(false);
-    //         console.log(e)
-    //         // ErrorDispaly(e);
-    //     }
-    // }
-
-
-    const getVendorDetails = async () => {
-        console.log(token, "tokeeen")
-        try {
-            // const res = await instance.get(
-            //     `/vendor/getVendorIdByToken`
-            // );
-            // if (res.data) {
-            //     console.log(res.data.id, "yuyiyui")
-            //     setVendorId(res.data.id)
-            // }
-        } catch (e) {
-            setLoading(false);
-            console.log(e)
-            // ErrorDispaly(e);
-        }
-    }
-
-
-    useEffect(() => {
-        // getAllBrands();
-        // getAllCategories();
-        // getAllColors();
-        getVendorDetails();
-    }, [token]);
 
 
 
-    const sampleColors = [
-        { name: 'Red', hexCode: '#FF0000' },
-        { name: 'Green', hexCode: '#00FF00' },
-        { name: 'Blue', hexCode: '#0000FF' },
-        { name: 'Yellow', hexCode: '#FFFF00' },
-        { name: 'Orange', hexCode: '#FFA500' },
-        { name: 'Purple', hexCode: '#800080' },
-        { name: 'Pink', hexCode: '#FFC0CB' },
-        { name: 'Brown', hexCode: '#A52A2A' },
-        { name: 'Gray', hexCode: '#808080' },
-        { name: 'Black', hexCode: '#000000' },
-    ];
-
-    const sampleSizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL"];
 
 
-
-    useEffect(() => {
-        setColors(allColors)
-        // setSizes(sampleSizes)
-    }, [allColors])
-
-
-
-    const [type, setType] = useState('');
-
-    const handleChangeType = (event) => {
-        setType(event.target.value);
-    };
-
-    const [value, setValue] = useState('');
-
-    const handleChangeValue = (event) => {
-        setValue(event.target.value);
-    };
 
 
 
     if (service) console.log(service, "kjkkkk")
 
-    // const [serviceAttributes, setServiceAttributes] = useState([{ attribute: '', value: '', price: '' }]);
+  
 
-
-
-    // const handleAttributeChange = (index, name, value) => {
-    //     const updatedAttributes = [...serviceAttributes];
-    //     updatedAttributes[index][name] = value;
-    //     setServiceAttributes(updatedAttributes);
-
-    //     setService({
-    //         ...service,
-    //         pricing: updatedAttributes,
-    //     });
-    // };
-
-    // const handleAddAttributes = () => {
-    //     setServiceAttributes([...serviceAttributes, { attribute: '', value: '', price: '' }]);
-    // };
-
-    // const handleRemoveAttributes = (index) => {
-    //     const updatedAttributes = [...serviceAttributes];
-    //     updatedAttributes.splice(index, 1);
-    //     setServiceAttributes(updatedAttributes);
-
-    //     setService({
-    //         ...service,
-    //         pricing: updatedAttributes,
-    //     });
-    // };
-
-
-    const [cashOnDeliverySwitch, setCashOnDeliverySwitch] = useState(true);
-
+        // const handleStatusSwitch = (event) => {
+        //     setStatusSwitch(event.target.checked);
+        //     setService({ ...service, active: event.target.checked })
+        // };
+   
     const handleCashOnDeliverySwitch = (event) => {
         setCashOnDeliverySwitch(event.target.checked);
         setService({ ...service, isCashOnDelivery: event.target.checked })
@@ -805,7 +273,7 @@ const AddServiceByAdmin = () => {
 
 
 
-    if (flattenedPricing) console.log(flattenedPricing, "shubhhhh")
+    // if (flattenedPricing) console.log(flattenedPricing, "shubhhhh")
 
     // Handle change for the main category or subcategories
     const handleAttributeChange = (index, name, value) => {
@@ -845,6 +313,14 @@ const AddServiceByAdmin = () => {
         updatedAttributes[index].subcategories.splice(subIndex, 1);
         setServiceAttributes(updatedAttributes);
     };
+
+    const [description, setDescription] = useState('');
+
+    const handleDescriptionChange = (value) => {
+        setDescription(value);
+        setService({ ...service, description: value });
+    };
+
 
 
 
@@ -887,7 +363,7 @@ const AddServiceByAdmin = () => {
                                             }}
                                             validate={validateServiceName} />
 
-                                        <TextField
+                                        {/* <TextField
                                             label="Description"
                                             multiline
                                             rows={4}
@@ -895,6 +371,24 @@ const AddServiceByAdmin = () => {
                                             onChange={(e) => setService({ ...service, description: e.target.value })}
                                             fullWidth
                                             margin="normal"
+                                        /> */}
+                                        <Typography sx={{ color: "gray" }} id="modal-modal-title" variant="p" component="p">
+                                            Description
+                                        </Typography>
+                                        <ReactQuill
+                                            value={description}
+                                            onChange={handleDescriptionChange}
+                                            modules={{
+                                                toolbar: [
+                                                    [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                                                    [{ size: [] }],
+                                                    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                                                    [{ 'list': 'ordered' }, { 'list': 'bullet' },
+                                                    { 'indent': '-1' }, { 'indent': '+1' }],
+                                                    ['link', 'image', 'video'],
+                                                    ['clean']
+                                                ],
+                                            }}
                                         />
 
                                         {/* {serviceAttributes.map((attribute, index) => (
@@ -939,7 +433,7 @@ const AddServiceByAdmin = () => {
                                         </Button> */}
 
 
-                                        <div>
+                                        <div style={{ marginTop: "24px" }}>
                                             {serviceAttributes.map((attribute, index) => (
                                                 <div key={index} style={{ marginBottom: '16px' }}>
                                                     {/* Main Category Input */}
@@ -1022,6 +516,28 @@ const AddServiceByAdmin = () => {
 
                                     </div>
 
+                                    {/* <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                                        <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
+                                            Status
+                                        </Typography>
+                                        <FormGroup>
+                                            <FormControlLabel
+                                                label="Status"
+                                                sx={{
+                                                    '& .MuiSwitch-switchBase.Mui-checked': {
+                                                        color: 'orange',
+                                                    },
+                                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                        backgroundColor: 'orange',
+                                                    },
+                                                }}
+                                                control={<Switch checked={service?.active}
+                                                    onChange={handleStatusSwitch} />}
+
+                                            />
+                                        </FormGroup>
+                                    </Box> */}
+
                                     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                                         <Typography sx={{ my: 1, color: "gray" }} id="modal-modal-title" variant="p" component="p">
                                             Cash on Delivery
@@ -1071,7 +587,7 @@ const AddServiceByAdmin = () => {
 
                                     <Box sx={{ display: "flex", gap: "10px" }}>
 
-                                        <Box sx={{ width: "50%" }}>
+                                        {/* <Box sx={{ width: "50%" }}>
                                             <FormControl fullWidth>
                                                 <InputLabel id="demo-simple-select-label">Type</InputLabel>
                                                 <Select
@@ -1086,10 +602,10 @@ const AddServiceByAdmin = () => {
                                                     <MenuItem value={30}>3</MenuItem>
                                                 </Select>
                                             </FormControl>
-                                        </Box>
+                                        </Box> */}
 
 
-                                        <Box sx={{ width: "50%" }} >
+                                        {/* <Box sx={{ width: "50%" }} >
                                             <InputField
                                                 label="Value"
                                                 type="text"
@@ -1097,7 +613,7 @@ const AddServiceByAdmin = () => {
                                                 onChange={(e) => setProduct({ ...product, value: e })}
                                             // validate={validateProductName}
                                             />
-                                        </Box>
+                                        </Box> */}
                                     </Box>
 
 
