@@ -306,7 +306,7 @@ const headCells = [
     label: "Order Date",
   },
   { id: "subtotal", numeric: true, disablePadding: false, label: "Subtotal" },
-  { id: "discount", numeric: true, disablePadding: false, label: "Discount" },
+  // { id: "discount", numeric: true, disablePadding: false, label: "Discount" },
   {
     id: "shippingCharges",
     numeric: true,
@@ -347,6 +347,8 @@ export default function EnhancedTable() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [openDateRangePicker, setOpenDateRangePicker] = useState(false);
+
+  if (orders) console.log(orders, "orderdfdfdf");
 
   const [openIPopup, setOpenIPopup] = useState(false);
 
@@ -403,7 +405,7 @@ export default function EnhancedTable() {
     try {
       const token = Cookies.get("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/orders/all`,
+        `${process.env.REACT_APP_BASE_URL}/order/service/getServiceOrder`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -411,7 +413,7 @@ export default function EnhancedTable() {
         }
       );
       if (response.data.success) {
-        const sortedOrders = response.data.orders.sort((a, b) => {
+        const sortedOrders = response.data.data.sort((a, b) => {
           return new Date(b.createdAt) - new Date(a.createdAt);
         });
         setOrders(sortedOrders);
@@ -436,13 +438,13 @@ export default function EnhancedTable() {
       setOrders(sortedOrders);
       return;
     }
-if (property === "mobileNo") {
-  const sortedOrders = stableSort(orders, (a, b) =>
-    order === "asc" ? a.mobileNo - b.mobileNo : b.mobileNo - a.mobileNo
-  );
-  setOrders(sortedOrders);
-  return;
-}
+    if (property === "mobileNo") {
+      const sortedOrders = stableSort(orders, (a, b) =>
+        order === "asc" ? a.mobileNo - b.mobileNo : b.mobileNo - a.mobileNo
+      );
+      setOrders(sortedOrders);
+      return;
+    }
 
     // For sorting by other columns
     const sortedOrders = stableSort(orders, getComparator(order, property));
@@ -499,18 +501,18 @@ if (property === "mobileNo") {
   // Filtering logic with date range
   // Filtering logic with date range
   const filteredOrders = orders.filter((order) => {
-    const nameMatch = order.user?.name
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
+    // const nameMatch = order.user?.name
+    //   .toLowerCase()
+    //   .includes(searchText.toLowerCase());
     const orderDateMatch = order.createdAt
       ? formatDate(order.createdAt).includes(searchText)
       : false;
     const subtotalMatch = order.subtotal
       ? order.subtotal.toString().includes(searchText)
       : false;
-    const discountMatch = order.discount
-      ? order.discount.toString().includes(searchText)
-      : false;
+    // const discountMatch = order.discount
+    //   ? order.discount.toString().includes(searchText)
+    //   : false;
     const shippingMatch = order.shippingCharges
       ? order.shippingCharges.toString().includes(searchText)
       : false;
@@ -522,10 +524,10 @@ if (property === "mobileNo") {
       : false;
 
     const isMatch =
-      nameMatch ||
+      // nameMatch ||
       orderDateMatch ||
       subtotalMatch ||
-      discountMatch ||
+      // discountMatch ||
       shippingMatch ||
       totalMatch ||
       statusMatch;
@@ -697,30 +699,29 @@ if (property === "mobileNo") {
           >
             <TableHead>
               <TableRow>
-{headCells.map((headCell) => (
-  <TableCell
-    key={headCell.id}
-    align={headCell.numeric ? "center" : "left"}
-    padding={headCell.disablePadding ? "none" : "normal"}
-    sortDirection={orderBy === headCell.id ? order : false}
-  >
-    <TableSortLabel
-      active={orderBy === headCell.id}
-      direction={orderBy === headCell.id ? order : "asc"}
-      onClick={() => handleRequestSort(headCell.id)}
-    >
-      {headCell.label}
-      {orderBy === headCell.id ? (
-        <Box component="span" sx={visuallyHidden}>
-          {order === "desc"
-            ? "sorted descending"
-            : "sorted ascending"}
-        </Box>
-      ) : null}
-    </TableSortLabel>
-  </TableCell>
-))}
-
+                {headCells.map((headCell) => (
+                  <TableCell
+                    key={headCell.id}
+                    align={headCell.numeric ? "center" : "left"}
+                    padding={headCell.disablePadding ? "none" : "normal"}
+                    sortDirection={orderBy === headCell.id ? order : false}
+                  >
+                    <TableSortLabel
+                      active={orderBy === headCell.id}
+                      direction={orderBy === headCell.id ? order : "asc"}
+                      onClick={() => handleRequestSort(headCell.id)}
+                    >
+                      {headCell.label}
+                      {orderBy === headCell.id ? (
+                        <Box component="span" sx={visuallyHidden}>
+                          {order === "desc"
+                            ? "sorted descending"
+                            : "sorted ascending"}
+                        </Box>
+                      ) : null}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -776,7 +777,7 @@ if (property === "mobileNo") {
                         </TableCell>
                         <TableCell>{formatDate(order.createdAt)}</TableCell>
                         <TableCell align="right">{order.subtotal}</TableCell>
-                        <TableCell align="right">{order.discount}</TableCell>
+                        {/* <TableCell align="right">{order.discount}</TableCell> */}
                         <TableCell align="right">
                           {order.shippingCharges}
                         </TableCell>
