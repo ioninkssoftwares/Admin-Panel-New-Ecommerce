@@ -376,7 +376,7 @@ export default function EnhancedTable() {
       setDialogueContentLoading(true);
       const token = Cookies.get("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/order/orderByorderId/${id}`,
+        `${process.env.REACT_APP_BASE_URL}/order/serviceOrder/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -834,7 +834,7 @@ export default function EnhancedTable() {
             }}
           >
             <DialogTitle id="alert-dialog-title">
-              <b>Order Details</b>
+              <b> Service Order Details</b>
             </DialogTitle>
 
             <DialogContent>
@@ -853,7 +853,8 @@ export default function EnhancedTable() {
                     }}
                   >
                     <Typography variant="body1">
-                      <strong>Order ID: </strong> {selectedOrderDetails._id}
+                      <strong>Service Order ID: </strong>{" "}
+                      {selectedOrderDetails._id}
                       <IconButton
                         onClick={handleCopyOrderID}
                         aria-label="Copy"
@@ -864,7 +865,7 @@ export default function EnhancedTable() {
                       </IconButton>
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Order Date:</strong>{" "}
+                      <strong>Service Order Date:</strong>{" "}
                       {formatDate(selectedOrderDetails.createdAt)}
                     </Typography>
                     <Typography variant="body1">
@@ -922,7 +923,7 @@ export default function EnhancedTable() {
                           <AccountCircleIcon />
                         </IconButton>
                         <Typography variant="body1" sx={{ marginLeft: "3%" }}>
-                          <b>{selectedOrderDetails.user.name}</b>
+                          <b>{selectedOrderDetails?.user?.name}</b>
                         </Typography>
                       </Box>
                       <Box
@@ -949,7 +950,7 @@ export default function EnhancedTable() {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.user.email
+                                {selectedOrderDetails?.user?.email
                                   ? selectedOrderDetails.user.email
                                   : "N/A"}
                               </strong>
@@ -964,7 +965,7 @@ export default function EnhancedTable() {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.user.mobileNo
+                                {selectedOrderDetails?.user?.mobileNo
                                   ? selectedOrderDetails.user.mobileNo
                                   : "N/A"}
                               </strong>
@@ -1011,7 +1012,7 @@ export default function EnhancedTable() {
                               sx={{ marginBottom: "4px" }}
                             >
                               <strong>
-                                {selectedOrderDetails.shippingInfo.address}
+                                {selectedOrderDetails?.shippingInfo?.address}
                               </strong>
                             </Typography>
                           </Box>
@@ -1032,7 +1033,7 @@ export default function EnhancedTable() {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.shippingInfo.city}
+                                {selectedOrderDetails.shippingInfo?.city}
                               </strong>
                             </Typography>
                           </Box>
@@ -1045,7 +1046,7 @@ export default function EnhancedTable() {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.shippingInfo.state}
+                                {selectedOrderDetails.shippingInfo?.state}
                               </strong>
                             </Typography>
                           </Box>
@@ -1058,7 +1059,7 @@ export default function EnhancedTable() {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.shippingInfo.pinCode}
+                                {selectedOrderDetails.shippingInfo?.pinCode}
                               </strong>
                             </Typography>
                           </Box>
@@ -1272,7 +1273,7 @@ export default function EnhancedTable() {
                         </IconButton>
                         <Typography variant="body1" sx={{ marginLeft: "3%" }}>
                           Vendor :
-                          <b>{selectedOrderDetails.product.vendorId.name}</b>
+                          <b>{selectedOrderDetails?.product?.vendorId?.name}</b>
                         </Typography>
                       </Box>
                       <Box
@@ -1299,7 +1300,7 @@ export default function EnhancedTable() {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.product.vendorId.email
+                                {selectedOrderDetails?.product?.vendorId?.email
                                   ? selectedOrderDetails.product.vendorId.email
                                   : "N/A"}
                               </strong>
@@ -1314,7 +1315,8 @@ export default function EnhancedTable() {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.product.vendorId.mobileNo
+                                {selectedOrderDetails?.product?.vendorId
+                                  ?.mobileNo
                                   ? selectedOrderDetails.product.vendorId
                                       .mobileNo
                                   : "N/A"}
