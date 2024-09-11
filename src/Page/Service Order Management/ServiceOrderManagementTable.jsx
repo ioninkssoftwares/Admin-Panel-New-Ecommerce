@@ -614,7 +614,7 @@ export default function EnhancedTable() {
                 id="tableTitle"
                 component="div"
               >
-                Orders
+                Service Orders
               </Typography>
               <IconButton onClick={() => setOpenDateRangePicker(true)}>
                 <DateRangeIcon /> {/* Date range icon */}
@@ -782,11 +782,17 @@ export default function EnhancedTable() {
                           {order.shippingCharges}
                         </TableCell>
                         <TableCell align="right">{order.total}</TableCell>
-                        <TableCell
-                          style={{ color: getStatusColor(order.status) }}
-                        >
-                          {order.status}
-                        </TableCell>
+                        {order.isCancelled === true ? (
+                          <TableCell style={{ color: "red" }}>
+                            Cancelled
+                          </TableCell>
+                        ) : (
+                          <TableCell
+                            style={{ color: getStatusColor(order.status) }}
+                          >
+                            {order.status}
+                          </TableCell>
+                        )}
                         <TableCell>
                           <IconButton
                             aria-label="view details"
@@ -891,6 +897,29 @@ export default function EnhancedTable() {
                       <PrintIcon />
                     </IconButton>
                   </Box>
+
+                  {selectedOrderDetails?.isCancelled === true && (
+                    <Box
+                      sx={{
+                        padding: "10px",
+                        border: "1px solid #e0e0e0",
+                        borderRadius: "8px",
+                        backgroundColor: "#fafafa",
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginTop: "25px",
+                      }}
+                    >
+                      <Typography variant="body1" color="red">
+                        <strong style={{ color: "black" }}>
+                          Cancelled Reason:{" "}
+                        </strong>{" "}
+                        {selectedOrderDetails.cancelledReason}
+                      </Typography>
+                    </Box>
+                  )}
 
                   <Box
                     sx={{
