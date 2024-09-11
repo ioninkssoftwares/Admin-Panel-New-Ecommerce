@@ -429,7 +429,7 @@ const EditServiceByAdmin = () => {
                             return acc;
                           }, [])
                           .map((item, index) => (
-                            <div key={index} className="mb-6 w-[200px]">
+                            <div key={index} className="mb-6 w-[250px]">
                               <p>
                                 Main Category:
                                 <span className="text-lg ml-2 font-semibold mb-2">
