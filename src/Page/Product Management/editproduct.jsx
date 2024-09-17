@@ -65,7 +65,7 @@ const EditProduct = () => {
     colorImages: [],
     sizes: [],
     colors: [],
-    gender: ""
+    gender: "",
   });
 
   const [subCategories, setSubCategories] = useState([]);
@@ -142,9 +142,8 @@ const EditProduct = () => {
     fetchBrands();
     fetchCategories();
     fetchSubcategories();
-    getAllColors()
+    getAllColors();
   }, []);
-
 
   // handling the price comparison
 
@@ -167,7 +166,6 @@ const EditProduct = () => {
     }
   }, [product]);
 
-
   const getAllColors = async () => {
     try {
       const token = Cookies.get("token");
@@ -180,7 +178,7 @@ const EditProduct = () => {
         }
       );
       if (response.data) {
-        setAllColors(response.data.data)
+        setAllColors(response.data.data);
       }
     } catch (error) {
       console.error("Error fetching colors:", error);
@@ -189,11 +187,8 @@ const EditProduct = () => {
   };
 
   useEffect(() => {
-    setColors(allColors)
-  }, [allColors])
-
-
-
+    setColors(allColors);
+  }, [allColors]);
 
   const fetchBrands = async () => {
     try {
@@ -302,9 +297,24 @@ const EditProduct = () => {
     }
   };
 
+  // const handleDiscountCoinsChange = (e) => {
+  //   const { value } = e.target;
+  //   if (/^\d*\.?\d*$/.test(value) && Number(value) <= Number(product.price)) {
+  //     setProduct((prevProduct) => ({
+  //       ...prevProduct,
+  //       discountCoins: value,
+  //     }));
+  //   }
+  // };
+
   const handleDiscountCoinsChange = (e) => {
     const { value } = e.target;
-    if (/^\d*\.?\d*$/.test(value) && Number(value) <= Number(product.price)) {
+
+    // Allow only numbers and decimals up to two decimal places
+    if (
+      /^\d*\.?\d{0,2}$/.test(value) &&
+      Number(value) <= Number(product.price)
+    ) {
       setProduct((prevProduct) => ({
         ...prevProduct,
         discountCoins: value,
@@ -445,10 +455,10 @@ const EditProduct = () => {
       formData.append("gender", product.gender);
 
       for (let i of sizes) {
-        formData.append('sizes', i);
+        formData.append("sizes", i);
       }
       for (let i of selectedColorsIds) {
-        formData.append('colors', i);
+        formData.append("colors", i);
       }
 
       // Convert all images to blobs before appending them
@@ -473,17 +483,19 @@ const EditProduct = () => {
       });
 
       // Convert all Color images to blobs before appending them
-      const colorImagePromises = product.colorImages.map(async (image, index) => {
-        if (typeof image === "string") {
-          // If image is a URL, fetch and convert to blob
-          const response = await fetch(image);
-          const blob = await response.blob();
-          return { blob, index };
-        } else {
-          // If image is already a blob, return it directly
-          return { blob: image, index };
+      const colorImagePromises = product.colorImages.map(
+        async (image, index) => {
+          if (typeof image === "string") {
+            // If image is a URL, fetch and convert to blob
+            const response = await fetch(image);
+            const blob = await response.blob();
+            return { blob, index };
+          } else {
+            // If image is already a blob, return it directly
+            return { blob: image, index };
+          }
         }
-      });
+      );
 
       // Wait for allcolor  images to be processed
       const colorImageBlobs = await Promise.all(colorImagePromises);
@@ -534,12 +546,10 @@ const EditProduct = () => {
     }));
   };
 
-
   // size and color logics
 
   // const sampleSizes = ["X", "S", "M", "L", "XL", "XXL", "3XL"];
   const sampleSizes = ["XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL"];
-
 
   const handleSizeChange = (event) => {
     setSizes(event.target.value);
@@ -547,22 +557,22 @@ const EditProduct = () => {
 
   const handleColorChange = (event) => {
     const selectedHexCodes = event.target.value;
-    const selectedColorObjects = selectedHexCodes.map(hexCode => colors.find(color => color.hexCode === hexCode));
-    console.log(selectedColorObjects, 'dfdfdfdfdfsfsa');
+    const selectedColorObjects = selectedHexCodes.map((hexCode) =>
+      colors.find((color) => color.hexCode === hexCode)
+    );
+    console.log(selectedColorObjects, "dfdfdfdfdfsfsa");
     setSelectedColors(selectedColorObjects);
 
     //selecting Ids
-    const colorIds = selectedColorObjects.map(color => color._id);
+    const colorIds = selectedColorObjects.map((color) => color._id);
 
     setSelectedColorsIds(colorIds);
-
-
 
     setProduct({ ...product, color: selectedColorObjects });
   };
 
   // gender logic
-  const genderOptions = ['men', 'women', 'boys', 'girls'];
+  const genderOptions = ["men", "women", "boys", "girls"];
   const handleGenderChange = (event) => {
     // setSelectedGender(event.target.value);
     setProduct({ ...product, gender: event.target.value });
@@ -620,7 +630,7 @@ const EditProduct = () => {
                 <span style={{ color: "#ff6f00", marginLeft: "0.5em" }}>
                   {product.brand
                     ? product.brand.charAt(0).toUpperCase() +
-                    product.brand.slice(1)
+                      product.brand.slice(1)
                     : ""}
                 </span>
               </span>
@@ -705,7 +715,7 @@ const EditProduct = () => {
                 <span style={{ color: "#ff6f00", marginLeft: "0.5em" }}>
                   {product.subCategory
                     ? product.subCategory.charAt(0).toUpperCase() +
-                    product.subCategory.slice(1)
+                      product.subCategory.slice(1)
                     : ""}
                 </span>
               </span>
@@ -788,6 +798,9 @@ const EditProduct = () => {
                 variant="outlined"
                 value={product.discountCoins}
                 onChange={handleDiscountCoinsChange}
+                inputProps={{
+                  maxLength: 6, // Limit the input to 2 characters
+                }}
                 style={{ margin: "1%" }}
               />
             </FormControl>
@@ -811,34 +824,38 @@ const EditProduct = () => {
                 style={{ margin: "1%" }}
               />
             </FormControl>
-            {!brandOptions.includes(selectedBrand) && <FormControl fullWidth margin="normal">
-              <TextField
-                label="Warranty Period"
-                variant="outlined"
-                value={product.warrantyPeriod}
-                onChange={(e) =>
-                  setProduct({ ...product, warrantyPeriod: e.target.value })
-                }
-                style={{ margin: "1%" }}
-              />
-            </FormControl>}
-            {brandOptions.includes(selectedBrand) && <div>
-              <FormControl fullWidth>
-                <InputLabel id="gender-select-label">Gender</InputLabel>
-                <Select
-                  labelId="gender-select-label"
-                  value={product?.gender}
-                  onChange={handleGenderChange}
-                  label="Gender"
-                >
-                  {genderOptions.map((gender) => (
-                    <MenuItem key={gender} value={gender}>
-                      {gender}
-                    </MenuItem>
-                  ))}
-                </Select>
+            {!brandOptions.includes(selectedBrand) && (
+              <FormControl fullWidth margin="normal">
+                <TextField
+                  label="Warranty Period"
+                  variant="outlined"
+                  value={product.warrantyPeriod}
+                  onChange={(e) =>
+                    setProduct({ ...product, warrantyPeriod: e.target.value })
+                  }
+                  style={{ margin: "1%" }}
+                />
               </FormControl>
-            </div>}
+            )}
+            {brandOptions.includes(selectedBrand) && (
+              <div>
+                <FormControl fullWidth>
+                  <InputLabel id="gender-select-label">Gender</InputLabel>
+                  <Select
+                    labelId="gender-select-label"
+                    value={product?.gender}
+                    onChange={handleGenderChange}
+                    label="Gender"
+                  >
+                    {genderOptions.map((gender) => (
+                      <MenuItem key={gender} value={gender}>
+                        {gender}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
           </Box>
           <Box
             sx={{
@@ -1013,117 +1030,137 @@ const EditProduct = () => {
               />
             </FormGroup>
           </Box>
-          {brandOptions.includes(selectedBrand) && <Box
-            sx={{
-              display: "flex",
-              alignItems: "start",
-              justifyContent: "start",
-              gap: "100px",
-              marginY: "20px",
-            }}>
-            <div>
-              <span className="mb-2">Selected Sizes:</span>
-              <ul className="list-disc">
-                {product?.sizes.map((spec, index) => (
-                  <li key={index}>{spec}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <span className="mb-2">Selected Colors:</span>
-              <ul className="list-none">
-                {product?.colors.map((color) => (
-                  <li key={color._id} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "5px" }}>
-                    <div
-                      style={{ width: "20px", height: "20px", background: color.hexCode, borderRadius: "50%" }}
-                    ></div>
-                    <span>{color.colorName}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {brandOptions.includes(selectedBrand) && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "start",
+                justifyContent: "start",
+                gap: "100px",
+                marginY: "20px",
+              }}
+            >
+              <div>
+                <span className="mb-2">Selected Sizes:</span>
+                <ul className="list-disc">
+                  {product?.sizes.map((spec, index) => (
+                    <li key={index}>{spec}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <span className="mb-2">Selected Colors:</span>
+                <ul className="list-none">
+                  {product?.colors.map((color) => (
+                    <li
+                      key={color._id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "20px",
+                          height: "20px",
+                          background: color.hexCode,
+                          borderRadius: "50%",
+                        }}
+                      ></div>
+                      <span>{color.colorName}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            {brandOptions.includes(selectedBrand) && <div className="my-4">
-              <FormControl fullWidth>
-                <InputLabel id="multiple-sizes-label">Sizes</InputLabel>
-                <Select
-                  labelId="multiple-sizes-label"
-                  sx={{ minWidth: "200px" }}
-                  multiple
-                  value={sizes.map((sizeObj) => sizeObj)}
-                  onChange={handleSizeChange}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value} label={value} />
+              {brandOptions.includes(selectedBrand) && (
+                <div className="my-4">
+                  <FormControl fullWidth>
+                    <InputLabel id="multiple-sizes-label">Sizes</InputLabel>
+                    <Select
+                      labelId="multiple-sizes-label"
+                      sx={{ minWidth: "200px" }}
+                      multiple
+                      value={sizes.map((sizeObj) => sizeObj)}
+                      onChange={handleSizeChange}
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
+                        >
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                    >
+                      {sampleSizes.map((size) => (
+                        <MenuItem key={size} value={size}>
+                          {size}
+                        </MenuItem>
                       ))}
-                    </Box>
-                  )}
-                >
-                  {sampleSizes.map((size) => (
-                    <MenuItem key={size} value={size}>
-                      {size}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>}
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
 
-
-            {brandOptions.includes(selectedBrand) && <div className="my-4">
-              <FormControl fullWidth>
-                <InputLabel id="color-select-label">Color</InputLabel>
-                <Select
-                  labelId="color-select-label"
-                  sx={{ minWidth: "200px" }}
-                  multiple
-                  value={selectedColors.map(color => color.hexCode)}
-                  onChange={handleColorChange}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selected.map((value) => {
-                        const color = colors.find(color => color.hexCode === value);
-                        return (
-                          <Chip
-                            key={value}
-                            label={color.colorName}
-                            style={{ backgroundColor: value, color: '#fff' }}
-                          />
-                        );
-                      })}
-                    </Box>
-                  )}
-                >
-                  {colors.map((color) => (
-                    <MenuItem key={color.colorName} value={color.hexCode}>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{
-                          backgroundColor: color.hexCode,
-                          width: 20,
-                          height: 20,
-                          marginRight: 10,
-                          border: '1px solid #000',
-                        }} />
-                        {color.colorName}
-                      </div>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-            </div>}
-          </Box>}
-
-
-
-
-
-
-
-
-
-
-
+              {brandOptions.includes(selectedBrand) && (
+                <div className="my-4">
+                  <FormControl fullWidth>
+                    <InputLabel id="color-select-label">Color</InputLabel>
+                    <Select
+                      labelId="color-select-label"
+                      sx={{ minWidth: "200px" }}
+                      multiple
+                      value={selectedColors.map((color) => color.hexCode)}
+                      onChange={handleColorChange}
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}
+                        >
+                          {selected.map((value) => {
+                            const color = colors.find(
+                              (color) => color.hexCode === value
+                            );
+                            return (
+                              <Chip
+                                key={value}
+                                label={color.colorName}
+                                style={{
+                                  backgroundColor: value,
+                                  color: "#fff",
+                                }}
+                              />
+                            );
+                          })}
+                        </Box>
+                      )}
+                    >
+                      {colors.map((color) => (
+                        <MenuItem key={color.colorName} value={color.hexCode}>
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <div
+                              style={{
+                                backgroundColor: color.hexCode,
+                                width: 20,
+                                height: 20,
+                                marginRight: 10,
+                                border: "1px solid #000",
+                              }}
+                            />
+                            {color.colorName}
+                          </div>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
+            </Box>
+          )}
 
           <FormControl fullWidth margin="normal">
             <TextField
@@ -1233,17 +1270,11 @@ const EditProduct = () => {
             </Box>
           </Box>
 
-          {brandOptions.includes(selectedBrand) && <div>
-            <Typography variant="h6" gutterBottom>
-              Color Images
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 3,
-              }}
-            >
+          {brandOptions.includes(selectedBrand) && (
+            <div>
+              <Typography variant="h6" gutterBottom>
+                Color Images
+              </Typography>
               <Box
                 sx={{
                   display: "flex",
@@ -1254,66 +1285,77 @@ const EditProduct = () => {
                 <Box
                   sx={{
                     display: "flex",
+                    flexDirection: "column",
                     gap: 3,
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
                   }}
                 >
-                  {[...Array(10)].map((_, index) => (
-                    <div
-                      key={`color-image-${index}`}
-                      style={{
-                        flexBasis: "30%",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: 1,
-                      }}
-                    >
-                      <input
-                        accept=".png, .jpg, .jpeg"
-                        style={{ display: "none" }}
-                        id={`color-image-upload-${index}`}
-                        type="file"
-                        onChange={(e) => handleColorImageChange(e.target.files, index)}
-                      />
-                      <label htmlFor={`color-image-upload-${index}`}>
-                        <Button variant="contained" component="span">
-                          Select Color Image {index + 1}
-                        </Button>
-                      </label>
-                      {product.colorImages[index] && (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <img
-                            src={
-                              typeof product.colorImages[index] === "string"
-                                ? product.colorImages[index]
-                                : URL.createObjectURL(product.colorImages[index])
-                            }
-                            alt={`Image ${index + 1}`}
-                            style={{ width: "100px", height: "auto" }}
-                          />
-
-                          <Button
-                            variant="outlined"
-                            onClick={() => handleColorImageRemove(index)}
-                            sx={{ ml: 1 }}
-                          >
-                            Remove
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 3,
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {[...Array(10)].map((_, index) => (
+                      <div
+                        key={`color-image-${index}`}
+                        style={{
+                          flexBasis: "30%",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <input
+                          accept=".png, .jpg, .jpeg"
+                          style={{ display: "none" }}
+                          id={`color-image-upload-${index}`}
+                          type="file"
+                          onChange={(e) =>
+                            handleColorImageChange(e.target.files, index)
+                          }
+                        />
+                        <label htmlFor={`color-image-upload-${index}`}>
+                          <Button variant="contained" component="span">
+                            Select Color Image {index + 1}
                           </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                        </label>
+                        {product.colorImages[index] && (
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <img
+                              src={
+                                typeof product.colorImages[index] === "string"
+                                  ? product.colorImages[index]
+                                  : URL.createObjectURL(
+                                      product.colorImages[index]
+                                    )
+                              }
+                              alt={`Image ${index + 1}`}
+                              style={{ width: "100px", height: "auto" }}
+                            />
+
+                            <Button
+                              variant="outlined"
+                              onClick={() => handleColorImageRemove(index)}
+                              sx={{ ml: 1 }}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-            {/* <Box
+              {/* <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -1330,9 +1372,8 @@ const EditProduct = () => {
                 {submitting ? "Updating..." : "Update Product"}
               </Button>
             </Box> */}
-
-
-          </div>}
+            </div>
+          )}
 
           <Box
             sx={{
@@ -1351,9 +1392,6 @@ const EditProduct = () => {
               {submitting ? "Updating..." : "Update Product"}
             </Button>
           </Box>
-
-
-
         </Box>
       </Box>
     </div>
