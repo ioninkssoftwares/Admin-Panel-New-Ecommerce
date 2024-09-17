@@ -213,14 +213,13 @@ export default function UserManagement() {
                         {userData &&
                           userData.filter((user) => user.role === "user")
                             .length}
-                        <span
+                        {/* <span
                           style={{
                             fontSize: "12px",
                             color: "green",
                             marginLeft: "4px",
                           }}
                         >
-                          {/* Calculate the percentage based on the total count of users */}
                           {userData &&
                             userData.length > 0 &&
                             `+${(
@@ -229,7 +228,7 @@ export default function UserManagement() {
                                 userData.length) *
                               100
                             ).toFixed(2)}%`}
-                        </span>
+                        </span> */}
                       </Typography>
                     </Typography>
                   </Box>

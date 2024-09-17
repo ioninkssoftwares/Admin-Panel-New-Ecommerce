@@ -30,6 +30,7 @@ import {
   Grid,
   ToggleButtonGroup,
   ToggleButton,
+  TablePagination,
 } from "@mui/material";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import PaymentIcon from "@mui/icons-material/Payment";
@@ -40,10 +41,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SideBar from "../../Component/SideBar";
 import WithdrawalPopup from "./withdrawalPopup";
 import AllWithdrawalPopup from "./allWithdrawalPopup";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 const StaffManagement = () => {
   const [filteredReferralCoins, setFilteredReferralCoins] = useState([]);
@@ -89,7 +90,20 @@ const StaffManagement = () => {
   const [allWithdrawalPopupOpen, setAllWithdrawalPopupOpen] = useState(false);
   const [view, setView] = useState("transactions");
 
-  if (selectedStaff) console.log(selectedStaff, "fhdsjhfkjs")
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // Handle pagination changes
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset page when rows per page changes
+  };
+
+  if (selectedStaff) console.log(selectedStaff, "fhdsjhfkjs");
 
   const totalRewardMoney = staffList.reduce((sum, staff) => {
     return sum + (staff.rewardMoney || 0);
@@ -102,8 +116,7 @@ const StaffManagement = () => {
     return sum + staffTotal;
   }, 0);
 
-  const pendingAmount = totalRewardMoney - totalPaidMoney
-
+  const pendingAmount = totalRewardMoney - totalPaidMoney;
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
@@ -373,7 +386,7 @@ const StaffManagement = () => {
 
       const token = Cookies.get("token");
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/admin/staff/updateDetails/${selectedStaff._id}`,
+        `${process.env.REACT_APP_BASE_URL}/me/update`,
         {
           method: "PUT",
           headers: {
@@ -438,26 +451,30 @@ const StaffManagement = () => {
     setOrderBy(property);
   };
 
-
   const sortedStaff = [...staffList].sort((a, b) => {
     const orderByValueA = a[orderBy] || "";
     const orderByValueB = b[orderBy] || "";
     if (orderBy === "mobileNo") {
-      return (order === "asc" ? 1 : -1) * (parseInt(orderByValueA) - parseInt(orderByValueB));
+      return (
+        (order === "asc" ? 1 : -1) *
+        (parseInt(orderByValueA) - parseInt(orderByValueB))
+      );
     } else {
-      return (order === "asc" ? 1 : -1) * orderByValueA.localeCompare(orderByValueB);
+      return (
+        (order === "asc" ? 1 : -1) * orderByValueA.localeCompare(orderByValueB)
+      );
     }
   });
 
-
   const filteredStaff = sortedStaff.filter((staff) => {
-    const searchTermLower = searchTerm.toLowerCase();
+    const searchTermLower = searchTerm?.toLowerCase();
     return (
-      staff.name.toLowerCase().includes(searchTermLower) ||
-      staff.email.toLowerCase().includes(searchTermLower) ||
-      String(staff.mobileNo).toLowerCase().includes(searchTermLower)
+      staff?.name.toLowerCase().includes(searchTermLower) ||
+      String(staff?.mobileNo).toLowerCase().includes(searchTermLower)
     );
   });
+
+  if (searchTerm) console.log(searchTerm, "dhfjsdhjfd");
 
   const handleExportExcel = async () => {
     try {
@@ -515,7 +532,6 @@ const StaffManagement = () => {
     setAllWithdrawalPopupOpen(false);
   };
 
-
   const handleViewChange = (event, newView) => {
     if (newView !== null) {
       setView(newView);
@@ -524,14 +540,19 @@ const StaffManagement = () => {
 
   const filterByDateRange = (data) => {
     if (!startDate || !endDate) return data;
-    return data.filter(item => {
+    return data.filter((item) => {
       const date = dayjs(item.date);
-      return date.isAfter(dayjs(startDate).subtract(1, 'day')) && date.isBefore(dayjs(endDate).add(1, 'day'));
+      return (
+        date.isAfter(dayjs(startDate).subtract(1, "day")) &&
+        date.isBefore(dayjs(endDate).add(1, "day"))
+      );
     });
   };
 
   const sortedReferralCoinss = filteredReferralCoins.slice().reverse();
-  const sortedWithdrawalInfo = (selectedStaff?.withdrawalInfo || []).slice().reverse();
+  const sortedWithdrawalInfo = (selectedStaff?.withdrawalInfo || [])
+    .slice()
+    .reverse();
 
   const filteredReferralCoinsByDate = filterByDateRange(sortedReferralCoinss);
   const filteredWithdrawalInfoByDate = filterByDateRange(sortedWithdrawalInfo);
@@ -539,18 +560,18 @@ const StaffManagement = () => {
   // const filteredReferralCoinsByDate = filterByDateRange(filteredReferralCoins);
   // const filteredWithdrawalInfoByDate = filterByDateRange(selectedStaff?.withdrawalInfo || []);
 
-
-
   const rewardStaffMoney = selectedStaff?.rewardMoney;
 
   // Calculate totalPaidStaffMoney by reducing the withdrawalInfo array
-  const totalPaidStaffMoney = selectedStaff?.withdrawalInfo.reduce((sum, withdrawal) => {
-    return sum + (withdrawal.totalAmount || 0);
-  }, 0);
+  const totalPaidStaffMoney = selectedStaff?.withdrawalInfo.reduce(
+    (sum, withdrawal) => {
+      return sum + (withdrawal.totalAmount || 0);
+    },
+    0
+  );
 
   // Calculate staffPendingAmount
   const staffPendingAmount = rewardStaffMoney - totalPaidStaffMoney;
-
 
   return (
     <>
@@ -565,7 +586,7 @@ const StaffManagement = () => {
             alignItems="center"
             marginTop="7%"
             justifyContent="space-between"
-          // marginLeft="20%"
+            // marginLeft="20%"
           >
             <TextField
               label="Search"
@@ -597,7 +618,13 @@ const StaffManagement = () => {
               </Button>
             </Box>
           </Box>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "start" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "start",
+            }}
+          >
             <div
               className="ProductManagementProductDetailsSecond00"
               style={{
@@ -635,7 +662,10 @@ const StaffManagement = () => {
                   alignItems: "center",
                 }}
               >
-                <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontSize: "14px", color: "grey" }}
+                >
                   All Staff
                   <br />
                   <Typography
@@ -643,20 +673,19 @@ const StaffManagement = () => {
                     style={{ fontWeight: "500", color: "black" }}
                   >
                     {staffList && staffList.length}
-                    <span
+                    {/* <span
                       style={{
                         fontSize: "12px",
                         color: "green",
                         marginLeft: "4px",
                       }}
                     >
-                      {/* Calculate the percentage based on the total count of users */}
                       {staffList &&
                         staffList.length > 0 &&
                         `+${((staffList.length / staffList.length) * 100).toFixed(
                           2
                         )}%`}
-                    </span>
+                    </span> */}
                   </Typography>
                 </Typography>
               </Box>
@@ -674,7 +703,6 @@ const StaffManagement = () => {
                 width: "70%",
               }}
             >
-
               <Box>
                 <Typography variant="h6" gutterBottom align="center">
                   Admin
@@ -685,7 +713,9 @@ const StaffManagement = () => {
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <PaymentIcon color="primary" />
                       <Box sx={{ marginLeft: 1 }}>
-                        <Typography variant="subtitle1">Total Amount</Typography>
+                        <Typography variant="subtitle1">
+                          Total Amount
+                        </Typography>
                         <Typography variant="h6" color="green">
                           ₹{totalRewardMoney}
                         </Typography>
@@ -728,10 +758,7 @@ const StaffManagement = () => {
                 </Grid>
               </Box>
             </div>
-
-
           </div>
-
 
           {/* <Box>
             <Typography variant="h6" gutterBottom align="center">
@@ -799,86 +826,100 @@ const StaffManagement = () => {
           ) : staffList.length === 0 ? (
             <Typography variant="body1">No staff at the moment</Typography>
           ) : (
-            <TableContainer
-              component={Paper}
-              style={{
-                width: "100%",
-                // marginLeft: "19%",
-                marginTop: "2%",
-                marginBottom: "2%",
-              }}
-            >
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <TableSortLabel
-                        active={orderBy === "name"}
-                        direction={orderBy === "name" ? order : "asc"}
-                        onClick={() => handleRequestSort("name")}
-                      >
-                        Name
-                      </TableSortLabel>
-                    </TableCell>
-
-                    <TableCell>
-                      <TableSortLabel
-                        active={orderBy === "email"}
-                        direction={orderBy === "email" ? order : "asc"}
-                        onClick={() => handleRequestSort("email")}
-                      >
-                        Email
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell>
-                      <TableSortLabel
-                        active={orderBy === "mobileNo"}
-                        direction={orderBy === "mobileNo" ? order : "asc"}
-                        onClick={() => handleRequestSort("mobileNo")}
-                      >
-                        Mobile No
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell>RewardCoins</TableCell>
-                    <TableCell>RewardMoney</TableCell>
-                    <TableCell>Actions</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredStaff.map((staff) => (
-                    <TableRow key={staff._id}>
-                      <TableCell>{capitalizeFirstLetter(staff.name)}</TableCell>
-
-                      <TableCell>{staff.email || " Not Given"}</TableCell>
-                      <TableCell>{staff.mobileNo}</TableCell>
-                      <TableCell>{staff.rewardCoins || 0} Coins</TableCell>
-                      <TableCell>₹{staff.rewardMoney || 0}</TableCell>
+            <>
+              <TableContainer
+                component={Paper}
+                style={{
+                  width: "100%",
+                  // marginLeft: "19%",
+                  marginTop: "2%",
+                  marginBottom: "2%",
+                }}
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <TableSortLabel
+                          active={orderBy === "name"}
+                          direction={orderBy === "name" ? order : "asc"}
+                          onClick={() => handleRequestSort("name")}
+                        >
+                          Name
+                        </TableSortLabel>
+                      </TableCell>
 
                       <TableCell>
-                        <IconButton
-                          color="default"
-                          onClick={() => handleViewDetails(staff)}
+                        <TableSortLabel
+                          active={orderBy === "email"}
+                          direction={orderBy === "email" ? order : "asc"}
+                          onClick={() => handleRequestSort("email")}
                         >
-                          <VisibilityIcon />
-                        </IconButton>
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleEdit(staff)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => handleConfirmDelete(staff)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                          Email
+                        </TableSortLabel>
                       </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={orderBy === "mobileNo"}
+                          direction={orderBy === "mobileNo" ? order : "asc"}
+                          onClick={() => handleRequestSort("mobileNo")}
+                        >
+                          Mobile No
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>RewardCoins</TableCell>
+                      <TableCell>RewardMoney</TableCell>
+                      <TableCell>Actions</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {filteredStaff.map((staff) => (
+                      <TableRow key={staff._id}>
+                        <TableCell>
+                          {capitalizeFirstLetter(staff.name)}
+                        </TableCell>
+
+                        <TableCell>{staff.email || " Not Given"}</TableCell>
+                        <TableCell>{staff.mobileNo}</TableCell>
+                        <TableCell>{staff.rewardCoins || 0} Coins</TableCell>
+                        <TableCell>₹{staff.rewardMoney || 0}</TableCell>
+
+                        <TableCell>
+                          <IconButton
+                            color="default"
+                            onClick={() => handleViewDetails(staff)}
+                          >
+                            <VisibilityIcon />
+                          </IconButton>
+                          <IconButton
+                            color="primary"
+                            onClick={() => handleEdit(staff)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            color="secondary"
+                            onClick={() => handleConfirmDelete(staff)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {/* Pagination controls */}
+              <TablePagination
+                component="div"
+                count={filteredStaff.length} // Total number of items
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
+            </>
           )}
           {openDeleteDialog && (
             <div className="delete-confirmation-modal">
@@ -1141,7 +1182,9 @@ const StaffManagement = () => {
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <PaymentIcon color="primary" />
                         <Box sx={{ marginLeft: 1 }}>
-                          <Typography variant="subtitle1">Total Amount</Typography>
+                          <Typography variant="subtitle1">
+                            Total Amount
+                          </Typography>
                           <Typography variant="h6" color="textSecondary">
                             ₹{rewardStaffMoney}
                           </Typography>
@@ -1152,7 +1195,9 @@ const StaffManagement = () => {
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <DoneIcon color="secondary" />
                         <Box sx={{ marginLeft: 1 }}>
-                          <Typography variant="subtitle1">Total Paid</Typography>
+                          <Typography variant="subtitle1">
+                            Total Paid
+                          </Typography>
                           <Typography variant="h6" color="textSecondary">
                             ₹{totalPaidStaffMoney || 0}
                           </Typography>
@@ -1174,24 +1219,43 @@ const StaffManagement = () => {
                     </Grid>
                   </Grid>
 
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "20px", marginBottom: "10px" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "start",
+                      gap: "20px",
+                      marginBottom: "10px",
+                    }}
+                  >
                     <ToggleButtonGroup
                       value={view}
                       exclusive
                       onChange={handleViewChange}
                       aria-label="view toggle"
                     >
-                      <ToggleButton value="transactions" aria-label="products view">
+                      <ToggleButton
+                        value="transactions"
+                        aria-label="products view"
+                      >
                         Transactions List
                       </ToggleButton>
-                      <ToggleButton value="withdrawalTransactions" aria-label="transactions view">
+                      <ToggleButton
+                        value="withdrawalTransactions"
+                        aria-label="transactions view"
+                      >
                         Withdrawal List
                       </ToggleButton>
-
                     </ToggleButtonGroup>
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginTop: "1rem",
+                        }}
+                      >
                         <DatePicker
                           label="Start Date"
                           value={startDate}
@@ -1239,12 +1303,13 @@ const StaffManagement = () => {
                     >
                       Withdraw
                     </Button>
-
                   </Box>
 
-
                   {view === "transactions" && (
-                    <TableContainer component={Paper} style={{ marginTop: "1rem" }}>
+                    <TableContainer
+                      component={Paper}
+                      style={{ marginTop: "1rem" }}
+                    >
                       <Table>
                         <TableHead>
                           <TableRow>
@@ -1261,10 +1326,19 @@ const StaffManagement = () => {
                                 <TableCell>
                                   {coin.amount}
                                   {coin.amount > 100 && (
-                                    <span style={{ color: 'red', marginLeft: '10px' }}>Coin Bonus</span>
+                                    <span
+                                      style={{
+                                        color: "red",
+                                        marginLeft: "10px",
+                                      }}
+                                    >
+                                      Coin Bonus
+                                    </span>
                                   )}
                                 </TableCell>
-                                <TableCell>{dayjs(coin.date).format('DD-MM-YYYY')}</TableCell>
+                                <TableCell>
+                                  {dayjs(coin.date).format("DD-MM-YYYY")}
+                                </TableCell>
                               </TableRow>
                             ))
                           ) : (
@@ -1280,7 +1354,10 @@ const StaffManagement = () => {
                   )}
 
                   {view === "withdrawalTransactions" && (
-                    <TableContainer component={Paper} style={{ marginTop: "1rem" }}>
+                    <TableContainer
+                      component={Paper}
+                      style={{ marginTop: "1rem" }}
+                    >
                       <Table>
                         <TableHead>
                           <TableRow>
@@ -1297,25 +1374,38 @@ const StaffManagement = () => {
                           {filteredWithdrawalInfoByDate.map((withdrawal) => (
                             <TableRow key={withdrawal.transactionId}>
                               <TableCell>{withdrawal.transactionId}</TableCell>
-                              <TableCell>{withdrawal.transactionType}</TableCell>
+                              <TableCell>
+                                {withdrawal.transactionType}
+                              </TableCell>
                               <TableCell>{withdrawal.baseAmount}</TableCell>
                               <TableCell>{withdrawal.tdsDeducted}</TableCell>
                               <TableCell>{withdrawal.totalAmount}</TableCell>
                               <TableCell>
                                 {withdrawal.tdsCertificate ? (
-                                  <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
-                                    <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
+                                  <a
+                                    href={withdrawal.tdsCertificate}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    <img
+                                      src={withdrawal.tdsCertificate}
+                                      alt="TDS Certificate"
+                                      style={{ width: "50px", height: "50px" }}
+                                    />
                                   </a>
-                                ) : 'No Certificate'}
+                                ) : (
+                                  "No Certificate"
+                                )}
                               </TableCell>
-                              <TableCell>{dayjs(withdrawal.date).format('DD-MM-YYYY')}</TableCell>
+                              <TableCell>
+                                {dayjs(withdrawal.date).format("DD-MM-YYYY")}
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   )}
-
 
                   {/* {view === "transactions" && (<TableContainer
                     component={Paper}
@@ -1387,8 +1477,6 @@ const StaffManagement = () => {
                       </Table>
                     </TableContainer>)} */}
                 </>
-
-
               )}
             </DialogContent>
             <DialogActions>
@@ -1411,7 +1499,7 @@ const StaffManagement = () => {
           />
           <ToastContainer />
         </div>
-      </div >
+      </div>
     </>
   );
 };
