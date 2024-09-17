@@ -85,7 +85,7 @@ const BarChartOne = () => {
           <br />
           <Typography paragraph style={{ fontWeight: "800" }}>
             {data && data.length}
-            <span
+            {/*    <span
               style={{
                 color: "green",
                 fontSize: "12px",
@@ -94,7 +94,7 @@ const BarChartOne = () => {
             >
               <ArrowUpwardIcon sx={{ fontSize: "12px" }} />
               {data && data.length > 0 && `+${deliveredPercentage}%`}
-            </span>
+            </span> */}
           </Typography>
         </Typography>
       </Box>
