@@ -182,20 +182,20 @@ const InvoiceDocument = ({ selectedOrderDetails }) => (
         <View style={styles.infoColumn}>
           <Text style={styles.subtitle}>Customer Information</Text>
           <Text style={styles.infoText}>
-{/*             Name: {selectedOrderDetails.user?.name} */}
-Name : S2 For You
+            {/*             Name: {selectedOrderDetails.user?.name} */}
+            Name : S2 For You
           </Text>
           <Text style={styles.infoText}>
-{/*             Email: {selectedOrderDetails.user?.email} */}
-Email : s2foryou@gmail.com
+            {/*             Email: {selectedOrderDetails.user?.email} */}
+            Email : s2foryou@gmail.com
           </Text>
           <Text style={styles.infoText}>
             Issued On:{" "}
             {new Date(selectedOrderDetails.createdAt).toLocaleDateString()}
           </Text>
           <Text style={styles.infoText}>
-{/*             Address: {selectedOrderDetails.user?.myAddress?.address} */}
-Adress : Dummy address area
+            {/*             Address: {selectedOrderDetails.user?.myAddress?.address} */}
+            Adress : Dummy address area
           </Text>
         </View>
         <View style={styles.infoColumn}>
@@ -263,18 +263,18 @@ Adress : Dummy address area
             <Text style={styles.tableCell}>
               {Math.round(selectedOrderDetails.basePrice)}
             </Text>
-            {selectedOrderDetails.cgst === 0 && selectedOrderDetails.sgst === 0 ? (
+            {/* {selectedOrderDetails.cgst === 0 && selectedOrderDetails.sgst === 0 ? (
   <Text style={styles.tableCell}> {selectedOrderDetails.igst.toFixed(2)}</Text>
 ) : (
   <>
     <Text style={styles.tableCell}>
-      {selectedOrderDetails.cgst.toFixed(2)} {/* Format CGST */}
+      {selectedOrderDetails.cgst.toFixed(2)} 
     </Text>
     <Text style={styles.tableCell}>
-      {selectedOrderDetails.sgst.toFixed(2)} {/* Format SGST */}
+      {selectedOrderDetails.sgst.toFixed(2)} 
     </Text>
   </>
-)}
+)} */}
 
             <Text style={styles.tableCell}>
               {Math.round(selectedOrderDetails.total)}
@@ -322,7 +322,6 @@ const statusOptions = [
   "Processing",
   "Shipped",
   "Delivered",
-  "Returned",
   "Cancelled",
 ];
 
@@ -348,7 +347,7 @@ export default function EnhancedTable() {
   const [toDate, setToDate] = useState("");
   const [openDateRangePicker, setOpenDateRangePicker] = useState(false);
 
-  if (orders) console.log(orders, "orderdfdfdf");
+  if (selectedOrderDetails) console.log(selectedOrderDetails, "orderdfdfdf");
 
   const [openIPopup, setOpenIPopup] = useState(false);
 
@@ -384,7 +383,7 @@ export default function EnhancedTable() {
         }
       );
       if (response.data.success) {
-        setSelectedOrderDetails(response.data.data);
+        setSelectedOrderDetails(response.data?.data[0]);
         // Directly set the popup to open without fetching user and product details
         setOpenPopup(true);
       } else {
@@ -500,10 +499,84 @@ export default function EnhancedTable() {
 
   // Filtering logic with date range
   // Filtering logic with date range
+  // const filteredOrders = orders.filter((order) => {
+  //   // const nameMatch = order.user?.name
+  //   //   .toLowerCase()
+  //   //   .includes(searchText.toLowerCase());
+  //   const orderDateMatch = order.createdAt
+  //     ? formatDate(order.createdAt).includes(searchText)
+  //     : false;
+  //   const subtotalMatch = order.subtotal
+  //     ? order.subtotal.toString().includes(searchText)
+  //     : false;
+  //   // const discountMatch = order.discount
+  //   //   ? order.discount.toString().includes(searchText)
+  //   //   : false;
+  //   const shippingMatch = order.shippingCharges
+  //     ? order.shippingCharges.toString().includes(searchText)
+  //     : false;
+  //   const totalMatch = order.total
+  //     ? order.total.toString().includes(searchText)
+  //     : false;
+  //   const statusMatch = order.status
+  //     ? order.status.toLowerCase().includes(searchText.toLowerCase())
+  //     : false;
+
+  //   const orderIdMatch = order._id
+  //     ? order._id.toLowerCase().includes(searchText.toLowerCase())
+  //     : false;
+
+  //   const isMatch =
+  //     // nameMatch ||
+  //     orderDateMatch ||
+  //     subtotalMatch ||
+  //     // discountMatch ||
+  //     shippingMatch ||
+  //     totalMatch ||
+  //     statusMatch ||
+  //     orderIdMatch;
+
+  //   // Filter based on selected status
+  //   const statusFilterMatch =
+  //     selectedStatusFilter === "None" || order.status === selectedStatusFilter;
+
+  //   // Filter based on date range
+  //   const orderDate = new Date(order.createdAt);
+  //   const isAfterFromDate =
+  //     !fromDate ||
+  //     new Date(
+  //       orderDate.getFullYear(),
+  //       orderDate.getMonth(),
+  //       orderDate.getDate()
+  //     ) >= new Date(fromDate);
+  //   const isBeforeOrEqualToToDate =
+  //     !toDate ||
+  //     new Date(
+  //       orderDate.getFullYear(),
+  //       orderDate.getMonth(),
+  //       orderDate.getDate()
+  //     ) <= new Date(toDate); // Adjusted here
+
+  //   // If no date is selected or if searchText is not empty, include all orders
+  //   if (
+  //     !fromDate &&
+  //     !toDate &&
+  //     (searchText.trim() === "" || selectedStatusFilter === "None")
+  //   ) {
+  //     return isMatch;
+  //   }
+
+  //   // If a date range is selected, filter orders within the range
+  //   return (
+  //     isMatch && statusFilterMatch && isAfterFromDate && isBeforeOrEqualToToDate
+  //   );
+  // });
+
   const filteredOrders = orders.filter((order) => {
-    // const nameMatch = order.user?.name
-    //   .toLowerCase()
-    //   .includes(searchText.toLowerCase());
+    // Search conditions
+    const nameMatch = order.user?.name
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
     const orderDateMatch = order.createdAt
       ? formatDate(order.createdAt).includes(searchText)
       : false;
@@ -522,21 +595,30 @@ export default function EnhancedTable() {
     const statusMatch = order.status
       ? order.status.toLowerCase().includes(searchText.toLowerCase())
       : false;
+    const orderIdMatch = order._id
+      ? order._id.toLowerCase().includes(searchText.toLowerCase())
+      : false;
 
+    // Combine search text filters
     const isMatch =
-      // nameMatch ||
+      nameMatch ||
       orderDateMatch ||
       subtotalMatch ||
       // discountMatch ||
       shippingMatch ||
       totalMatch ||
-      statusMatch;
+      statusMatch ||
+      orderIdMatch;
 
-    // Filter based on selected status
+    // Status filter - For any status except "Cancelled", isCancelled should be false
     const statusFilterMatch =
-      selectedStatusFilter === "None" || order.status === selectedStatusFilter;
+      selectedStatusFilter === "None" ||
+      (selectedStatusFilter === "Cancelled" && order.isCancelled) ||
+      (selectedStatusFilter !== "Cancelled" &&
+        order.status === selectedStatusFilter &&
+        order.isCancelled === false);
 
-    // Filter based on date range
+    // Date range filter
     const orderDate = new Date(order.createdAt);
     const isAfterFromDate =
       !fromDate ||
@@ -551,18 +633,9 @@ export default function EnhancedTable() {
         orderDate.getFullYear(),
         orderDate.getMonth(),
         orderDate.getDate()
-      ) <= new Date(toDate); // Adjusted here
+      ) <= new Date(toDate);
 
-    // If no date is selected or if searchText is not empty, include all orders
-    if (
-      !fromDate &&
-      !toDate &&
-      (searchText.trim() === "" || selectedStatusFilter === "None")
-    ) {
-      return isMatch;
-    }
-
-    // If a date range is selected, filter orders within the range
+    // Final condition combining all filters
     return (
       isMatch && statusFilterMatch && isAfterFromDate && isBeforeOrEqualToToDate
     );
@@ -576,6 +649,13 @@ export default function EnhancedTable() {
     document.execCommand("copy");
     document.body.removeChild(textarea);
     toast.info("Order ID copied to clipboard");
+  };
+
+  const clearAllFilters = () => {
+    setSearchText(""); // Clear the search text
+    setSelectedStatusFilter("None"); // Reset the status filter to "None"
+    setFromDate(null); // Reset the from date filter
+    setToDate(null); // Reset the to date filter
   };
 
   return (
@@ -661,18 +741,28 @@ export default function EnhancedTable() {
                   <SearchIcon />
                 </IconButton>
               </Paper>
-              <Box sx={{ ml: 2 }}>
+              {/* <Box sx={{ ml: 2 }}>
                 <InputBase
                   type="date"
                   onChange={handleDateChange}
                   sx={{ width: 180 }}
                   inputProps={{ "aria-label": "select date" }}
                 />
-              </Box>
+              </Box> */}
             </>
           )}
 
-          {selected.length > 0 ? (
+          <Tooltip title="Clear filter">
+            <IconButton
+              onClick={clearAllFilters}
+              sx={{ p: "10px" }}
+              aria-label="clear filter"
+            >
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
+
+          {/* {selected.length > 0 ? (
             <Tooltip title="Delete">
               <IconButton>
                 <DeleteIcon />
@@ -688,7 +778,7 @@ export default function EnhancedTable() {
                 <ClearIcon />
               </IconButton>
             </Tooltip>
-          )}
+          )} */}
         </Toolbar>
 
         <TableContainer>
@@ -916,7 +1006,7 @@ export default function EnhancedTable() {
                         <strong style={{ color: "black" }}>
                           Cancelled Reason:{" "}
                         </strong>{" "}
-                        {selectedOrderDetails.cancelledReason}
+                        {selectedOrderDetails.customCancelReason}
                       </Typography>
                     </Box>
                   )}

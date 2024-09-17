@@ -17,6 +17,7 @@ import {
   Typography,
   Card,
   CardContent,
+  InputAdornment
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ProductList from "./ProductManagementTable";
@@ -279,7 +280,7 @@ const ProductManagement = () => {
                       p: 1,
                       fontSize: "40px",
                       borderRadius: "10px",
-                      marginBottom: "12%"
+                      marginBottom: "12%",
                     }}
                   />
                   <Typography
@@ -293,21 +294,20 @@ const ProductManagement = () => {
                       style={{ fontWeight: "500", color: "black" }}
                     >
                       {products && products.length}
-                      <span
+                      {/* <span
                         style={{
                           fontSize: "12px",
                           color: "green",
                           marginLeft: "4px",
                         }}
                       >
-                        {/* Calculate the percentage based on the total count of products */}
                         {products &&
                           products.length > 0 &&
                           `+${(
                             (products.length / products.length) *
                             100
                           ).toFixed(2)}%`}
-                      </span>
+                      </span> */}
                     </Typography>
                   </Typography>
                 </Box>

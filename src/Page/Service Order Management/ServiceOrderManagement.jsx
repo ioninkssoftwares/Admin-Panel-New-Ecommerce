@@ -315,11 +315,11 @@ export default function ServiceOrderManagement() {
       "OrderId",
       "Customer name",
       "Ordered Date",
-      "Product Id",
-      "Quantity",
-      "Sub Total",
-      "Shipping Charges",
-      "Discount",
+      "Service Id",
+      // "Quantity",
+      // "Sub Total",
+      // "Shipping Charges",
+      // "Discount",
       "Total",
       "Address",
       "City",
@@ -393,15 +393,15 @@ export default function ServiceOrderManagement() {
       <SideBar />
       <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: "55px" }}>
         <Box sx={{ marginTop: "1rem" }}>
-          {/* <Button
+          <Button
             // onClick={handleOpenOrderSummary}
             onClick={exportToExcel}
             sx={{ background: "orange" }}
             variant="contained"
           >
-            SErvice Order Summary
+            Export Report
           </Button>
-          <Button
+          {/* <Button
             onClick={handleCreateOrder}
             sx={{ background: "orange", ml: 2 }}
             variant="contained"
@@ -457,21 +457,25 @@ export default function ServiceOrderManagement() {
                   <br />
                   <Typography
                     paragraph
-                    style={{ fontWeight: "500", color: "black" }}
+                    style={{
+                      fontWeight: "500",
+                      color: "black",
+                      textAlign: "center",
+                    }}
                   >
                     {orders && orders.length}
-                    <span
+                    {/* <span
                       style={{
                         fontSize: "12px",
                         color: "green",
                         marginLeft: "4px",
                       }}
                     >
-                      {/* Calculate the percentage based on the total count of users */}
+               
                       {orders &&
                         orders.length > 0 &&
                         `+${deliveredPercentage}%`}
-                    </span>
+                    </span> */}
                   </Typography>
                 </Typography>
               </Box>
@@ -537,7 +541,7 @@ export default function ServiceOrderManagement() {
             </div>
 
             {/* Container for Returned Orders */}
-            <div
+            {/* <div
               style={{ flex: "1", marginRight: "1rem", alignContent: "center" }}
             >
               <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
@@ -552,7 +556,7 @@ export default function ServiceOrderManagement() {
                       .length}
                 </Typography>
               </Typography>
-            </div>
+            </div> */}
 
             {/* Container for Cancelled Orders */}
             <div style={{ flex: "1", alignContent: "center" }}>
@@ -563,9 +567,9 @@ export default function ServiceOrderManagement() {
                   paragraph
                   style={{ fontWeight: "500", color: "black" }}
                 >
-                  {orders &&
-                    orders.filter((product) => product.status === "Cancelled")
-                      .length}
+                  {orders
+                    ? orders.filter((order) => order.isCancelled).length
+                    : 0}
                 </Typography>
               </Typography>
             </div>
