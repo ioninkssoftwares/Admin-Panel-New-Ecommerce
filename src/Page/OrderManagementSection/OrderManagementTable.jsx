@@ -328,7 +328,6 @@ const statusOptions = [
   "Processing",
   "Shipped",
   "Delivered",
-  "Returned",
   "Cancelled",
 ];
 
@@ -355,7 +354,7 @@ export default function EnhancedTable() {
   const [openDateRangePicker, setOpenDateRangePicker] = useState(false);
 
   const [openIPopup, setOpenIPopup] = useState(false);
-  if(selectedOrderDetails) console.log(selectedOrderDetails,"jkjkjk")
+  if (selectedOrderDetails) console.log(selectedOrderDetails, "jkjkjk");
 
   const handleInvoice = () => {
     setOpenIPopup(true);
@@ -443,13 +442,13 @@ export default function EnhancedTable() {
       setOrders(sortedOrders);
       return;
     }
-if (property === "mobileNo") {
-  const sortedOrders = stableSort(orders, (a, b) =>
-    order === "asc" ? a.mobileNo - b.mobileNo : b.mobileNo - a.mobileNo
-  );
-  setOrders(sortedOrders);
-  return;
-}
+    if (property === "mobileNo") {
+      const sortedOrders = stableSort(orders, (a, b) =>
+        order === "asc" ? a.mobileNo - b.mobileNo : b.mobileNo - a.mobileNo
+      );
+      setOrders(sortedOrders);
+      return;
+    }
 
     // For sorting by other columns
     const sortedOrders = stableSort(orders, getComparator(order, property));
@@ -505,7 +504,80 @@ if (property === "mobileNo") {
 
   // Filtering logic with date range
   // Filtering logic with date range
+  // const filteredOrders = orders.filter((order) => {
+  //   const nameMatch = order.user?.name
+  //     .toLowerCase()
+  //     .includes(searchText.toLowerCase());
+  //   const orderDateMatch = order.createdAt
+  //     ? formatDate(order.createdAt).includes(searchText)
+  //     : false;
+  //   const subtotalMatch = order.subtotal
+  //     ? order.subtotal.toString().includes(searchText)
+  //     : false;
+  //   const discountMatch = order.discount
+  //     ? order.discount.toString().includes(searchText)
+  //     : false;
+  //   const shippingMatch = order.shippingCharges
+  //     ? order.shippingCharges.toString().includes(searchText)
+  //     : false;
+  //   const totalMatch = order.total
+  //     ? order.total.toString().includes(searchText)
+  //     : false;
+  //   const statusMatch = order.status
+  //     ? order.status.toLowerCase().includes(searchText.toLowerCase())
+  //     : false;
+  //   const orderIdMatch = order._id
+  //     ? order._id.toLowerCase().includes(searchText.toLowerCase())
+  //     : false;
+
+  //   const isMatch =
+  //     nameMatch ||
+  //     orderDateMatch ||
+  //     subtotalMatch ||
+  //     discountMatch ||
+  //     shippingMatch ||
+  //     totalMatch ||
+  //     statusMatch ||
+  //     orderIdMatch;
+
+  //   // Filter based on selected status
+  //   const statusFilterMatch =
+  //     selectedStatusFilter === "None" || order.status === selectedStatusFilter;
+
+  //   // Filter based on date range
+  //   const orderDate = new Date(order.createdAt);
+  //   const isAfterFromDate =
+  //     !fromDate ||
+  //     new Date(
+  //       orderDate.getFullYear(),
+  //       orderDate.getMonth(),
+  //       orderDate.getDate()
+  //     ) >= new Date(fromDate);
+  //   const isBeforeOrEqualToToDate =
+  //     !toDate ||
+  //     new Date(
+  //       orderDate.getFullYear(),
+  //       orderDate.getMonth(),
+  //       orderDate.getDate()
+  //     ) <= new Date(toDate); // Adjusted here
+
+  //   // If no date is selected or if searchText is not empty, include all orders
+  //   if (
+  //     !fromDate &&
+  //     !toDate &&
+  //     (searchText.trim() === "" || selectedStatusFilter === "None")
+  //   ) {
+  //     return isMatch;
+  //   }
+
+  //   // If a date range is selected, filter orders within the range
+  //   return (
+  //     isMatch && statusFilterMatch && isAfterFromDate && isBeforeOrEqualToToDate
+  //   );
+  // });
+
   const filteredOrders = orders.filter((order) => {
+    // Search conditions
     const nameMatch = order.user?.name
       .toLowerCase()
       .includes(searchText.toLowerCase());
@@ -527,7 +599,11 @@ if (property === "mobileNo") {
     const statusMatch = order.status
       ? order.status.toLowerCase().includes(searchText.toLowerCase())
       : false;
+    const orderIdMatch = order._id
+      ? order._id.toLowerCase().includes(searchText.toLowerCase())
+      : false;
 
+    // Combine search text filters
     const isMatch =
       nameMatch ||
       orderDateMatch ||
@@ -535,13 +611,18 @@ if (property === "mobileNo") {
       discountMatch ||
       shippingMatch ||
       totalMatch ||
-      statusMatch;
+      statusMatch ||
+      orderIdMatch;
 
-    // Filter based on selected status
+    // Status filter - For any status except "Cancelled", isCancelled should be false
     const statusFilterMatch =
-      selectedStatusFilter === "None" || order.status === selectedStatusFilter;
+      selectedStatusFilter === "None" ||
+      (selectedStatusFilter === "Cancelled" && order.isCancelled) ||
+      (selectedStatusFilter !== "Cancelled" &&
+        order.status === selectedStatusFilter &&
+        order.isCancelled === false);
 
-    // Filter based on date range
+    // Date range filter
     const orderDate = new Date(order.createdAt);
     const isAfterFromDate =
       !fromDate ||
@@ -556,22 +637,15 @@ if (property === "mobileNo") {
         orderDate.getFullYear(),
         orderDate.getMonth(),
         orderDate.getDate()
-      ) <= new Date(toDate); // Adjusted here
+      ) <= new Date(toDate);
 
-    // If no date is selected or if searchText is not empty, include all orders
-    if (
-      !fromDate &&
-      !toDate &&
-      (searchText.trim() === "" || selectedStatusFilter === "None")
-    ) {
-      return isMatch;
-    }
-
-    // If a date range is selected, filter orders within the range
+    // Final condition combining all filters
     return (
       isMatch && statusFilterMatch && isAfterFromDate && isBeforeOrEqualToToDate
     );
   });
+
+  if (filteredOrders) console.log(filteredOrders, "dklfjdlksjlk");
 
   const handleCopyOrderID = (orderId) => {
     const textarea = document.createElement("textarea");
@@ -581,6 +655,13 @@ if (property === "mobileNo") {
     document.execCommand("copy");
     document.body.removeChild(textarea);
     toast.info("Order ID copied to clipboard");
+  };
+
+  const clearAllFilters = () => {
+    setSearchText(""); // Clear the search text
+    setSelectedStatusFilter("None"); // Reset the status filter to "None"
+    setFromDate(null); // Reset the from date filter
+    setToDate(null); // Reset the to date filter
   };
 
   return (
@@ -666,18 +747,28 @@ if (property === "mobileNo") {
                   <SearchIcon />
                 </IconButton>
               </Paper>
-              <Box sx={{ ml: 2 }}>
+              {/* <Box sx={{ ml: 2 }}>
                 <InputBase
                   type="date"
                   onChange={handleDateChange}
                   sx={{ width: 180 }}
                   inputProps={{ "aria-label": "select date" }}
                 />
-              </Box>
+              </Box> */}
             </>
           )}
 
-          {selected.length > 0 ? (
+          <Tooltip title="Clear filter">
+            <IconButton
+              onClick={clearAllFilters}
+              sx={{ p: "10px" }}
+              aria-label="clear filter"
+            >
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
+
+          {/* {selected.length > 0 ? (
             <Tooltip title="Delete">
               <IconButton>
                 <DeleteIcon />
@@ -693,7 +784,7 @@ if (property === "mobileNo") {
                 <ClearIcon />
               </IconButton>
             </Tooltip>
-          )}
+          )} */}
         </Toolbar>
 
         <TableContainer>
@@ -704,30 +795,29 @@ if (property === "mobileNo") {
           >
             <TableHead>
               <TableRow>
-{headCells.map((headCell) => (
-  <TableCell
-    key={headCell.id}
-    align={headCell.numeric ? "center" : "left"}
-    padding={headCell.disablePadding ? "none" : "normal"}
-    sortDirection={orderBy === headCell.id ? order : false}
-  >
-    <TableSortLabel
-      active={orderBy === headCell.id}
-      direction={orderBy === headCell.id ? order : "asc"}
-      onClick={() => handleRequestSort(headCell.id)}
-    >
-      {headCell.label}
-      {orderBy === headCell.id ? (
-        <Box component="span" sx={visuallyHidden}>
-          {order === "desc"
-            ? "sorted descending"
-            : "sorted ascending"}
-        </Box>
-      ) : null}
-    </TableSortLabel>
-  </TableCell>
-))}
-
+                {headCells.map((headCell) => (
+                  <TableCell
+                    key={headCell.id}
+                    align={headCell.numeric ? "center" : "left"}
+                    padding={headCell.disablePadding ? "none" : "normal"}
+                    sortDirection={orderBy === headCell.id ? order : false}
+                  >
+                    <TableSortLabel
+                      active={orderBy === headCell.id}
+                      direction={orderBy === headCell.id ? order : "asc"}
+                      onClick={() => handleRequestSort(headCell.id)}
+                    >
+                      {headCell.label}
+                      {orderBy === headCell.id ? (
+                        <Box component="span" sx={visuallyHidden}>
+                          {order === "desc"
+                            ? "sorted descending"
+                            : "sorted ascending"}
+                        </Box>
+                      ) : null}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -788,11 +878,22 @@ if (property === "mobileNo") {
                           {order.shippingCharges}
                         </TableCell>
                         <TableCell align="right">{order.total}</TableCell>
-                        <TableCell
+                        {/* <TableCell
                           style={{ color: getStatusColor(order.status) }}
                         >
                           {order.status}
-                        </TableCell>
+                        </TableCell> */}
+                        {order.isCancelled === true ? (
+                          <TableCell style={{ color: "red" }}>
+                            Cancelled
+                          </TableCell>
+                        ) : (
+                          <TableCell
+                            style={{ color: getStatusColor(order.status) }}
+                          >
+                            {order.status}
+                          </TableCell>
+                        )}
                         <TableCell>
                           <IconButton
                             aria-label="view details"
@@ -873,21 +974,27 @@ if (property === "mobileNo") {
                       <strong>Order Date:</strong>{" "}
                       {formatDate(selectedOrderDetails.createdAt)}
                     </Typography>
-                    <Typography variant="body1">
-                      <strong>Status:</strong>{" "}
-                      <span
-                        style={{
-                          backgroundColor: getStatusColor(
-                            selectedOrderDetails.status
-                          ),
-                          padding: "2px 8px",
-                          borderRadius: "4px",
-                          color: "#fff",
-                        }}
-                      >
-                        {selectedOrderDetails.status}
-                      </span>
-                    </Typography>
+                    {selectedOrderDetails?.isCancelled === true ? (
+                      <Typography variant="body1">
+                        <strong>Status:</strong> <span>Cancelled</span>
+                      </Typography>
+                    ) : (
+                      <Typography variant="body1">
+                        <strong>Status:</strong>{" "}
+                        <span
+                          style={{
+                            backgroundColor: getStatusColor(
+                              selectedOrderDetails.status
+                            ),
+                            padding: "2px 8px",
+                            borderRadius: "4px",
+                            color: "#fff",
+                          }}
+                        >
+                          {selectedOrderDetails.status}
+                        </span>
+                      </Typography>
+                    )}
 
                     <IconButton
                       aria-label="view details"
@@ -896,6 +1003,29 @@ if (property === "mobileNo") {
                       <PrintIcon />
                     </IconButton>
                   </Box>
+
+                  {selectedOrderDetails?.isCancelled === true && (
+                    <Box
+                      sx={{
+                        padding: "10px",
+                        border: "1px solid #e0e0e0",
+                        borderRadius: "8px",
+                        backgroundColor: "#fafafa",
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginTop: "25px",
+                      }}
+                    >
+                      <Typography variant="body1" color="red">
+                        <strong style={{ color: "black" }}>
+                          Cancelled Reason:{" "}
+                        </strong>{" "}
+                        {selectedOrderDetails.cancelledReason}
+                      </Typography>
+                    </Box>
+                  )}
 
                   <Box
                     sx={{
@@ -928,7 +1058,7 @@ if (property === "mobileNo") {
                           <AccountCircleIcon />
                         </IconButton>
                         <Typography variant="body1" sx={{ marginLeft: "3%" }}>
-                          <b>{selectedOrderDetails.user.name}</b>
+                          <b>{selectedOrderDetails?.user?.name}</b>
                         </Typography>
                       </Box>
                       <Box
@@ -1278,7 +1408,7 @@ if (property === "mobileNo") {
                         </IconButton>
                         <Typography variant="body1" sx={{ marginLeft: "3%" }}>
                           Vendor :
-                          <b>{selectedOrderDetails.product.vendorId.name}</b>
+                          <b>{selectedOrderDetails?.product?.vendorId?.name}</b>
                         </Typography>
                       </Box>
                       <Box
@@ -1305,7 +1435,7 @@ if (property === "mobileNo") {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.product.vendorId.email
+                                {selectedOrderDetails?.product?.vendorId?.email
                                   ? selectedOrderDetails.product.vendorId.email
                                   : "N/A"}
                               </strong>
@@ -1320,7 +1450,8 @@ if (property === "mobileNo") {
                             </Typography>
                             <Typography variant="body1">
                               <strong>
-                                {selectedOrderDetails.product.vendorId.mobileNo
+                                {selectedOrderDetails?.product?.vendorId
+                                  ?.mobileNo
                                   ? selectedOrderDetails.product.vendorId
                                       .mobileNo
                                   : "N/A"}

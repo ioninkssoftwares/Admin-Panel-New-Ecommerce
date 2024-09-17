@@ -26,6 +26,7 @@ import Cookies from "js-cookie";
 import SideBar from "../../Component/SideBar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const BannerComponent = () => {
   const [loading, setLoading] = useState(false);
@@ -39,6 +40,8 @@ const BannerComponent = () => {
   const [croppedImages, setCroppedImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cropModalOpen, setCropModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories();
@@ -76,12 +79,8 @@ const BannerComponent = () => {
   };
 
   const handleSubmit = async () => {
-    if (
-      filesToUpload.length < 1 ||
-      selectedCategories.length < 1 ||
-      !selectedOption
-    ) {
-      toast.error("Please select at least 1 image, category, and banner type");
+    if (filesToUpload.length < 1) {
+      toast.error("Please select at least 1 image");
       return;
     }
 
@@ -93,13 +92,29 @@ const BannerComponent = () => {
     });
     const urlsArray = [];
 
+    // selectedCategories.forEach((category, index) => {
+    //   urlsArray.push(urls[index] || "");
+    // });
+
+    // Add hardcoded "mainbanner" and check for empty URLs
     selectedCategories.forEach((category, index) => {
-      urlsArray.push(urls[index] || "");
+      const url = urls[index] || "";
+      if (!url) {
+        toast.error("URL should not be empty for any category");
+        setLoading(false);
+        return;
+      }
+      urlsArray.push(url);
     });
+
+    // Stop further execution if there's an empty URL
+    if (urlsArray.length !== selectedCategories.length) {
+      return; // Exit early if any URL is empty
+    }
 
     const urlsJson = JSON.stringify(urlsArray);
     formData.append("linkUrl", urlsJson);
-    formData.append("subCategory", selectedOption);
+    formData.append("subCategory", "mainbanner");
 
     try {
       const token = Cookies.get("token");
@@ -119,7 +134,7 @@ const BannerComponent = () => {
 
       if (res.ok) {
         toast.success("Banner added successfully");
-        window.location.href = "/inventorymanagement";
+        navigate("/inventorymanagement");
       } else {
         toast.error(data.message || "Failed to add banner");
       }
@@ -270,7 +285,7 @@ const BannerComponent = () => {
           <Box width="100%" marginBottom="20px">
             {renderImages()}
           </Box>
-          <FormControl variant="outlined" fullWidth>
+          {/* <FormControl variant="outlined" fullWidth>
             <InputLabel id="banner-type-label">Banner Type</InputLabel>
             <Select
               labelId="banner-type-label"
@@ -284,7 +299,7 @@ const BannerComponent = () => {
               <MenuItem value="mainbanner">Main Banner</MenuItem>
               <MenuItem value="productbanner">Product Banner</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
           <Button
             onClick={handleSubmit}
             variant="contained"

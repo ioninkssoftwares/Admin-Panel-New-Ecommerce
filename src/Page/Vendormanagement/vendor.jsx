@@ -27,6 +27,7 @@ import {
   Paper,
   IconButton,
   DialogContentText,
+  TablePagination,
 } from "@mui/material";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from "react-toastify";
@@ -96,6 +97,24 @@ const VendorManagement = () => {
   const [viewingVendorData, setViewingVendorData] = useState(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedVendorDetails, setSelectedVendorDetails] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // Handle pagination changes
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset page when rows per page changes
+  };
+
+  // Slice the vendors data for the current page
+  const paginatedVendors = vendors.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   useEffect(() => {
     fetchVendors();
@@ -1003,7 +1022,7 @@ const VendorManagement = () => {
                 <>
                   <Typography variant="h6">Transactions:</Typography>
                   {selectedVendor.withdrawalInfo &&
-                    selectedVendor.withdrawalInfo.length > 0 ? (
+                  selectedVendor.withdrawalInfo.length > 0 ? (
                     <TableContainer component={Paper}>
                       <Table>
                         <TableHead>
@@ -1109,44 +1128,60 @@ const VendorManagement = () => {
         {loading ? (
           <CircularProgress />
         ) : (
-          <TableContainer component={Paper} className="mt-4">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Id</TableCell>
-                  <TableCell>Last Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Mobile Number</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {vendors.map((vendor) => (
-                  <TableRow key={vendor._id}>
-                    <TableCell>{vendor.name}</TableCell>
-                    <TableCell>{vendor._id}</TableCell>
-                    <TableCell>{vendor.lastName}</TableCell>
-                    <TableCell>{vendor.email}</TableCell>
-                    <TableCell>{vendor.mobileNo}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={() => handleOpenEditDialog(vendor._id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleViewVendor(vendor._id)}>
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton onClick={() => openDeleteDialog(vendor._id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+          <>
+            <TableContainer component={Paper} className="mt-4">
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Id</TableCell>
+                    <TableCell>Last Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Mobile Number</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {vendors.map((vendor) => (
+                    <TableRow key={vendor._id}>
+                      <TableCell>{vendor.name}</TableCell>
+                      <TableCell>{vendor._id}</TableCell>
+                      <TableCell>{vendor.lastName}</TableCell>
+                      <TableCell>{vendor.email}</TableCell>
+                      <TableCell>{vendor.mobileNo}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() => handleOpenEditDialog(vendor._id)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleViewVendor(vendor._id)}
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => openDeleteDialog(vendor._id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {/* Pagination controls */}
+            <TablePagination
+              component="div"
+              count={vendors.length} // Total number of items
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 25]}
+            />
+          </>
         )}
         <Dialog
           open={openCreateDialog}

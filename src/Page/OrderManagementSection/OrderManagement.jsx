@@ -431,15 +431,16 @@ export default function OrderManagement() {
             sx={{ background: "orange" }}
             variant="contained"
           >
-            Order Summary
+            Export Report
           </Button>
-          <Button
+
+          {/*  <Button
             onClick={handleCreateOrder}
             sx={{ background: "orange", ml: 2 }}
             variant="contained"
           >
             Create Order
-          </Button>
+          </Button> */}
         </Box>
         <div
           style={{
@@ -448,141 +449,162 @@ export default function OrderManagement() {
             alignItems: "center",
           }}
         >
-         <div
-  className="ProductManagementProductDetailsSecond00"
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "2%",
-    width: "100%",
-    marginBottom: "2%",
-  }}
->
-  {/* Container for the icon and all order statistics */}
-  <div style={{ flex: "1", marginRight: "1rem" , alignContent:"center"}}>
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "1rem",
-      }}
-    >
-      <PeopleOutlineIcon
-        sx={{
-          color: "black",
-          background: "#ffffcc",
-          p: 1,
-          fontSize: "40px",
-          borderRadius: "10px",
-          marginBottom:"12%"
-        }}
-      />
-      <Typography variant="h6" sx={{ fontSize: "16px", color: "black" }}>
-        All Orders
-        <br />
-        <Typography
-          paragraph
-          style={{ fontWeight: "500", color: "black" }}
-        >
-          {orders && orders.length}
-          <span
+          <div
+            className="ProductManagementProductDetailsSecond00"
             style={{
-              fontSize: "12px",
-              color: "green",
-              marginLeft: "4px",
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "2%",
+              width: "100%",
+              marginBottom: "2%",
             }}
           >
-            {/* Calculate the percentage based on the total count of users */}
-            {orders && orders.length > 0 && `+${deliveredPercentage}%`}
-          </span>
-        </Typography>
-      </Typography>
-    </Box>
-  </div>
+            {/* Container for the icon and all order statistics */}
+            <div
+              style={{ flex: "1", marginRight: "1rem", alignContent: "center" }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                <PeopleOutlineIcon
+                  sx={{
+                    color: "black",
+                    background: "#ffffcc",
+                    p: 1,
+                    fontSize: "40px",
+                    borderRadius: "10px",
+                    marginBottom: "12%",
+                  }}
+                />
+                <Typography
+                  variant="h6"
+                  sx={{ fontSize: "16px", color: "black" }}
+                >
+                  All Orders
+                  <br />
+                  <Typography
+                    paragraph
+                    style={{
+                      fontWeight: "500",
+                      color: "black",
+                      textAlign: "center",
+                    }}
+                  >
+                    {orders && orders.length}
+                    {/* <span
+                      style={{
+                        fontSize: "12px",
+                        color: "green",
+                        marginLeft: "4px",
+                      }}
+                    >
+                      {orders &&
+                        orders.length > 0 &&
+                        `+${deliveredPercentage}%`}
+                    </span> */}
+                  </Typography>
+                </Typography>
+              </Box>
+            </div>
 
-  {/* Container for Delivered Orders */}
-  <div style={{ flex: "1", marginRight: "1rem" , alignContent:"center", alignContent:"center"}}>
-    <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
-      Delivered Orders
-      <br />
-      <Typography
-        paragraph
-        style={{ fontWeight: "500", color: "black" }}
-      >
-        {orders &&
-          orders.filter((product) => product.status === "Delivered")
-            .length}
-      </Typography>
-    </Typography>
-  </div>
+            {/* Container for Delivered Orders */}
+            <div
+              style={{
+                flex: "1",
+                marginRight: "1rem",
+                alignContent: "center",
+                alignContent: "center",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
+                Delivered Orders
+                <br />
+                <Typography
+                  paragraph
+                  style={{ fontWeight: "500", color: "black" }}
+                >
+                  {orders &&
+                    orders.filter((product) => product.status === "Delivered")
+                      .length}
+                </Typography>
+              </Typography>
+            </div>
 
-  {/* Container for Shipped Orders */}
-  <div style={{ flex: "1", marginRight: "1rem" , alignContent:"center"}}>
-    <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
-      Shipped Orders
-      <br />
-      <Typography
-        paragraph
-        style={{ fontWeight: "500", color: "black" }}
-      >
-        {orders &&
-          orders.filter((product) => product.status === "Shipped")
-            .length}
-      </Typography>
-    </Typography>
-  </div>
+            {/* Container for Shipped Orders */}
+            <div
+              style={{ flex: "1", marginRight: "1rem", alignContent: "center" }}
+            >
+              <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
+                Shipped Orders
+                <br />
+                <Typography
+                  paragraph
+                  style={{ fontWeight: "500", color: "black" }}
+                >
+                  {orders &&
+                    orders.filter((product) => product.status === "Shipped")
+                      .length}
+                </Typography>
+              </Typography>
+            </div>
 
-  {/* Container for Processing Orders */}
-  <div style={{ flex: "1", marginRight: "1rem" , alignContent:"center"}}>
-    <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
-      Processing Orders
-      <br />
-      <Typography
-        paragraph
-        style={{ fontWeight: "500", color: "black" }}
-      >
-        {orders &&
-          orders.filter((product) => product.status === "Processing")
-            .length}
-      </Typography>
-    </Typography>
-  </div>
+            {/* Container for Processing Orders */}
+            <div
+              style={{ flex: "1", marginRight: "1rem", alignContent: "center" }}
+            >
+              <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
+                Processing Orders
+                <br />
+                <Typography
+                  paragraph
+                  style={{ fontWeight: "500", color: "black" }}
+                >
+                  {orders &&
+                    orders.filter((product) => product.status === "Processing")
+                      .length}
+                </Typography>
+              </Typography>
+            </div>
 
-  {/* Container for Returned Orders */}
-  <div style={{ flex: "1", marginRight: "1rem" , alignContent:"center"}}>
-    <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
-      Returned Orders
-      <br />
-      <Typography
-        paragraph
-        style={{ fontWeight: "500", color: "black" }}
-      >
-        {orders &&
-          orders.filter((product) => product.status === "Returned")
-            .length}
-      </Typography>
-    </Typography>
-  </div>
+            {/* Container for Returned Orders */}
+            {/* <div
+              style={{ flex: "1", marginRight: "1rem", alignContent: "center" }}
+            >
+              <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
+                Returned Orders
+                <br />
+                <Typography
+                  paragraph
+                  style={{ fontWeight: "500", color: "black" }}
+                >
+                  {orders &&
+                    orders.filter((product) => product.status === "Returned")
+                      .length}
+                </Typography>
+              </Typography>
+            </div> */}
 
-  {/* Container for Cancelled Orders */}
-  <div style={{ flex: "1", alignContent:"center"}}>
-    <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
-      Cancelled Orders
-      <br />
-      <Typography
-        paragraph
-        style={{ fontWeight: "500", color: "black" }}
-      >
-        {orders &&
-          orders.filter((product) => product.status === "Cancelled")
-            .length}
-      </Typography>
-    </Typography>
-  </div>
-</div>
-
+            {/* Container for Cancelled Orders */}
+            <div style={{ flex: "1", alignContent: "center" }}>
+              <Typography variant="h6" sx={{ fontSize: "14px", color: "grey" }}>
+                Cancelled Orders
+              </Typography>
+              <Typography
+                paragraph
+                style={{ fontWeight: "500", color: "black" }}
+              >
+                {orders
+                  ? orders.filter((order) => order.isCancelled).length
+                  : 0}
+              </Typography>
+            </div>
+          </div>
 
           {/* <div
             className="ProductManagementProductDetailsSecond00"
