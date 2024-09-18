@@ -566,8 +566,11 @@ export default function OrderManagement() {
                   style={{ fontWeight: "500", color: "black" }}
                 >
                   {orders &&
-                    orders.filter((product) => product.status === "Processing")
-                      .length}
+                    orders.filter(
+                      (product) =>
+                        product.status === "Processing" &&
+                        product.isCancelled === false
+                    ).length}
                 </Typography>
               </Typography>
             </div>
