@@ -461,7 +461,7 @@ const CategoryComponent = () => {
     setSearchQuery(e.target.value);
   };
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", marginTop: "100px" }}>
       <ToastContainer />
       <SideBar />
       <div
@@ -471,6 +471,7 @@ const CategoryComponent = () => {
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
+          // border: "4px solid #ccc",
         }}
       >
         <div>
@@ -548,7 +549,7 @@ const CategoryComponent = () => {
           </Button>
         </div>
         <div>
-          <h3>Create New Subcategory</h3>
+          <h3 style={{ marginTop: "20px" }}>Create New Subcategory</h3>
           <FormControl fullWidth variant="outlined" margin="normal">
             <InputLabel id="category-select-label">Category</InputLabel>
             <Select

@@ -35,7 +35,6 @@ export default function Dashboard() {
           }}
         >
           <Typography variant="h5">Welcome back, Admin</Typography>
-         
         </Box>
 
         <Box
@@ -47,7 +46,7 @@ export default function Dashboard() {
           }}
         >
           <BarChartOne />
-          <BarChartTwo/>
+          <BarChartTwo />
           <CardChartSix />
           {/* <RangeChartFour /> */}
           {/* <BarChartTwo />
@@ -61,9 +60,7 @@ export default function Dashboard() {
             marginBottom: "15px",
           }}
         >
-          
           {/* <TableChartFive /> */}
-         
         </Box>
 
         {/* <Box>
