@@ -891,12 +891,13 @@ const StaffManagement = () => {
                           >
                             <VisibilityIcon />
                           </IconButton>
-                          <IconButton
+                          {/*        <IconButton
                             color="primary"
                             onClick={() => handleEdit(staff)}
                           >
                             <EditIcon />
                           </IconButton>
+                          */}
                           <IconButton
                             color="secondary"
                             onClick={() => handleConfirmDelete(staff)}
