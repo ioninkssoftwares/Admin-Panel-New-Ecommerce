@@ -299,7 +299,12 @@ const EditProduct = () => {
 
   // const handleDiscountCoinsChange = (e) => {
   //   const { value } = e.target;
-  //   if (/^\d*\.?\d*$/.test(value) && Number(value) <= Number(product.price)) {
+
+  //   // Allow only numbers and decimals up to two decimal places
+  //   if (
+  //     /^\d*\.?\d{0,2}$/.test(value) &&
+  //     Number(value) <= Number(product.price)
+  //   ) {
   //     setProduct((prevProduct) => ({
   //       ...prevProduct,
   //       discountCoins: value,
@@ -310,9 +315,9 @@ const EditProduct = () => {
   const handleDiscountCoinsChange = (e) => {
     const { value } = e.target;
 
-    // Allow only numbers and decimals up to two decimal places
+    // Allow up to 5 digits before the decimal and up to 2 digits after the decimal
     if (
-      /^\d*\.?\d{0,2}$/.test(value) &&
+      /^\d{0,5}(\.\d{0,2})?$/.test(value) &&
       Number(value) <= Number(product.price)
     ) {
       setProduct((prevProduct) => ({
@@ -799,7 +804,7 @@ const EditProduct = () => {
                 value={product.discountCoins}
                 onChange={handleDiscountCoinsChange}
                 inputProps={{
-                  maxLength: 6, // Limit the input to 2 characters
+                  maxLength: 8, // Limit the input to 2 characters
                 }}
                 style={{ margin: "1%" }}
               />

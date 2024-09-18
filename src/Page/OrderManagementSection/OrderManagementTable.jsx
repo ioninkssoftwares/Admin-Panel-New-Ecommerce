@@ -1022,7 +1022,7 @@ export default function EnhancedTable() {
                         <strong style={{ color: "black" }}>
                           Cancelled Reason:{" "}
                         </strong>{" "}
-                        {selectedOrderDetails.cancelledReason}
+                        {selectedOrderDetails.customCancelReason}
                       </Typography>
                     </Box>
                   )}
@@ -1468,9 +1468,16 @@ export default function EnhancedTable() {
                       <TableHead>
                         <TableRow>
                           <TableCell>Product Name</TableCell>
+                          {selectedOrderDetails.color && (
+                            <TableCell>Color</TableCell>
+                          )}
+                          {selectedOrderDetails.size && (
+                            <TableCell>SIze</TableCell>
+                          )}
                           <TableCell>Price</TableCell>
                           <TableCell>Quantity</TableCell>
                           <TableCell>Subtotal</TableCell>
+
                           <TableCell>Discount</TableCell>
                           <TableCell>Shipping Charges</TableCell>
                           <TableCell>Total Fare</TableCell>
@@ -1485,6 +1492,12 @@ export default function EnhancedTable() {
                               ? selectedOrderDetails.product.name
                               : "N/A"}
                           </TableCell>
+                          {selectedOrderDetails.color && (
+                            <TableCell>{selectedOrderDetails.color}</TableCell>
+                          )}
+                          {selectedOrderDetails.size && (
+                            <TableCell>{selectedOrderDetails.size}</TableCell>
+                          )}
                           <TableCell>
                             {selectedOrderDetails.subtotal &&
                             selectedOrderDetails.quantity
