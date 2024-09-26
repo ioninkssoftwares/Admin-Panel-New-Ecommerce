@@ -217,7 +217,7 @@ const ProductList = () => {
                   {/* <TableCell>₹ {product.price}</TableCell> */}
                   <TableCell>{product.stock}</TableCell>
                   <TableCell>
-                    {product.isVerified === "true" ? (
+                    {product.isVerified === true ? (
                       <p
                         style={{
                           backgroundColor: "#32936F29",
@@ -277,8 +277,12 @@ const ProductList = () => {
           <button onClick={handleDeleteConfirm} autoFocus>
             Delete
           </button>
-          <button style={{ backgroundColor: "#dc3545" }} onClick={handleDeleteCancel}>Cancel</button>
-
+          <button
+            style={{ backgroundColor: "#dc3545" }}
+            onClick={handleDeleteCancel}
+          >
+            Cancel
+          </button>
         </DialogActions>
       </Dialog>
       <ToastContainer />
