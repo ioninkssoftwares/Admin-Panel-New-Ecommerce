@@ -114,7 +114,7 @@ const EditProduct = () => {
           images: data.productImages,
           gstPerc: data.gstPerc,
           hsnCode: data.hsnCode,
-          isVerified: data.isVerified === "true",
+          isVerified: data.isVerified === true,
           adminPerc: data.addationalPrec,
           finalPrice: data.finalPrice,
           freeUserPrice: data.freeUser,
