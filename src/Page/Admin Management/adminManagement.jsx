@@ -27,16 +27,17 @@ import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import SideBar from "../../Component/SideBar"
+import SideBar from "../../Component/SideBar";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 import { useCookies } from "react-cookie";
 import WithdrawalPopup from "../StaffManagement/withdrawalPopup";
+import { formatCurrency } from "../../utils/currencyUtils";
 
 const AdminManagement = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
@@ -49,7 +50,7 @@ const AdminManagement = () => {
   const [withdrawalPopupOpen, setWithdrawalPopupOpen] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
-  if (adminDetails) console.log(adminDetails, "jkhjkkj")
+  if (adminDetails) console.log(adminDetails, "jkhjkkj");
 
   const handleWithdrawPopup = () => {
     setWithdrawalPopupOpen(true);
@@ -57,9 +58,9 @@ const AdminManagement = () => {
 
   const handleWithdrawClosePopup = () => {
     setWithdrawalPopupOpen(false);
-  }
+  };
 
-   const [view, setView] = useState("transactions");
+  const [view, setView] = useState("transactions");
 
   const handleViewChange = (event, newView) => {
     if (newView !== null) {
@@ -77,9 +78,12 @@ const AdminManagement = () => {
 
   const filterByDateRange = (data) => {
     if (!startDate || !endDate) return data;
-    return data.filter(item => {
+    return data.filter((item) => {
       const date = dayjs(item.date);
-      return date.isAfter(dayjs(startDate).subtract(1, 'day')) && date.isBefore(dayjs(endDate).add(1, 'day'));
+      return (
+        date.isAfter(dayjs(startDate).subtract(1, "day")) &&
+        date.isBefore(dayjs(endDate).add(1, "day"))
+      );
     });
   };
 
@@ -88,9 +92,6 @@ const AdminManagement = () => {
 
   // const filteredReferralCoinsByDate = filterByDateRange(sortedReferralCoinss);
   // const filteredWithdrawalInfoByDate = filterByDateRange(sortedWithdrawalInfo);
-
-
-
 
   const fetchStaff = async () => {
     try {
@@ -114,14 +115,11 @@ const AdminManagement = () => {
   const fetchAdminDetails = async () => {
     const token = cookies.token;
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data.success) {
         setAdminDetails(response.data);
       }
@@ -156,12 +154,14 @@ const AdminManagement = () => {
     return sum + staffTotal;
   }, 0);
 
-  const totalPendinggStaffMoney = totalStaffRewardMoney - totalPaidStaffMoney
+  const totalPendinggStaffMoney = totalStaffRewardMoney - totalPaidStaffMoney;
 
-
-  const adminWithdrawalMoney = adminDetails?.user?.withdrawalInfo.reduce((sum, staff) => {
-    return sum + (staff.rewardMoney || 0);
-  }, 0);
+  const adminWithdrawalMoney = adminDetails?.user?.withdrawalInfo.reduce(
+    (sum, staff) => {
+      return sum + (staff.rewardMoney || 0);
+    },
+    0
+  );
 
   const calculateRewardMoney = (referralCoins) => {
     return referralCoins.reduce((sum, coin) => {
@@ -169,13 +169,18 @@ const AdminManagement = () => {
     }, 0);
   };
 
-  const sortedAdminWithdrawalInfo = (adminDetails?.user?.withdrawalInfo || []).slice().reverse();
+  const sortedAdminWithdrawalInfo = (adminDetails?.user?.withdrawalInfo || [])
+    .slice()
+    .reverse();
 
-  const filteredWithdrawalInfoByDate = filterByDateRange(sortedAdminWithdrawalInfo);
+  const filteredWithdrawalInfoByDate = filterByDateRange(
+    sortedAdminWithdrawalInfo
+  );
 
-  const totalWithdrawalAmount = adminDetails?.user?.withdrawalInfo.reduce((sum, transaction) => sum + transaction.totalAmount, 0);
-
-
+  const totalWithdrawalAmount = adminDetails?.user?.withdrawalInfo.reduce(
+    (sum, transaction) => sum + transaction.totalAmount,
+    0
+  );
 
   return (
     <div style={{ display: "flex" }}>
@@ -267,9 +272,11 @@ const AdminManagement = () => {
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <PaymentIcon color="primary" />
                   <Box sx={{ marginLeft: 1 }}>
-                    <Typography variant="subtitle1">Total Amount Earned</Typography>
+                    <Typography variant="subtitle1">
+                      Total Amount Earned
+                    </Typography>
                     <Typography variant="h6" color="textSecondary">
-                      ₹{totalStaffRewardMoney}
+                      ₹{formatCurrency(totalStaffRewardMoney)}
                     </Typography>
                   </Box>
                 </Box>
@@ -289,11 +296,9 @@ const AdminManagement = () => {
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <HourglassEmptyIcon color="error" />
                   <Box sx={{ marginLeft: 1 }}>
-                    <Typography variant="subtitle1">
-                      Pending Amount
-                    </Typography>
+                    <Typography variant="subtitle1">Pending Amount</Typography>
                     <Typography variant="h6" color="textSecondary">
-                      ₹{totalPendinggStaffMoney}
+                      ₹{formatCurrency(totalPendinggStaffMoney)}
                     </Typography>
                   </Box>
                 </Box>
@@ -306,14 +311,22 @@ const AdminManagement = () => {
                       Total withdrawal Amount
                     </Typography>
                     <Typography variant="h6" color="textSecondary">
-                      ₹{totalWithdrawalAmount}
+                      ₹{formatCurrency(totalWithdrawalAmount)}
                     </Typography>
                   </Box>
                 </Box>
               </Grid>
             </Grid>
 
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: "20px", marginBottom: "10px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "start",
+                gap: "20px",
+                marginBottom: "10px",
+              }}
+            >
               <ToggleButtonGroup
                 value={view}
                 exclusive
@@ -323,13 +336,18 @@ const AdminManagement = () => {
                 <ToggleButton value="transactions" aria-label="products view">
                   All Staff Transactions List
                 </ToggleButton>
-                <ToggleButton value="allTransactions" aria-label="products view">
+                <ToggleButton
+                  value="allTransactions"
+                  aria-label="products view"
+                >
                   All Transactions List
                 </ToggleButton>
-                <ToggleButton value="adminWithdrawalTransactions" aria-label="transactions view">
+                <ToggleButton
+                  value="adminWithdrawalTransactions"
+                  aria-label="transactions view"
+                >
                   Admin Withdrawal List
                 </ToggleButton>
-
               </ToggleButtonGroup>
 
               {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -362,9 +380,7 @@ const AdminManagement = () => {
               >
                 Withdraw
               </Button>
-
             </Box>
-
 
             {view === "transactions" && (
               <>
@@ -388,7 +404,12 @@ const AdminManagement = () => {
                           <TableRow key={staff._id}>
                             <TableCell>{staff._id}</TableCell>
                             <TableCell>{staff.name}</TableCell>
-                            <TableCell>            {calculateRewardMoney(staff.referralCoins)}</TableCell>
+                            <TableCell>
+                              {" "}
+                              {formatCurrency(
+                                calculateRewardMoney(staff.referralCoins)
+                              )}
+                            </TableCell>
                             {/* <TableCell>{staff.price}</TableCell> */}
                           </TableRow>
                         ))}
@@ -420,17 +441,35 @@ const AdminManagement = () => {
                       <TableRow key={withdrawal.transactionId}>
                         <TableCell>{withdrawal.transactionId}</TableCell>
                         <TableCell>{withdrawal.transactionType}</TableCell>
-                        <TableCell>{withdrawal.totalAmount}</TableCell>
-                        <TableCell>{withdrawal.tdsDeducted}</TableCell>
-                        <TableCell>{withdrawal.baseAmount}</TableCell>
+                        <TableCell>
+                          {formatCurrency(withdrawal.totalAmount)}
+                        </TableCell>
+                        <TableCell>
+                          {formatCurrency(withdrawal.tdsDeducted)}
+                        </TableCell>
+                        <TableCell>
+                          {formatCurrency(withdrawal.baseAmount)}
+                        </TableCell>
                         <TableCell>
                           {withdrawal.tdsCertificate ? (
-                            <a href={withdrawal.tdsCertificate} target="_blank" rel="noopener noreferrer">
-                              <img src={withdrawal.tdsCertificate} alt="TDS Certificate" style={{ width: '50px', height: '50px' }} />
+                            <a
+                              href={withdrawal.tdsCertificate}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <img
+                                src={withdrawal.tdsCertificate}
+                                alt="TDS Certificate"
+                                style={{ width: "50px", height: "50px" }}
+                              />
                             </a>
-                          ) : 'No Certificate'}
+                          ) : (
+                            "No Certificate"
+                          )}
                         </TableCell>
-                        <TableCell>{dayjs(withdrawal.date).format('DD-MM-YYYY')}</TableCell>
+                        <TableCell>
+                          {dayjs(withdrawal.date).format("DD-MM-YYYY")}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -442,7 +481,10 @@ const AdminManagement = () => {
               <>
                 <Typography variant="h6">All Transactions:</Typography>
                 {staffList && staffList.length > 0 ? (
-                  <TableContainer component={Paper} style={{ marginBottom: "20px" }}>
+                  <TableContainer
+                    component={Paper}
+                    style={{ marginBottom: "20px" }}
+                  >
                     <Table>
                       <TableHead>
                         <TableRow>
@@ -462,12 +504,21 @@ const AdminManagement = () => {
                                   <TableCell>{staff._id}</TableCell>
                                   <TableCell>{staff.name}</TableCell>
                                   <TableCell>
-                                    {coin.amount}
+                                    {formatCurrency(coin.amount)}
                                     {coin.amount > 100 && (
-                                      <span style={{ color: 'red', marginLeft: '10px' }}>Coin Bonus</span>
+                                      <span
+                                        style={{
+                                          color: "red",
+                                          marginLeft: "10px",
+                                        }}
+                                      >
+                                        Coin Bonus
+                                      </span>
                                     )}
                                   </TableCell>
-                                  <TableCell>{dayjs(staff.date).format('DD-MM-YYYY')}</TableCell>
+                                  <TableCell>
+                                    {dayjs(staff.date).format("DD-MM-YYYY")}
+                                  </TableCell>
                                 </TableRow>
                               ))}
                           </React.Fragment>
@@ -480,11 +531,7 @@ const AdminManagement = () => {
                 )}
               </>
             )}
-
-
           </>
-
-
         )}
         {/* </DialogContent> */}
         {/* <DialogActions>
@@ -503,7 +550,7 @@ const AdminManagement = () => {
         />
         <ToastContainer />
       </div>
-    </div >
-  )
-}
-export default AdminManagement
+    </div>
+  );
+};
+export default AdminManagement;
