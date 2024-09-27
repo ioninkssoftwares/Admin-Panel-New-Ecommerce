@@ -591,9 +591,9 @@ const VendorManagement = () => {
     try {
       const token = Cookies.get("token");
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/admin/vendor/delete/${vendorId}`,
+        `${process.env.REACT_APP_BASE_URL}/empty-stock/${vendorId}`,
         {
-          method: "DELETE",
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -603,7 +603,7 @@ const VendorManagement = () => {
       if (!response.ok) {
         toast.error(data.message);
       } else {
-        toast.success("Vendor deleted successfully");
+        toast.success(data.message);
         fetchVendors();
         setDeleteDialogOpen(false);
       }
@@ -1538,7 +1538,7 @@ const VendorManagement = () => {
           <div className="delete-confirmation-modal">
             <div className="modal-content">
               <h2>Confirm Deletion</h2>
-              <p> Are you sure you want to delete this vendor</p>
+              <p> Are you sure you want to make stocks to 0.</p>
               <div className="delete-confirmation-buttons">
                 <button onClick={() => handleDeleteVendor(selectedVendorId)}>
                   Confirm
