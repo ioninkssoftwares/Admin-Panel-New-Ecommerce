@@ -45,6 +45,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { formatCurrency } from "../../utils/currencyUtils";
 
 const StaffManagement = () => {
   const [filteredReferralCoins, setFilteredReferralCoins] = useState([]);
@@ -478,12 +479,12 @@ const StaffManagement = () => {
 
   const handleExportExcel = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/admin/staff/get`
-      );
+      // const response = await axios.get(
+      //   `${process.env.REACT_APP_BASE_URL}/staff/getAllStaf`
+      // );
 
-      if (response.data.success) {
-        const staffData = response.data.data.map(
+      if (staffList.length > 0) {
+        const staffData = staffList.map(
           ({ name, email, mobileNo, referralCount }) => ({
             " Name": name,
 
@@ -717,7 +718,7 @@ const StaffManagement = () => {
                           Total Amount
                         </Typography>
                         <Typography variant="h6" color="green">
-                          ₹{totalRewardMoney}
+                          ₹{formatCurrency(totalRewardMoney)}
                         </Typography>
                       </Box>
                     </Box>
@@ -728,7 +729,7 @@ const StaffManagement = () => {
                       <Box sx={{ marginLeft: 1 }}>
                         <Typography variant="subtitle1">Total Paid</Typography>
                         <Typography variant="h6" color="textSecondary">
-                          ₹{totalPaidMoney}
+                          ₹{formatCurrency(totalPaidMoney)}
                         </Typography>
                       </Box>
                     </Box>
@@ -741,7 +742,7 @@ const StaffManagement = () => {
                           Pending Amount
                         </Typography>
                         <Typography variant="h6" color="textSecondary">
-                          ₹{pendingAmount}
+                          ₹{formatCurrency(pendingAmount)}
                         </Typography>
                       </Box>
                     </Box>
@@ -881,8 +882,12 @@ const StaffManagement = () => {
 
                         <TableCell>{staff.email || " Not Given"}</TableCell>
                         <TableCell>{staff.mobileNo}</TableCell>
-                        <TableCell>{staff.rewardCoins || 0} Coins</TableCell>
-                        <TableCell>₹{staff.rewardMoney || 0}</TableCell>
+                        <TableCell>
+                          {formatCurrency(staff.rewardCoins) || 0} Coins
+                        </TableCell>
+                        <TableCell>
+                          ₹{formatCurrency(staff.rewardMoney) || 0}
+                        </TableCell>
 
                         <TableCell>
                           <IconButton
@@ -1187,7 +1192,7 @@ const StaffManagement = () => {
                             Total Amount
                           </Typography>
                           <Typography variant="h6" color="textSecondary">
-                            ₹{rewardStaffMoney}
+                            ₹{formatCurrency(rewardStaffMoney)}
                           </Typography>
                         </Box>
                       </Box>
@@ -1200,7 +1205,7 @@ const StaffManagement = () => {
                             Total Paid
                           </Typography>
                           <Typography variant="h6" color="textSecondary">
-                            ₹{totalPaidStaffMoney || 0}
+                            ₹{formatCurrency(totalPaidStaffMoney) || 0}
                           </Typography>
                         </Box>
                       </Box>
@@ -1213,7 +1218,7 @@ const StaffManagement = () => {
                             Pending Amount
                           </Typography>
                           <Typography variant="h6" color="textSecondary">
-                            ₹{staffPendingAmount}
+                            ₹{formatCurrency(staffPendingAmount)}
                           </Typography>
                         </Box>
                       </Box>
@@ -1325,7 +1330,7 @@ const StaffManagement = () => {
                               <TableRow key={coin._id}>
                                 <TableCell>{coin._id}</TableCell>
                                 <TableCell>
-                                  {coin.amount}
+                                  {formatCurrency(coin.amount)}
                                   {coin.amount > 100 && (
                                     <span
                                       style={{
@@ -1378,9 +1383,15 @@ const StaffManagement = () => {
                               <TableCell>
                                 {withdrawal.transactionType}
                               </TableCell>
-                              <TableCell>{withdrawal.baseAmount}</TableCell>
-                              <TableCell>{withdrawal.tdsDeducted}</TableCell>
-                              <TableCell>{withdrawal.totalAmount}</TableCell>
+                              <TableCell>
+                                {formatCurrency(withdrawal.baseAmount)}
+                              </TableCell>
+                              <TableCell>
+                                {formatCurrency(withdrawal.tdsDeducted)}
+                              </TableCell>
+                              <TableCell>
+                                {formatCurrency(withdrawal.totalAmount)}
+                              </TableCell>
                               <TableCell>
                                 {withdrawal.tdsCertificate ? (
                                   <a
