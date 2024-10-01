@@ -5,6 +5,8 @@ import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import DescriptionIcon from "@mui/icons-material/Description";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 import {
   Button,
@@ -98,7 +100,10 @@ const VendorManagement = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedVendorDetails, setSelectedVendorDetails] = useState(null);
   const [page, setPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  if (vendors) console.log(vendors, "vendors");
 
   // Handle pagination changes
   const handleChangePage = (event, newPage) => {
@@ -511,6 +516,57 @@ const VendorManagement = () => {
       toast.error("Failed to create vendor");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredVendor = vendors.filter((vendor) => {
+    const searchTermLower = searchTerm?.toLowerCase();
+    return (
+      vendor?.name.toLowerCase().includes(searchTermLower) ||
+      String(vendor?.mobileNo).toLowerCase().includes(searchTermLower) ||
+      vendor?.email.toLowerCase().includes(searchTermLower)
+    );
+  });
+
+  // if (searchTerm) console.log(searchTerm, "dhfjsdhjfd");
+
+  const handleExportExcel = async () => {
+    try {
+      // const response = await axios.get(
+      //   `${process.env.REACT_APP_BASE_URL}/staff/getAllStaf`
+      // );
+
+      if (vendors.length > 0) {
+        const vendorsData = vendors.map(({ name, email, mobileNo }) => ({
+          " Name": name,
+
+          Email: email,
+          "Mobile No": mobileNo,
+          // "Referral Count": referralCount,
+        }));
+
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(vendorsData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Staff Data");
+
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "array",
+        });
+        const blob = new Blob([excelBuffer], {
+          type: "application/octet-stream",
+        });
+        saveAs(blob, "staff_data.xlsx");
+      } else {
+        toast.error("Failed to export staff data");
+      }
+    } catch (error) {
+      console.error("Error exporting staff data:", error);
+      toast.error("Failed to export staff data");
     }
   };
 
@@ -1117,6 +1173,7 @@ const VendorManagement = () => {
         <Typography variant="h4" gutterBottom>
           Vendor Management
         </Typography>
+
         <Button
           variant="contained"
           color="primary"
@@ -1125,6 +1182,26 @@ const VendorManagement = () => {
         >
           Add Vendor
         </Button>
+
+        <Button
+          variant="contained"
+          onClick={handleExportExcel}
+          style={{
+            backgroundColor: "#ffa500",
+            float: "right",
+          }}
+        >
+          Export
+        </Button>
+        <Box>
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearch}
+            sx={{ mr: 1 }} // Add margin-right to create space between the elements
+          />
+        </Box>
         {loading ? (
           <CircularProgress />
         ) : (
@@ -1142,7 +1219,7 @@ const VendorManagement = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {vendors.map((vendor) => (
+                  {filteredVendor.map((vendor) => (
                     <TableRow key={vendor._id}>
                       <TableCell>{vendor.name}</TableCell>
                       <TableCell>{vendor._id}</TableCell>
