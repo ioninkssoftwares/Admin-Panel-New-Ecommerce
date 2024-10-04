@@ -1451,7 +1451,7 @@ export default function EnhancedTable() {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Product Name</TableCell>
+                          <TableCell>Service Name</TableCell>
                           <TableCell>Price</TableCell>
                           <TableCell>Quantity</TableCell>
                           <TableCell>Subtotal</TableCell>

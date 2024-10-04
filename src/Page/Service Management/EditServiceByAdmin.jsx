@@ -713,7 +713,7 @@ const EditServiceByAdmin = () => {
                 <div>
                   <p className="text-center text-xl my-8 ">Uploaded Images</p>
                   <div className="">
-                    <div className="flex flex-col space-y-4">
+                    <div className="flex flex-col space-y-4 gap-10">
                       {service?.images.map((image, index) => (
                         <img
                           key={index}
